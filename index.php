@@ -1,4 +1,18 @@
 <?php include 'db.php';?>
+<?php
+
+if(isset($_GET['update'])){
+    $id = (int)$_GET['update'];
+    $result = $conn->query("SELECT * FROM tasks WHERE id=$id");
+    $editTask = $result->fetch_assoc();
+
+    if(!$editTask){
+        header("$location");
+        exit();
+    }
+}
+
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -52,7 +66,7 @@
     
     <form method="POST" action="index.php">
         <input type="hidden" name="id" value="<?= $editTask['id'] ?? ''; ?>">
-        <input type="text" name="task" value="<?= htmlspecialcahrs($editTask['task'] ?? '')?>" placeholder="Enter a new Task" required>
+        <input type="text" name="task" value="<?= htmlspecialchars($editTask['task'] ?? '')?>" placeholder="Enter a new Task" required>
         <button type="submit" name="<?= $editTask ? 'update' : 'add'?>">
             <?= $editTask ? 'Update Task' : 'Add Task'?>
         </button>
@@ -82,12 +96,6 @@
             exit();
         }
 
-        if(isset($_GET['update'])){
-            $id = (int)$_GET['update'];
-            $result = $conn->query("SELECT * FROM tasks WHERE id=$id");
-            $editTask = $result->fetch_assoc();
-        }
-
         if(isset($_POST['update'])){
             $id = (int)$_POST['id'];
             $task = $conn->real_escape_string($_POST['task']);
@@ -110,13 +118,14 @@
             echo "<li class='$doneClass'>" . htmlspecialchars($row['task']);
             
             if(!$row['done']){
-                echo "<a href='index.php?done=" . $row['id'] . "'>Done</a>";
+                echo "<a href='index.php?done=" . $row['id'] . "'>Done</a>" . 
+                "<a href='index.php?update={$row['id']}'>Edit</a>";
             } else {
-                echo "<a href='index.php?undo=" . $row['id'] . "'>Undo</a>";
+                echo "<a href='index.php?undo=" . $row['id'] . "'>Undo</a>" . 
+                "<span style='color:gray; margin-left:10px;'>Edit</span>";
             }
              
-            echo" <a href='index.php?update=" . $row['id'] . "'>Edit</a>" . 
-                " <a href='index.php?delete=" . $row['id'] . "' onclick=\"return confirm('Are you sure?')\">Delete</a>" . 
+            echo" <a href='index.php?delete=" . $row['id'] . "' onclick=\"return confirm('Are you sure?')\">Delete</a>" . 
                 "</li>";
         }
         ?>

@@ -63,14 +63,21 @@ if(isset($_GET['update'])){
 <body>
     
     <h2>Zedric To-Do List</h2>
-    
+
     <form method="POST" action="index.php">
-        <input type="hidden" name="id" value="<?= $editTask['id'] ?? ''; ?>">
-        <input type="text" name="task" value="<?= htmlspecialchars($editTask['task'] ?? '')?>" placeholder="Enter a new Task" required>
-        <button type="submit" name="<?= $editTask ? 'update' : 'add'?>">
-            <?= $editTask ? 'Update Task' : 'Add Task'?>
-        </button>
+        <input type="text" name="task" placeholder="Enter a new task" required>
+        <button type="submit" name="add">Add Task</button>
     </form>
+    <?php if ($editTask): ?>
+        <form method="POST" action="index.php">
+            <input type="hidden" name="id" value="<?= $editTask['id']; ?>">
+            <input type="text" name="task" value="<?= htmlspecialchars($editTask['task'])?>" placeholder="Enter a new Task" required>
+            <button type="submit" name="update">
+                Update Task
+            </button>
+            <a href="index.php" style="margin-left:10px;">Cancel</a>
+        </form>
+    <?php endif; ?>
 
     <ul>
         <?php

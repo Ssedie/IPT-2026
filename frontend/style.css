@@ -16,7 +16,7 @@
     }
 
     body {
-      font-family: 'Nunito', sans-serif;
+      font-family: 'Crimson Pro', serif;
       background: linear-gradient(135deg, #74c442 0%, #4a9e2f 40%, #2d7a1f 100%);
       min-height: 100vh;
       display: flex;
@@ -44,32 +44,33 @@
     /* ── LEFT PANEL ── */
     .left {
       background: linear-gradient(160deg, #3a7a28 0%, #2a5e1a 100%);
-      flex: 0 0 42%;
-      padding: 44px 36px;
+      flex: 1; /* Equal width — was flex: 0 0 42% */
+      padding: 44px 52px;
       display: flex;
       flex-direction: column;
+      justify-content: center;
       position: relative;
       overflow: hidden;
     }
 
+    /* Top-left L-bracket corner */
     .left::before {
       content: '';
       position: absolute;
-      top: -60px; left: -60px;
-      width: 220px; height: 220px;
-      border: 2px solid rgba(245,166,35,0.25);
-      border-radius: 4px;
-      transform: rotate(10deg);
+      top: 24px; left: 24px;
+      width: 140px; height: 140px;
+      border-top: 2.5px solid rgba(245,166,35,0.75);
+      border-left: 2.5px solid rgba(245,166,35,0.75);
     }
 
+    /* Bottom-right L-bracket corner */
     .left::after {
       content: '';
       position: absolute;
-      bottom: -50px; right: -50px;
-      width: 180px; height: 180px;
-      border: 2px solid rgba(245,166,35,0.2);
-      border-radius: 4px;
-      transform: rotate(20deg);
+      bottom: 24px; right: 24px;
+      width: 140px; height: 140px;
+      border-bottom: 2.5px solid rgba(245,166,35,0.75);
+      border-right: 2.5px solid rgba(245,166,35,0.75);
     }
 
     .logo {
@@ -91,8 +92,8 @@
     }
 
     .logo-text {
-      font-family: 'Playfair Display', serif;
-      font-size: 32px;
+      font-family: 'Squada One', sans-serif;
+      font-size: 65px;
       color: white;
       letter-spacing: 1px;
     }
@@ -100,8 +101,9 @@
     .logo-text span { color: var(--orange); }
 
     .tagline {
+      font-family: 'Spline Sans', sans-serif;
       color: rgba(255,255,255,0.82);
-      font-size: 14px;
+      font-size: 18px;
       line-height: 1.65;
       margin-bottom: 36px;
       position: relative;
@@ -130,7 +132,7 @@
     .feat-text strong {
       display: block;
       color: white;
-      font-size: 13px;
+      font-size: 18px;
       font-weight: 700;
       margin-bottom: 2px;
     }
@@ -179,7 +181,6 @@
       flex-shrink: 0;
       padding: 12px 44px 20px;
       background: var(--cream);
-      /* Subtle shadow so it feels "lifted" above the scroll area */
       box-shadow: 0 -8px 20px rgba(247, 245, 238, 0.98);
     }
 
@@ -265,7 +266,7 @@
       border-radius: 10px;
       padding: 13px 16px;
       font-size: 14px;
-      font-family: 'Nunito', sans-serif;
+      font-family: 'Crimson Pro', serif;
       color: var(--text-dark);
       outline: none;
       margin-bottom: 16px;
@@ -329,7 +330,7 @@
       padding: 15px;
       font-size: 16px;
       font-weight: 700;
-      font-family: 'Nunito', sans-serif;
+      font-family: 'Crimson Pro', serif;
       cursor: pointer;
       transition: background 0.2s, transform 0.1s;
       margin-bottom: 18px;
@@ -393,4 +394,4 @@
       .right-body { padding: 0 20px; }
       .right-footer { padding: 10px 20px 14px; }
       .input-row, .input-row-3 { grid-template-columns: 1fr; }
-    }
+    } 

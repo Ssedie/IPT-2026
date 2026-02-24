@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FarmVille - Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="card">
+  <!-- LEFT -->
+  <div class="left">
+    <div class="logo">
+      <div class="logo-icon">🌾</div>
+      <div class="logo-text">FARM<span>VILLE</span></div>
+    </div>
+    <p class="tagline">Join the future of farming. Connect with modern agricultural solutions and grow your success.</p>
+    <ul class="features">
+      <li>
+        <div class="feat-icon">📋</div>
+        <div class="feat-text">
+          <strong>Smart Harvest Listings</strong>
+          <p>Post crops with price, quantity, and availability.</p>
+        </div>
+      </li>
+      <li>
+        <div class="feat-icon">🛒</div>
+        <div class="feat-text">
+          <strong>Market Browsing & Ordering</strong>
+          <p>Buyers can explore available harvests and place orders directly with farmers.</p>
+        </div>
+      </li>
+      <li>
+        <div class="feat-icon">📊</div>
+        <div class="feat-text">
+          <strong>Monitoring & Reports</strong>
+          <p>Admins can track transactions, supply levels, and pricing trends in real time.</p>
+        </div>
+      </li>
+      <li>
+        <div class="feat-icon">✅</div>
+        <div class="feat-text">
+          <strong>Farmer Registration & Verification</strong>
+          <p>Verified profiles for trusted transactions.</p>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right">
+    <button class="go-back" onclick="goBack()">→ Go Back</button>
+
+    <div class="tabs">
+      <div class="tab active" id="tab-login" onclick="switchTab('login')">Login</div>
+      <div class="tab" id="tab-register" onclick="switchTab('register')">Register</div>
+    </div>
+
+    <!-- LOGIN PANEL -->
+    <div class="form-panel active" id="panel-login">
+      <div class="welcome-title">Welcome Back!</div>
+      <div class="welcome-sub">Enter your credentials to access your account</div>
+
+      <div class="error-msg" id="login-error"></div>
+      <div class="success-msg" id="login-success"></div>
+
+      <label>Email Address</label>
+      <input type="email" id="login-email" placeholder="you@example.com" />
+
+      <label>Password</label>
+      <div class="password-wrap">
+        <input type="password" id="login-password" placeholder="••••••••" />
+        <span class="toggle-pw" onclick="togglePassword('login-password', this)">👁</span>
+      </div>
+
+      <div class="checkbox-row">
+        <input type="checkbox" id="terms-login" />
+        <label for="terms-login">I agree to the Terms & Conditions and Privacy Policy</label>
+      </div>
+
+      <button class="btn-primary" id="login-btn" onclick="handleLogin()">Sign In</button>
+
+      <div class="link-row" style="margin-bottom:10px;">
+        <a onclick="showForgotPassword()">Forgot Password?</a>
+      </div>
+      <div class="link-row">
+        Don't have an account? <a onclick="switchTab('register')">Create One</a>
+      </div>
+    </div>
+
+    <!-- REGISTER PANEL -->
+    <div class="form-panel" id="panel-register">
+      <div class="welcome-title">Create Your Account</div>
+      <div class="welcome-sub">Join thousands of farmers growing smarter!</div>
+
+      <div class="error-msg" id="register-error"></div>
+      <div class="success-msg" id="register-success"></div>
+
+      <div class="section-label">Personal Details</div>
+      <hr class="section-divider">
+
+      <label>Full Name</label>
+      <input type="text" id="reg-name" placeholder="Juan dela Cruz" />
+
+      <label>Email Address</label>
+      <input type="email" id="reg-email" placeholder="you@example.com" />
+
+      <div class="section-label" style="margin-top:4px;">Address</div>
+      <hr class="section-divider">
+
+      <div class="input-row">
+        <div>
+          <label>Street</label>
+          <input type="text" id="reg-street" placeholder="123 Main St" />
+        </div>
+        <div>
+          <label>Barangay</label>
+          <input type="text" id="reg-barangay" placeholder="Barangay" />
+        </div>
+      </div>
+
+      <div class="input-row-3">
+        <div>
+          <label>City</label>
+          <input type="text" id="reg-city" placeholder="City" />
+        </div>
+        <div>
+          <label>Province</label>
+          <input type="text" id="reg-province" placeholder="Province" />
+        </div>
+        <div>
+          <label>Zip Code</label>
+          <input type="text" id="reg-zip" placeholder="0000" />
+        </div>
+      </div>
+
+      <div class="section-label" style="margin-top:4px;">Security</div>
+      <hr class="section-divider">
+
+      <label>Password</label>
+      <div class="password-wrap">
+        <input type="password" id="reg-password" placeholder="••••••••" />
+        <span class="toggle-pw" onclick="togglePassword('reg-password', this)">👁</span>
+      </div>
+
+      <label>Confirm Password</label>
+      <div class="password-wrap">
+        <input type="password" id="reg-confirm" placeholder="••••••••" />
+        <span class="toggle-pw" onclick="togglePassword('reg-confirm', this)">👁</span>
+      </div>
+
+      <button class="btn-primary" id="register-btn" onclick="handleRegister()">Sign Up</button>
+
+      <div class="link-row">
+        Already have an account? <a onclick="switchTab('login')">Login</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>

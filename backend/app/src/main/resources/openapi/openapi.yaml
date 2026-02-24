@@ -1,0 +1,323 @@
+openapi: 3.0.0
+info:
+  title: Product API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/api/v1
+tags:
+  - name: Product
+    description: Product management API
+paths:
+  /products:
+    get:
+      tags:
+        - Product
+      summary: Get all products
+      operationId: getAllProducts
+      responses:
+        "200":
+          description: A list of products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+    post:
+      tags:
+        - Product
+      summary: Create a new product
+      operationId: createProduct
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        "201":
+          description: Product created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        "400":
+          description: Invalid input
+  /products/{id}:
+    get:
+      tags:
+        - Product
+      summary: Get product by ID
+      operationId: getProductById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the product to retrieve
+      responses:
+        "200":
+          description: Product found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        "404":
+          description: Product not found
+    put:
+      tags:
+        - Product
+      summary: Update a product
+      operationId: updateProduct
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the product to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        "200":
+          description: Product updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        "400":
+          description: Invalid input
+        "404":
+          description: Product not found
+    delete:
+      tags:
+        - Product
+      summary: Delete a product
+      operationId: deleteProduct
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the product to delete
+      responses:
+        "204":
+          description: Product deleted successfully
+        "404":
+          description: Product not found
+
+  /users:
+    get:
+      tags:
+        - User
+      summary: Get all users
+      operationId: getAllUsers
+      responses:
+        "200":
+          description: A list of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+    post:
+      tags:
+        - User
+      summary: Create a new user
+      operationId: createUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        "201":
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        "400":
+          description: Invalid input
+  /users/{id}:
+    get:
+      tags:
+        - User
+      summary: Get user by ID
+      operationId: getUserById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the user to retrieve
+      responses:
+        "200":
+          description: User found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        "404":
+          description: User not found
+    put:
+      tags:
+        - User
+      summary: Update a user
+      operationId: updateUser
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the user to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        "200":
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        "400":
+          description: Invalid input
+        "404":
+          description: User not found
+    delete:
+      tags:
+        - User
+      summary: Delete a user
+      operationId: deleteUser
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the user to delete
+      responses:
+        "204":
+          description: User deleted successfully
+        "404":
+          description: User not found
+
+components:
+  schemas:
+    Product:
+      type: object
+      required:
+        - name
+        - price
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unique identifier for the product
+        name:
+          type: string
+          example: Laptop
+          description: Name of the product
+        description:
+          type: string
+          nullable: true
+          example: Powerful and portable laptop
+          description: Description of the product
+        price:
+          type: number
+          format: float
+          example: 1200.00
+          description: Price of the product
+        createdAt:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Creation timestamp
+        updatedAt:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Last update timestamp
+    User:
+      type: object
+      required:
+        - email
+        - password
+        - firstName
+        - middleName
+        - lastName
+        - createdAt
+        - role
+        - street
+        - city
+        - province
+        - postalCode
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unique identifier for the user
+        email:
+          type: string
+          format: email
+          example:
+        password:
+          type: string
+          format: password
+          example: password123
+          description: User's password (hashed in storage)
+        firstName:
+          type: string
+          example: John
+          description: User's first name
+        middleName:
+          type: string
+          nullable: true
+          example: A.
+          description: User's middle name
+        lastName:
+          type: string
+          example: Doe
+          description: User's last name
+        createdAt:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Creation timestamp
+        role:
+          type: string
+          example: admin
+          description: User's role (e.g., admin, user)
+        street:
+          type: string
+          example: 123 Main St
+          description: User's street address
+        city:
+          type: string
+          example: Anytown
+          description: User's city
+        province:
+          type: string
+          example: Anystate
+          description: User's province
+        postalCode:
+          type: string
+          example: 12345
+          description: User's postal code
+        

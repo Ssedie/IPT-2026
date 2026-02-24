@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FarmVille - Login</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -51,116 +51,146 @@
 
   <!-- RIGHT -->
   <div class="right">
-    <button class="go-back" onclick="goBack()">→ Go Back</button>
 
-    <div class="tabs">
-      <div class="tab active" id="tab-login" onclick="switchTab('login')">Login</div>
-      <div class="tab" id="tab-register" onclick="switchTab('register')">Register</div>
-    </div>
-
-    <!-- LOGIN PANEL -->
-    <div class="form-panel active" id="panel-login">
-      <div class="welcome-title">Welcome Back!</div>
-      <div class="welcome-sub">Enter your credentials to access your account</div>
-
-      <div class="error-msg" id="login-error"></div>
-      <div class="success-msg" id="login-success"></div>
-
-      <label>Email Address</label>
-      <input type="email" id="login-email" placeholder="you@example.com" />
-
-      <label>Password</label>
-      <div class="password-wrap">
-        <input type="password" id="login-password" placeholder="••••••••" />
-        <span class="toggle-pw" onclick="togglePassword('login-password', this)">👁</span>
-      </div>
-
-      <div class="checkbox-row">
-        <input type="checkbox" id="terms-login" />
-        <label for="terms-login">I agree to the Terms & Conditions and Privacy Policy</label>
-      </div>
-
-      <button class="btn-primary" id="login-btn" onclick="handleLogin()">Sign In</button>
-
-      <div class="link-row" style="margin-bottom:10px;">
-        <a onclick="showForgotPassword()">Forgot Password?</a>
-      </div>
-      <div class="link-row">
-        Don't have an account? <a onclick="switchTab('register')">Create One</a>
+    <!-- STICKY TOP: Go Back + Tabs -->
+    <div class="right-header">
+      <button class="go-back" onclick="goBack()">→ Go Back</button>
+      <div class="tabs">
+        <div class="tab active" id="tab-login" onclick="switchTab('login')">Login</div>
+        <div class="tab" id="tab-register" onclick="switchTab('register')">Register</div>
       </div>
     </div>
 
-    <!-- REGISTER PANEL -->
-    <div class="form-panel" id="panel-register">
-      <div class="welcome-title">Create Your Account</div>
-      <div class="welcome-sub">Join thousands of farmers growing smarter!</div>
+    <!-- SCROLLABLE MIDDLE: Form fields only -->
+    <div class="right-body">
 
-      <div class="error-msg" id="register-error"></div>
-      <div class="success-msg" id="register-success"></div>
+      <!-- LOGIN PANEL -->
+      <div class="form-panel active" id="panel-login">
+        <div class="welcome-title">Welcome Back!</div>
+        <div class="welcome-sub">Enter your credentials to access your account</div>
 
-      <div class="section-label">Personal Details</div>
-      <hr class="section-divider">
+        <div class="error-msg" id="login-error"></div>
+        <div class="success-msg" id="login-success"></div>
 
-      <label>Full Name</label>
-      <input type="text" id="reg-name" placeholder="Juan dela Cruz" />
+        <label>Email Address</label>
+        <input type="email" id="login-email" placeholder="you@example.com" />
 
-      <label>Email Address</label>
-      <input type="email" id="reg-email" placeholder="you@example.com" />
-
-      <div class="section-label" style="margin-top:4px;">Address</div>
-      <hr class="section-divider">
-
-      <div class="input-row">
-        <div>
-          <label>Street</label>
-          <input type="text" id="reg-street" placeholder="123 Main St" />
+        <label>Password</label>
+        <div class="password-wrap">
+          <input type="password" id="login-password" placeholder="••••••••" />
+          <span class="toggle-pw" onclick="togglePassword('login-password', this)">👁</span>
         </div>
-        <div>
-          <label>Barangay</label>
-          <input type="text" id="reg-barangay" placeholder="Barangay" />
+
+        <div class="checkbox-row">
+          <input type="checkbox" id="terms-login" />
+          <label for="terms-login">I agree to the Terms & Conditions and Privacy Policy</label>
         </div>
       </div>
 
-      <div class="input-row-3">
-        <div>
-          <label>City</label>
-          <input type="text" id="reg-city" placeholder="City" />
+      <!-- REGISTER PANEL -->
+      <div class="form-panel" id="panel-register">
+        <div class="welcome-title">Create Your Account</div>
+        <div class="welcome-sub">Join thousands of farmers growing smarter!</div>
+
+        <div class="error-msg" id="register-error"></div>
+        <div class="success-msg" id="register-success"></div>
+
+        <div class="section-label">Personal Details</div>
+        <hr class="section-divider">
+
+        <label>Full Name</label>
+        <input type="text" id="reg-name" placeholder="Juan dela Cruz" />
+
+        <label>Email Address</label>
+        <input type="email" id="reg-email" placeholder="you@example.com" />
+
+        <div class="section-label" style="margin-top:4px;">Address</div>
+        <hr class="section-divider">
+
+        <div class="input-row">
+          <div>
+            <label>Street</label>
+            <input type="text" id="reg-street" placeholder="123 Main St" />
+          </div>
+          <div>
+            <label>Barangay</label>
+            <input type="text" id="reg-barangay" placeholder="Barangay" />
+          </div>
         </div>
-        <div>
-          <label>Province</label>
-          <input type="text" id="reg-province" placeholder="Province" />
+
+        <div class="input-row-3">
+          <div>
+            <label>City</label>
+            <input type="text" id="reg-city" placeholder="City" />
+          </div>
+          <div>
+            <label>Province</label>
+            <input type="text" id="reg-province" placeholder="Province" />
+          </div>
+          <div>
+            <label>Zip Code</label>
+            <input type="text" id="reg-zip" placeholder="0000" />
+          </div>
         </div>
-        <div>
-          <label>Zip Code</label>
-          <input type="text" id="reg-zip" placeholder="0000" />
+
+        <div class="section-label" style="margin-top:4px;">Security</div>
+        <hr class="section-divider">
+
+        <label>Password</label>
+        <div class="password-wrap">
+          <input type="password" id="reg-password" placeholder="••••••••" />
+          <span class="toggle-pw" onclick="togglePassword('reg-password', this)">👁</span>
+        </div>
+
+        <label>Confirm Password</label>
+        <div class="password-wrap">
+          <input type="password" id="reg-confirm" placeholder="••••••••" />
+          <span class="toggle-pw" onclick="togglePassword('reg-confirm', this)">👁</span>
         </div>
       </div>
 
-      <div class="section-label" style="margin-top:4px;">Security</div>
-      <hr class="section-divider">
+    </div><!-- /right-body -->
 
-      <label>Password</label>
-      <div class="password-wrap">
-        <input type="password" id="reg-password" placeholder="••••••••" />
-        <span class="toggle-pw" onclick="togglePassword('reg-password', this)">👁</span>
+    <!-- STICKY BOTTOM: Button + account toggle link -->
+    <div class="right-footer">
+
+      <!-- Login footer -->
+      <div id="footer-login">
+        <button class="btn-primary" id="login-btn" onclick="handleLogin()">Sign In</button>
+        <div class="link-row" style="margin-bottom:8px;">
+          <a onclick="showForgotPassword()">Forgot Password?</a>
+        </div>
+        <div class="link-row">
+          Don't have an account? <a onclick="switchTab('register')">Create One</a>
+        </div>
       </div>
 
-      <label>Confirm Password</label>
-      <div class="password-wrap">
-        <input type="password" id="reg-confirm" placeholder="••••••••" />
-        <span class="toggle-pw" onclick="togglePassword('reg-confirm', this)">👁</span>
+      <!-- Register footer -->
+      <div id="footer-register" style="display:none;">
+        <button class="btn-primary" id="register-btn" onclick="handleRegister()">Sign Up</button>
+        <div class="link-row">
+          Already have an account? <a onclick="switchTab('login')">Login</a>
+        </div>
       </div>
 
-      <button class="btn-primary" id="register-btn" onclick="handleRegister()">Sign Up</button>
+    </div><!-- /right-footer -->
 
-      <div class="link-row">
-        Already have an account? <a onclick="switchTab('login')">Login</a>
-      </div>
-    </div>
-  </div>
+  </div><!-- /right -->
 </div>
 
 <script src="script.js"></script>
+<script>
+  function switchTab(tab) {
+    document.querySelectorAll('.form-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('panel-' + tab).classList.add('active');
+    document.getElementById('tab-' + tab).classList.add('active');
 
+    document.getElementById('footer-login').style.display    = tab === 'login'    ? 'block' : 'none';
+    document.getElementById('footer-register').style.display = tab === 'register' ? 'block' : 'none';
+
+    document.querySelector('.right-body').scrollTop = 0;
+  }
+</script>
 </body>
 </html>

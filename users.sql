@@ -9,4 +9,5 @@ CREATE TABLE users (
     province VARCHAR(100),
     zip_code VARCHAR(20),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    role VARCHAR(20) DEFAULT 'user'
 );

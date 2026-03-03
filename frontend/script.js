@@ -39,6 +39,7 @@ function switchTab(tab) {
   }
 
   // ── LOGIN ──
+  // ── corrected LOGIN ──
   async function handleLogin() {
     clearMessages();
     const email    = document.getElementById('login-email').value.trim();
@@ -53,7 +54,7 @@ function switchTab(tab) {
     btn.textContent = 'Signing in...';
 
     try {
-      const response = await fetch('http://localhost:8080/api/auth/login', {
+      const response = await fetch('login.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -62,11 +63,19 @@ function switchTab(tab) {
       const data = await response.json();
 
       if (response.ok) {
-        localStorage.setItem('token', data.token);
+        // SUCCESS: Store data and redirect
         localStorage.setItem('user', JSON.stringify(data.user));
         showSuccess('login-success', 'Login successful! Redirecting...');
-        setTimeout(() => window.location.href = 'dashboard.html', 1200);
+        
+        setTimeout(() => {
+            if (data.user.role === 'admin') {
+                window.location.href = 'admin_dashboard.html';
+            } else {
+                window.location.href = 'dashboard.html';
+            }
+        }, 1200);
       } else {
+        // ERROR: Show the specific message from PHP (e.g., "Invalid email or password")
         showError('login-error', data.message || 'Invalid email or password.');
       }
     } catch (err) {
@@ -105,7 +114,7 @@ function switchTab(tab) {
     btn.textContent = 'Creating account...';
 
     try {
-      const response = await fetch('http://localhost:8080/api/auth/register', {
+      const response = await fetch('register.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password, street, barangay, city, province, zip }),

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FarmVille - Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        // IMMEDIATE CHECK: If no user data is found, send them back to login
+        if (!localStorage.getItem('user')) {
+            window.location.href = 'login.html';
+        }
+    </script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <header>
+            <h1>FARM<span>VILLE</span></h1>
+            <div class="user-info">
+                Welcome, <span id="user-display-name">Farmer</span>!
+                <button onclick="handleLogout()" class="btn-logout">Logout</button>
+            </div>
+        </header>
+
+        <main>
+            <h2>Your Farm Overview</h2>
+            <p>Select an option from the menu to manage your harvests.</p>
+            </main>
+    </div>
+
+    <script>
+        // Display the logged-in user's name
+        const userData = JSON.parse(localStorage.getItem('user'));
+        if (userData && userData.full_name) {
+            document.getElementById('user-display-name').textContent = userData.full_name;
+        }
+
+        // Logout function
+        function handleLogout() {
+            localStorage.clear(); // Wipe the data
+            window.location.href = 'login.html'; // Go back to login
+        }
+    </script>
+</body>
+</html>

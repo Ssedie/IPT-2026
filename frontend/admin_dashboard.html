@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FarmVille Admin - Control Panel</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Simple layout styles for Admin */
+        .admin-layout { display: flex; min-height: 100vh; }
+        .sidebar { width: 250px; background: #2c3e50; color: white; padding: 20px; }
+        .main-content { flex: 1; padding: 30px; background: #f4f7f6; }
+        .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .user-table { width: 100%; border-collapse: collapse; background: white; }
+        .user-table th, .user-table td { padding: 12px; border-bottom: 1px solid #ddd; text-align: left; }
+        .btn-delete { background: #e74c3c; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; }
+    </style>
+    
+    <script>
+        // --- 1. THE SECURITY GUARD ---
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (!user || user.role !== 'admin') {
+            alert("Unauthorized access! Redirecting to login...");
+            window.location.href = 'login.html';
+        }
+    </script>
+</head>
+<body>
+
+<div class="admin-layout">
+    <div class="sidebar">
+        <h2>FarmVille Admin</h2>
+        <hr>
+        <p>Dashboard</p>
+        <p>Manage Farmers</p>
+        <p>Review Harvests</p>
+        <p>Market Trends</p>
+        <br>
+        <button onclick="handleLogout()" class="btn-primary" style="background:#c0392b;">Logout</button>
+    </div>
+
+    <div class="main-content">
+        <header>
+            <h1>System Overview</h1>
+            <p>Welcome back, <strong id="admin-name">Admin</strong></p>
+        </header>
+
+        <div class="stat-grid">
+            <div class="stat-card">
+                <h3>Total Farmers</h3>
+                <p id="count-users">Loading...</p>
+            </div>
+            <div class="stat-card">
+                <h3>Active Listings</h3>
+                <p>42 Crops</p>
+            </div>
+            <div class="stat-card">
+                <h3>Pending Verifications</h3>
+                <p>5 Farmers</p>
+            </div>
+        </div>
+
+        <h3>Recent Registered Users</h3>
+        <table class="user-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>City</th>
+                    <th>Role</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="user-list-body">
+                </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    // Set Admin Name
+    document.getElementById('admin-name').textContent = user.full_name;
+
+    // Logout Function
+    function handleLogout() {
+        localStorage.clear();
+        window.location.href = 'login.html';
+    }
+
+    // Fetch users from PHP (We'll create this next)
+    async function loadUsers() {
+        try {
+            const response = await fetch('get_users.php');
+            const data = await response.json();
+            
+            const tableBody = document.getElementById('user-list-body');
+            document.getElementById('count-users').textContent = data.length;
+
+            tableBody.innerHTML = data.map(u => `
+                <tr>
+                    <td>${u.full_name}</td>
+                    <td>${u.email}</td>
+                    <td>${u.city}</td>
+                    <td><strong>${u.role}</strong></td>
+                    <td><button class="btn-delete" onclick="deleteUser(${u.id})">Remove</button></td>
+                </tr>
+            `).join('');
+        } catch (err) {
+            console.error("Failed to load users", err);
+        }
+    }
+
+    loadUsers();
+</script>
+</body>
+</html>

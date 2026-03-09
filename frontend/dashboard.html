@@ -1,45 +1,1233 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FarmVille - Dashboard</title>
-    <link rel="stylesheet" href="style.css">
-    <script>
-        // IMMEDIATE CHECK: If no user data is found, send them back to login
-        if (!localStorage.getItem('user')) {
-            window.location.href = 'login.html';
-        }
-    </script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FarmVille — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-dark: #1a3a1a;
+    --green-mid: #2d5a1b;
+    --green-light: #4a7c2f;
+    --green-pale: #e8f0e0;
+    --amber: #e8a020;
+    --amber-light: #f5c842;
+    --cream: #faf6ed;
+    --white: #ffffff;
+    --text-dark: #1a2a0a;
+    --text-mid: #3a4a2a;
+    --text-light: #6a7a5a;
+    --border: #d4e0c4;
+    --sidebar-w: 260px;
+    --red: #d94f4f;
+    --blue: #3a7bd5;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #f0f4ea;
+    color: var(--text-dark);
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: var(--green-dark);
+    min-height: 100vh;
+    position: fixed; left: 0; top: 0; bottom: 0;
+    display: flex; flex-direction: column;
+    z-index: 50;
+    box-shadow: 4px 0 24px rgba(0,0,0,0.15);
+  }
+
+  .sidebar-logo {
+    padding: 28px 24px 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .sidebar-logo .logo-icon {
+    width: 38px; height: 38px;
+    background: var(--amber);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+  }
+
+  .sidebar-logo span {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem; font-weight: 900;
+    color: var(--amber);
+  }
+
+  .sidebar-user {
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    display: flex; align-items: center; gap: 12px;
+  }
+
+  .user-avatar {
+    width: 44px; height: 44px;
+    background: var(--green-mid);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+    border: 2px solid rgba(232,160,32,0.4);
+    flex-shrink: 0;
+  }
+
+  .user-info h4 { font-size: 0.875rem; font-weight: 600; color: var(--white); }
+  .user-info p  { font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-top: 2px; }
+
+  .verified-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: rgba(74,124,47,0.3); color: #8fd45a;
+    font-size: 0.65rem; font-weight: 700;
+    padding: 2px 8px; border-radius: 10px; margin-top: 4px;
+  }
+
+  .buyer-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: rgba(58,123,213,0.25); color: #7ab3f5;
+    font-size: 0.65rem; font-weight: 700;
+    padding: 2px 8px; border-radius: 10px; margin-top: 4px;
+  }
+
+  .sidebar-nav { flex: 1; padding: 16px 12px; overflow-y: auto; }
+
+  .nav-section-label {
+    font-size: 0.65rem; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: rgba(255,255,255,0.3); padding: 12px 12px 6px;
+  }
+
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: 10px;
+    cursor: pointer; transition: all 0.2s; margin-bottom: 2px;
+    color: rgba(255,255,255,0.6); font-size: 0.875rem;
+    font-weight: 500; text-decoration: none;
+  }
+
+  .nav-item:hover { background: rgba(255,255,255,0.08); color: var(--white); }
+  .nav-item.active { background: var(--amber); color: var(--green-dark); font-weight: 700; }
+  .nav-item .icon { font-size: 1.1rem; width: 22px; text-align: center; }
+
+  .nav-badge {
+    margin-left: auto; background: var(--red); color: white;
+    font-size: 0.65rem; font-weight: 700;
+    padding: 2px 7px; border-radius: 10px; min-width: 20px; text-align: center;
+  }
+
+  .nav-badge.blue { background: var(--blue); }
+
+  .sidebar-footer {
+    padding: 16px 12px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .sidebar-footer .nav-item { color: rgba(255,255,255,0.4); }
+
+  /* ── MAIN ── */
+  .main {
+    margin-left: var(--sidebar-w); flex: 1;
+    display: flex; flex-direction: column; min-height: 100vh;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    background: var(--white); padding: 16px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 40;
+  }
+
+  .topbar-left h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem; font-weight: 700; color: var(--text-dark);
+  }
+
+  .topbar-left p { font-size: 0.8rem; color: var(--text-light); margin-top: 2px; }
+  .topbar-right  { display: flex; align-items: center; gap: 16px; }
+
+  .search-box {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--cream); border: 1px solid var(--border);
+    border-radius: 10px; padding: 8px 14px; min-width: 220px;
+  }
+
+  .search-box input {
+    border: none; background: transparent;
+    font-family: 'DM Sans', sans-serif; font-size: 0.875rem;
+    color: var(--text-dark); outline: none; width: 100%;
+  }
+
+  .icon-btn {
+    width: 38px; height: 38px; background: var(--cream);
+    border: 1px solid var(--border); border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; position: relative; font-size: 1rem; transition: all 0.2s;
+  }
+
+  .icon-btn:hover { background: var(--border); }
+
+  .notif-dot {
+    position: absolute; top: 6px; right: 6px;
+    width: 8px; height: 8px; background: var(--red);
+    border-radius: 50%; border: 2px solid var(--white);
+  }
+
+  /* ── CONTENT ── */
+  .content { padding: 32px; flex: 1; }
+
+  /* ── STATS ── */
+  .stats-row {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 20px; margin-bottom: 28px;
+  }
+
+  .stat-card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 16px; padding: 24px 20px;
+    position: relative; overflow: hidden; transition: all 0.2s;
+  }
+
+  .stat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.07); }
+
+  .stat-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  }
+
+  .stat-card.green::before { background: var(--green-light); }
+  .stat-card.amber::before { background: var(--amber); }
+  .stat-card.blue::before  { background: var(--blue); }
+  .stat-card.red::before   { background: var(--red); }
+
+  .stat-card .s-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; margin-bottom: 16px;
+  }
+
+  .stat-card.green .s-icon { background: rgba(74,124,47,0.12); }
+  .stat-card.amber .s-icon { background: rgba(232,160,32,0.12); }
+  .stat-card.blue  .s-icon { background: rgba(58,123,213,0.12); }
+  .stat-card.red   .s-icon { background: rgba(217,79,79,0.12); }
+
+  .stat-card .s-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem; font-weight: 700;
+    color: var(--text-dark); line-height: 1; margin-bottom: 4px;
+  }
+
+  .stat-card .s-label  { font-size: 0.8rem; color: var(--text-light); font-weight: 500; }
+  .stat-card .s-change { font-size: 0.75rem; font-weight: 600; margin-top: 8px; display: flex; align-items: center; gap: 4px; }
+  .s-change.up   { color: var(--green-light); }
+  .s-change.down { color: var(--red); }
+
+  /* ── QUICK GRID ── */
+  .quick-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 12px; margin-bottom: 24px;
+  }
+
+  .quick-btn {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 14px; padding: 20px;
+    display: flex; align-items: center; gap: 12px;
+    cursor: pointer; transition: all 0.2s;
+    text-decoration: none; color: var(--text-dark);
+  }
+
+  .quick-btn:hover {
+    border-color: var(--amber); background: rgba(232,160,32,0.04);
+    transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  }
+
+  .quick-btn .q-icon {
+    width: 44px; height: 44px;
+    background: linear-gradient(135deg, var(--amber) 0%, var(--amber-light) 100%);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; flex-shrink: 0;
+  }
+
+  .quick-btn:nth-child(2) .q-icon { background: linear-gradient(135deg, var(--green-mid) 0%, var(--green-light) 100%); }
+  .quick-btn:nth-child(3) .q-icon { background: linear-gradient(135deg, var(--blue) 0%, #5a9bf5 100%); }
+  .quick-btn:nth-child(4) .q-icon { background: linear-gradient(135deg, #9b59b6 0%, #c39bd3 100%); }
+
+  .q-text h4 { font-size: 0.875rem; font-weight: 700; }
+  .q-text p  { font-size: 0.75rem; color: var(--text-light); margin-top: 2px; }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 16px; overflow: hidden;
+  }
+
+  .card-header {
+    padding: 20px 24px 16px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem; font-weight: 700; color: var(--text-dark);
+  }
+
+  .card-subtitle { font-size: 0.75rem; color: var(--text-light); margin-top: 2px; }
+
+  .card-action {
+    font-size: 0.8rem; font-weight: 600; color: var(--green-light);
+    cursor: pointer; text-decoration: none; transition: color 0.2s;
+  }
+
+  .card-action:hover { color: var(--green-mid); }
+  .card-body { padding: 20px 24px; }
+
+  /* ── DASHBOARD GRID ── */
+  .dashboard-grid {
+    display: grid; grid-template-columns: 2fr 1fr;
+    gap: 24px; margin-bottom: 24px;
+  }
+
+  /* ── TABLE ── */
+  .listing-table { width: 100%; border-collapse: collapse; }
+
+  .listing-table th {
+    text-align: left; font-size: 0.72rem; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--text-light); padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .listing-table td {
+    padding: 14px 12px; font-size: 0.875rem;
+    border-bottom: 1px solid rgba(212,224,196,0.4);
+    vertical-align: middle;
+  }
+
+  .listing-table tr:last-child td { border-bottom: none; }
+  .listing-table tr:hover td { background: var(--green-pale); }
+
+  .crop-name { font-weight: 600; color: var(--text-dark); }
+  .crop-qty  { color: var(--text-mid); }
+
+  /* ── BADGES ── */
+  .status-badge {
+    display: inline-block; font-size: 0.7rem; font-weight: 700;
+    padding: 3px 10px; border-radius: 20px;
+  }
+
+  .badge-active  { background: rgba(74,124,47,0.12);  color: var(--green-light); }
+  .badge-pending { background: rgba(232,160,32,0.12); color: #c07010; }
+  .badge-sold    { background: rgba(58,123,213,0.12); color: var(--blue); }
+  .badge-expired { background: rgba(217,79,79,0.1);   color: var(--red); }
+
+  /* ── TABLE BUTTONS ── */
+  .action-btns { display: flex; gap: 6px; }
+
+  .tbl-btn {
+    font-size: 0.72rem; font-weight: 600;
+    padding: 4px 10px; border-radius: 6px;
+    cursor: pointer; border: 1px solid; transition: all 0.2s;
+  }
+
+  .tbl-btn.edit { border-color: var(--border); color: var(--text-mid); background: var(--cream); }
+  .tbl-btn.edit:hover { border-color: var(--green-light); color: var(--green-light); }
+  .tbl-btn.del  { border-color: rgba(217,79,79,0.2); color: var(--red); background: rgba(217,79,79,0.05); }
+  .tbl-btn.del:hover  { background: rgba(217,79,79,0.1); }
+  .tbl-btn.view { border-color: var(--border); color: var(--text-mid); background: var(--cream); }
+  .tbl-btn.view:hover { border-color: var(--blue); color: var(--blue); }
+
+  /* ── ORDER ITEMS ── */
+  .order-item {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 14px 0; border-bottom: 1px solid rgba(212,224,196,0.4);
+  }
+
+  .order-item:last-child { border-bottom: none; padding-bottom: 0; }
+
+  .order-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: var(--green-pale);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; flex-shrink: 0;
+  }
+
+  .order-info h4 { font-size: 0.875rem; font-weight: 600; color: var(--text-dark); }
+  .order-info p  { font-size: 0.775rem; color: var(--text-light); margin-top: 3px; }
+  .order-meta    { margin-left: auto; text-align: right; flex-shrink: 0; }
+  .order-meta .amount { font-size: 0.9rem; font-weight: 700; color: var(--green-mid); }
+  .order-meta .date   { font-size: 0.72rem; color: var(--text-light); margin-top: 3px; }
+
+  /* ── NOTIFICATIONS ── */
+  .notif-item {
+    display: flex; gap: 12px; padding: 12px 0;
+    border-bottom: 1px solid rgba(212,224,196,0.4);
+    align-items: flex-start;
+  }
+
+  .notif-item:last-child { border-bottom: none; }
+
+  .notif-dot-left {
+    width: 8px; height: 8px; border-radius: 50%;
+    margin-top: 6px; flex-shrink: 0;
+  }
+
+  .notif-item p    { font-size: 0.825rem; color: var(--text-mid); line-height: 1.5; }
+  .notif-item span { font-size: 0.7rem; color: var(--text-light); margin-top: 3px; display: block; }
+
+  /* ── PRICE BARS ── */
+  .price-bar-wrap {
+    display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px;
+  }
+
+  .price-bar-col { text-align: center; }
+
+  .price-bar-track {
+    height: 80px; background: var(--green-pale);
+    border-radius: 4px; margin-bottom: 8px;
+    position: relative; overflow: hidden;
+  }
+
+  .price-bar-fill {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: var(--green-light); border-radius: 4px;
+  }
+
+  .price-bar-fill.amber { background: var(--amber); }
+
+  /* ── BROWSE CARDS (buyer) ── */
+  .browse-grid { display: flex; flex-direction: column; gap: 10px; }
+
+  .browse-card {
+    background: var(--cream); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px;
+    display: flex; align-items: center; gap: 12px;
+    cursor: pointer; transition: all 0.2s;
+  }
+
+  .browse-card:hover {
+    border-color: var(--green-light);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    transform: translateY(-1px);
+  }
+
+  .browse-card-icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    background: var(--white);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; flex-shrink: 0;
+  }
+
+  .browse-card-info h4 { font-size: 0.875rem; font-weight: 700; color: var(--text-dark); }
+  .browse-card-info p  { font-size: 0.75rem; color: var(--text-light); margin-top: 2px; }
+
+  .browse-card-price { margin-left: auto; text-align: right; flex-shrink: 0; }
+
+  .browse-card-price strong {
+    display: block; font-family: 'Playfair Display', serif;
+    font-size: 1rem; font-weight: 700; color: var(--green-mid);
+  }
+
+  .browse-card-price span { font-size: 0.7rem; color: var(--text-light); }
+
+  /* ── FAB ── */
+  .fab {
+    position: fixed; bottom: 32px; right: 32px;
+    width: 56px; height: 56px; background: var(--amber);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; cursor: pointer;
+    box-shadow: 0 8px 24px rgba(232,160,32,0.4);
+    transition: all 0.2s; z-index: 60;
+  }
+
+  .fab:hover { transform: scale(1.1); box-shadow: 0 12px 32px rgba(232,160,32,0.5); }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+    z-index: 200; display: none; align-items: center; justify-content: center;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--white); border-radius: 20px; padding: 32px;
+    width: 100%; max-width: 520px;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.2);
+    animation: scaleIn 0.2s ease;
+  }
+
+  @keyframes scaleIn {
+    from { transform: scale(0.95); opacity: 0; }
+    to   { transform: scale(1);    opacity: 1; }
+  }
+
+  .modal h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem; margin-bottom: 24px; color: var(--text-dark);
+  }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-full { grid-column: 1 / -1; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+
+  .form-group label {
+    font-size: 0.78rem; font-weight: 600; color: var(--text-mid);
+    text-transform: uppercase; letter-spacing: 0.05em;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 10px 14px; border: 1px solid var(--border);
+    border-radius: 10px; font-family: 'DM Sans', sans-serif;
+    font-size: 0.875rem; color: var(--text-dark);
+    background: var(--cream); outline: none; transition: border-color 0.2s;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus { border-color: var(--green-light); }
+
+  .modal-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px; }
+
+  .btn-cancel {
+    padding: 10px 24px; background: var(--cream);
+    border: 1px solid var(--border); border-radius: 10px;
+    font-family: 'DM Sans', sans-serif; font-size: 0.875rem;
+    font-weight: 600; cursor: pointer; color: var(--text-mid);
+  }
+
+  .btn-submit {
+    padding: 10px 28px; background: var(--green-mid); border: none;
+    border-radius: 10px; font-family: 'DM Sans', sans-serif;
+    font-size: 0.875rem; font-weight: 700; cursor: pointer;
+    color: var(--white); transition: background 0.2s;
+  }
+
+  .btn-submit:hover { background: var(--green-dark); }
+</style>
 </head>
 <body>
-    <div class="dashboard-container">
-        <header>
-            <h1>FARM<span>VILLE</span></h1>
-            <div class="user-info">
-                Welcome, <span id="user-display-name">Farmer</span>!
-                <button onclick="handleLogout()" class="btn-logout">Logout</button>
-            </div>
-        </header>
 
-        <main>
-            <h2>Your Farm Overview</h2>
-            <p>Select an option from the menu to manage your harvests.</p>
-            </main>
+<!-- ══════════════════════════════════════
+     SIDEBAR
+══════════════════════════════════════ -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">🌾</div>
+    <span>FARMVILLE</span>
+  </div>
+
+  <div class="sidebar-user">
+    <div class="user-avatar" id="sidebar-avatar">🧑‍🌾</div>
+    <div class="user-info">
+      <h4 id="sidebar-name">Loading...</h4>
+      <p  id="sidebar-email">...</p>
+      <div class="verified-badge" id="farmer-badge">✓ Verified Farmer</div>
+      <div class="buyer-badge"    id="buyer-badge"  style="display:none">🛍️ Buyer Account</div>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+
+    <!-- ── FARMER NAV ── -->
+    <div id="farmer-nav">
+      <div class="nav-section-label">Main</div>
+      <a href="#" class="nav-item active"><span class="icon">🏠</span> Dashboard</a>
+      <a href="#" class="nav-item"><span class="icon">📋</span> My Listings <span class="nav-badge">3</span></a>
+      <a href="#" class="nav-item" onclick="openModal(); return false;"><span class="icon">➕</span> New Listing</a>
+
+      <div class="nav-section-label" style="margin-top:8px">Orders</div>
+      <a href="#" class="nav-item"><span class="icon">📦</span> Incoming Orders <span class="nav-badge">2</span></a>
+      <a href="#" class="nav-item"><span class="icon">🕐</span> Order History</a>
+      <a href="#" class="nav-item"><span class="icon">⚖️</span> Disputes</a>
+
+      <div class="nav-section-label" style="margin-top:8px">Finance</div>
+      <a href="#" class="nav-item"><span class="icon">💰</span> Earnings</a>
+      <a href="#" class="nav-item"><span class="icon">🧾</span> Transactions</a>
+
+      <div class="nav-section-label" style="margin-top:8px">Account</div>
+      <a href="#" class="nav-item"><span class="icon">💬</span> Messages <span class="nav-badge">5</span></a>
+      <a href="#" class="nav-item"><span class="icon">🔔</span> Notifications</a>
+      <a href="#" class="nav-item"><span class="icon">👤</span> My Profile</a>
     </div>
 
-    <script>
-        // Display the logged-in user's name
-        const userData = JSON.parse(localStorage.getItem('user'));
-        if (userData && userData.full_name) {
-            document.getElementById('user-display-name').textContent = userData.full_name;
-        }
+    <!-- ── BUYER NAV ── -->
+    <div id="buyer-nav" style="display:none">
+      <div class="nav-section-label">Marketplace</div>
+      <a href="#" class="nav-item active"><span class="icon">🏠</span> Dashboard</a>
+      <a href="#" class="nav-item"><span class="icon">🔍</span> Browse Listings</a>
+      <a href="#" class="nav-item"><span class="icon">⭐</span> Saved Listings</a>
 
-        // Logout function
-        function handleLogout() {
-            localStorage.clear(); // Wipe the data
-            window.location.href = 'login.html'; // Go back to login
-        }
-    </script>
+      <div class="nav-section-label" style="margin-top:8px">My Orders</div>
+      <a href="#" class="nav-item"><span class="icon">📦</span> Active Orders <span class="nav-badge blue">2</span></a>
+      <a href="#" class="nav-item"><span class="icon">🕐</span> Order History</a>
+      <a href="#" class="nav-item"><span class="icon">⚖️</span> Disputes</a>
+
+      <div class="nav-section-label" style="margin-top:8px">Account</div>
+      <a href="#" class="nav-item"><span class="icon">💬</span> Messages <span class="nav-badge blue">3</span></a>
+      <a href="#" class="nav-item"><span class="icon">🔔</span> Notifications</a>
+      <a href="#" class="nav-item"><span class="icon">👤</span> My Profile</a>
+    </div>
+
+  </nav>
+
+  <div class="sidebar-footer">
+    <a href="index.html" class="nav-item"><span class="icon">🌐</span> Back to Site</a>
+    <a href="#" class="nav-item" onclick="logout(); return false;"><span class="icon">🚪</span> Logout</a>
+  </div>
+</aside>
+
+<!-- ══════════════════════════════════════
+     MAIN
+══════════════════════════════════════ -->
+<main class="main">
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <h2 id="topbar-greeting">Welcome 👋</h2>
+      <p  id="topbar-sub">Loading your dashboard...</p>
+    </div>
+    <div class="topbar-right">
+      <div class="search-box">
+        <span>🔍</span>
+        <input type="text" id="topbar-search" placeholder="Search...">
+      </div>
+      <div class="icon-btn">💬<div class="notif-dot"></div></div>
+      <div class="icon-btn">🔔<div class="notif-dot"></div></div>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <!-- ══════════════════════════════
+         FARMER CONTENT
+    ══════════════════════════════ -->
+    <div id="farmer-content" style="display:none">
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-card green">
+          <div class="s-icon">📋</div>
+          <div class="s-value">8</div>
+          <div class="s-label">Active Listings</div>
+          <div class="s-change up">↑ 2 this week</div>
+        </div>
+        <div class="stat-card amber">
+          <div class="s-icon">📦</div>
+          <div class="s-value">12</div>
+          <div class="s-label">Incoming Orders</div>
+          <div class="s-change up">↑ 4 new today</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="s-icon">💰</div>
+          <div class="s-value">₱18,450</div>
+          <div class="s-label">Total Earnings</div>
+          <div class="s-change up">↑ ₱3,200 this month</div>
+        </div>
+        <div class="stat-card red">
+          <div class="s-icon">⚠️</div>
+          <div class="s-value">1</div>
+          <div class="s-label">Open Disputes</div>
+          <div class="s-change down">Requires attention</div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="quick-grid">
+        <a href="#" class="quick-btn" onclick="openModal(); return false;">
+          <div class="q-icon">➕</div>
+          <div class="q-text"><h4>New Listing</h4><p>Publish a crop for sale</p></div>
+        </a>
+        <a href="#" class="quick-btn">
+          <div class="q-icon">📦</div>
+          <div class="q-text"><h4>View Orders</h4><p>Manage incoming orders</p></div>
+        </a>
+        <a href="#" class="quick-btn">
+          <div class="q-icon">📊</div>
+          <div class="q-text"><h4>Price Trends</h4><p>Check local market rates</p></div>
+        </a>
+        <a href="#" class="quick-btn">
+          <div class="q-icon">💬</div>
+          <div class="q-text"><h4>Messages</h4><p>Chat with buyers</p></div>
+        </a>
+      </div>
+
+      <!-- Main Grid -->
+      <div class="dashboard-grid">
+
+        <!-- Listings Table -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">My Harvest Listings</div>
+              <div class="card-subtitle">All your active and pending listings</div>
+            </div>
+            <a href="#" class="card-action" onclick="openModal(); return false;">+ Add New</a>
+          </div>
+          <div class="card-body" style="padding:0">
+            <table class="listing-table">
+              <thead>
+                <tr>
+                  <th>Crop</th><th>Qty</th><th>Price/Unit</th><th>Status</th><th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="crop-name">🌽 Corn (White)</span></td>
+                  <td class="crop-qty">150 kg</td><td>₱28/kg</td>
+                  <td><span class="status-badge badge-active">Active</span></td>
+                  <td><div class="action-btns"><button class="tbl-btn edit">Edit</button><button class="tbl-btn del">Delete</button></div></td>
+                </tr>
+                <tr>
+                  <td><span class="crop-name">🍅 Tomatoes</span></td>
+                  <td class="crop-qty">80 kg</td><td>₱45/kg</td>
+                  <td><span class="status-badge badge-active">Active</span></td>
+                  <td><div class="action-btns"><button class="tbl-btn edit">Edit</button><button class="tbl-btn del">Delete</button></div></td>
+                </tr>
+                <tr>
+                  <td><span class="crop-name">🥬 Cabbage</span></td>
+                  <td class="crop-qty">200 kg</td><td>₱22/kg</td>
+                  <td><span class="status-badge badge-pending">Pending</span></td>
+                  <td><div class="action-btns"><button class="tbl-btn edit">Edit</button><button class="tbl-btn del">Delete</button></div></td>
+                </tr>
+                <tr>
+                  <td><span class="crop-name">🧅 Onions</span></td>
+                  <td class="crop-qty">60 kg</td><td>₱85/kg</td>
+                  <td><span class="status-badge badge-active">Active</span></td>
+                  <td><div class="action-btns"><button class="tbl-btn edit">Edit</button><button class="tbl-btn del">Delete</button></div></td>
+                </tr>
+                <tr>
+                  <td><span class="crop-name">🥕 Carrots</span></td>
+                  <td class="crop-qty">120 kg</td><td>₱38/kg</td>
+                  <td><span class="status-badge badge-sold">Sold Out</span></td>
+                  <td><div class="action-btns"><button class="tbl-btn edit">Restock</button></div></td>
+                </tr>
+                <tr>
+                  <td><span class="crop-name">🍆 Eggplant</span></td>
+                  <td class="crop-qty">90 kg</td><td>₱32/kg</td>
+                  <td><span class="status-badge badge-expired">Expired</span></td>
+                  <td><div class="action-btns"><button class="tbl-btn edit">Renew</button><button class="tbl-btn del">Delete</button></div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Right Column -->
+        <div style="display:flex; flex-direction:column; gap:20px;">
+
+          <!-- Recent Orders -->
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Recent Orders</div>
+                <div class="card-subtitle">Latest buyer activity</div>
+              </div>
+              <a href="#" class="card-action">View all</a>
+            </div>
+            <div class="card-body">
+              <div class="order-item">
+                <div class="order-icon">🛍️</div>
+                <div class="order-info">
+                  <h4>Clara Reyes</h4>
+                  <p>30kg Tomatoes · Cash Meetup</p>
+                  <span class="status-badge badge-pending" style="margin-top:4px">Awaiting Confirm</span>
+                </div>
+                <div class="order-meta">
+                  <div class="amount">₱1,350</div>
+                  <div class="date">2h ago</div>
+                </div>
+              </div>
+              <div class="order-item">
+                <div class="order-icon">🛍️</div>
+                <div class="order-info">
+                  <h4>Juan dela Cruz</h4>
+                  <p>50kg Corn · GCash</p>
+                  <span class="status-badge badge-active" style="margin-top:4px">Confirmed</span>
+                </div>
+                <div class="order-meta">
+                  <div class="amount">₱1,400</div>
+                  <div class="date">Yesterday</div>
+                </div>
+              </div>
+              <div class="order-item">
+                <div class="order-icon">🛍️</div>
+                <div class="order-info">
+                  <h4>Maria Santos</h4>
+                  <p>40kg Cabbage · Bank Transfer</p>
+                  <span class="status-badge badge-sold" style="margin-top:4px">Completed</span>
+                </div>
+                <div class="order-meta">
+                  <div class="amount">₱880</div>
+                  <div class="date">Mar 7</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notifications -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Notifications</div>
+              <a href="#" class="card-action">Mark all read</a>
+            </div>
+            <div class="card-body">
+              <div class="notif-item">
+                <div class="notif-dot-left" style="background:var(--amber)"></div>
+                <div>
+                  <p>Your <strong>Cabbage</strong> listing is pending admin approval</p>
+                  <span>30 minutes ago</span>
+                </div>
+              </div>
+              <div class="notif-item">
+                <div class="notif-dot-left" style="background:var(--green-light)"></div>
+                <div>
+                  <p>New order from <strong>Clara Reyes</strong> for Tomatoes</p>
+                  <span>2 hours ago</span>
+                </div>
+              </div>
+              <div class="notif-item">
+                <div class="notif-dot-left" style="background:var(--red)"></div>
+                <div>
+                  <p>Dispute opened on Order <strong>#ORD-2024-089</strong></p>
+                  <span>Yesterday</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Price Trends -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Local Price Trends</div>
+            <div class="card-subtitle">Average market prices this week (₱/kg)</div>
+          </div>
+          <a href="#" class="card-action">Full Report →</a>
+        </div>
+        <div class="card-body">
+          <div class="price-bar-wrap">
+            <div class="price-bar-col">
+              <div class="price-bar-track"><div class="price-bar-fill" style="height:70%"></div></div>
+              <div style="font-size:0.8rem;font-weight:700;color:var(--text-dark)">₱28</div>
+              <div style="font-size:0.7rem;color:var(--text-light)">🌽 Corn</div>
+            </div>
+            <div class="price-bar-col">
+              <div class="price-bar-track"><div class="price-bar-fill amber" style="height:95%"></div></div>
+              <div style="font-size:0.8rem;font-weight:700;color:var(--text-dark)">₱85</div>
+              <div style="font-size:0.7rem;color:var(--text-light)">🧅 Onion</div>
+            </div>
+            <div class="price-bar-col">
+              <div class="price-bar-track"><div class="price-bar-fill" style="height:55%"></div></div>
+              <div style="font-size:0.8rem;font-weight:700;color:var(--text-dark)">₱45</div>
+              <div style="font-size:0.7rem;color:var(--text-light)">🍅 Tomato</div>
+            </div>
+            <div class="price-bar-col">
+              <div class="price-bar-track"><div class="price-bar-fill" style="height:40%"></div></div>
+              <div style="font-size:0.8rem;font-weight:700;color:var(--text-dark)">₱38</div>
+              <div style="font-size:0.7rem;color:var(--text-light)">🥕 Carrot</div>
+            </div>
+            <div class="price-bar-col">
+              <div class="price-bar-track"><div class="price-bar-fill" style="height:25%"></div></div>
+              <div style="font-size:0.8rem;font-weight:700;color:var(--text-dark)">₱22</div>
+              <div style="font-size:0.7rem;color:var(--text-light)">🥬 Cabbage</div>
+            </div>
+            <div class="price-bar-col">
+              <div class="price-bar-track"><div class="price-bar-fill" style="height:35%"></div></div>
+              <div style="font-size:0.8rem;font-weight:700;color:var(--text-dark)">₱32</div>
+              <div style="font-size:0.7rem;color:var(--text-light)">🍆 Eggplant</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!-- /farmer-content -->
+
+
+    <!-- ══════════════════════════════
+         BUYER CONTENT
+    ══════════════════════════════ -->
+    <div id="buyer-content" style="display:none">
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-card green">
+          <div class="s-icon">🔍</div>
+          <div class="s-value">142</div>
+          <div class="s-label">Available Listings</div>
+          <div class="s-change up">↑ 18 new today</div>
+        </div>
+        <div class="stat-card amber">
+          <div class="s-icon">📦</div>
+          <div class="s-value">2</div>
+          <div class="s-label">Active Orders</div>
+          <div class="s-change up">In progress</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="s-icon">💸</div>
+          <div class="s-value">₱6,230</div>
+          <div class="s-label">Total Spent</div>
+          <div class="s-change up">↑ ₱1,350 this month</div>
+        </div>
+        <div class="stat-card red">
+          <div class="s-icon">⚠️</div>
+          <div class="s-value">0</div>
+          <div class="s-label">Open Disputes</div>
+          <div class="s-change up">All clear</div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="quick-grid">
+        <a href="#" class="quick-btn">
+          <div class="q-icon">🔍</div>
+          <div class="q-text"><h4>Browse Crops</h4><p>Find fresh local produce</p></div>
+        </a>
+        <a href="#" class="quick-btn">
+          <div class="q-icon">📦</div>
+          <div class="q-text"><h4>My Orders</h4><p>Track your purchases</p></div>
+        </a>
+        <a href="#" class="quick-btn">
+          <div class="q-icon">⭐</div>
+          <div class="q-text"><h4>Saved Listings</h4><p>Your bookmarked crops</p></div>
+        </a>
+        <a href="#" class="quick-btn">
+          <div class="q-icon">💬</div>
+          <div class="q-text"><h4>Messages</h4><p>Chat with farmers</p></div>
+        </a>
+      </div>
+
+      <!-- Main Grid -->
+      <div class="dashboard-grid">
+
+        <!-- Recent Purchases Table -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Recent Purchases</div>
+              <div class="card-subtitle">Your latest orders from local farmers</div>
+            </div>
+            <a href="#" class="card-action">View all</a>
+          </div>
+          <div class="card-body" style="padding:0">
+            <table class="listing-table">
+              <thead>
+                <tr>
+                  <th>Crop</th><th>Farmer</th><th>Qty</th><th>Total</th><th>Status</th><th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="crop-name">🍅 Tomatoes</span></td>
+                  <td>Mongju Lloyd</td><td>30 kg</td><td>₱1,350</td>
+                  <td><span class="status-badge badge-pending">Awaiting Confirm</span></td>
+                  <td><div class="action-btns"><button class="tbl-btn view">Track</button></div></td>
+                </tr>
+                <tr>
+                  <td><span class="crop-name">🌽 Corn (White)</span></td>
+                  <td>Jose Reyes</td><td>50 kg</td><td>₱1,400</td>
+                  <td><span class="status-badge badge-active">Confirmed</span></td>
+                  <td><div class="action-btns"><button class="tbl-btn view">Track</button></div></td>
+                </tr>
+                <tr>
+                  <td><span class="crop-name">🥬 Cabbage</span></td>
+                  <td>Rosa Dela Cruz</td><td>40 kg</td><td>₱880</td>
+                  <td><span class="status-badge badge-sold">Completed</span></td>
+                  <td><div class="action-btns"><button class="tbl-btn view">Review</button></div></td>
+                </tr>
+                <tr>
+                  <td><span class="crop-name">🧅 Onions</span></td>
+                  <td>Pedro Bautista</td><td>20 kg</td><td>₱1,700</td>
+                  <td><span class="status-badge badge-sold">Completed</span></td>
+                  <td><div class="action-btns"><button class="tbl-btn view">Review</button></div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Right Column -->
+        <div style="display:flex; flex-direction:column; gap:20px;">
+
+          <!-- Fresh Near You -->
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Fresh Near You</div>
+                <div class="card-subtitle">New listings in your area</div>
+              </div>
+              <a href="#" class="card-action">Browse all</a>
+            </div>
+            <div class="card-body">
+              <div class="browse-grid">
+                <div class="browse-card">
+                  <div class="browse-card-icon">🥕</div>
+                  <div class="browse-card-info">
+                    <h4>Fresh Carrots</h4>
+                    <p>Mongju Lloyd · Brgy. Santa Cruz</p>
+                  </div>
+                  <div class="browse-card-price">
+                    <strong>₱38/kg</strong>
+                    <span>120 kg left</span>
+                  </div>
+                </div>
+                <div class="browse-card">
+                  <div class="browse-card-icon">🍆</div>
+                  <div class="browse-card-info">
+                    <h4>Eggplant</h4>
+                    <p>Rosa Dela Cruz · Brgy. Maligaya</p>
+                  </div>
+                  <div class="browse-card-price">
+                    <strong>₱32/kg</strong>
+                    <span>90 kg left</span>
+                  </div>
+                </div>
+                <div class="browse-card">
+                  <div class="browse-card-icon">🌽</div>
+                  <div class="browse-card-info">
+                    <h4>White Corn</h4>
+                    <p>Jose Reyes · Brgy. Rizal</p>
+                  </div>
+                  <div class="browse-card-price">
+                    <strong>₱28/kg</strong>
+                    <span>150 kg left</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notifications -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Notifications</div>
+              <a href="#" class="card-action">Mark all read</a>
+            </div>
+            <div class="card-body">
+              <div class="notif-item">
+                <div class="notif-dot-left" style="background:var(--green-light)"></div>
+                <div>
+                  <p>Your order for <strong>Tomatoes</strong> was confirmed</p>
+                  <span>1 hour ago</span>
+                </div>
+              </div>
+              <div class="notif-item">
+                <div class="notif-dot-left" style="background:var(--amber)"></div>
+                <div>
+                  <p><strong>18 new listings</strong> added near your area today</p>
+                  <span>3 hours ago</span>
+                </div>
+              </div>
+              <div class="notif-item">
+                <div class="notif-dot-left" style="background:var(--blue)"></div>
+                <div>
+                  <p>New message from farmer <strong>Mongju Lloyd</strong></p>
+                  <span>Yesterday</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Market Prices for Buyers -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Today's Market Prices</div>
+            <div class="card-subtitle">Know what's fair before you buy (₱/kg)</div>
+          </div>
+          <a href="#" class="card-action">Full Market →</a>
+        </div>
+        <div class="card-body">
+          <div class="price-bar-wrap">
+            <div class="price-bar-col">
+              <div class="price-bar-track"><div class="price-bar-fill" style="height:70%"></div></div>
+              <div style="font-size:0.8rem;font-weight:700;color:var(--text-dark)">₱28</div>
+              <div style="font-size:0.7rem;color:var(--text-light)">🌽 Corn</div>
+            </div>
+            <div class="price-bar-col">
+              <div class="price-bar-track"><div class="price-bar-fill amber" style="height:95%"></div></div>
+              <div style="font-size:0.8rem;font-weight:700;color:var(--text-dark)">₱85</div>
+              <div style="font-size:0.7rem;color:var(--text-light)">🧅 Onion</div>
+            </div>
+            <div class="price-bar-col">
+              <div class="price-bar-track"><div class="price-bar-fill" style="height:55%"></div></div>
+              <div style="font-size:0.8rem;font-weight:700;color:var(--text-dark)">₱45</div>
+              <div style="font-size:0.7rem;color:var(--text-light)">🍅 Tomato</div>
+            </div>
+            <div class="price-bar-col">
+              <div class="price-bar-track"><div class="price-bar-fill" style="height:40%"></div></div>
+              <div style="font-size:0.8rem;font-weight:700;color:var(--text-dark)">₱38</div>
+              <div style="font-size:0.7rem;color:var(--text-light)">🥕 Carrot</div>
+            </div>
+            <div class="price-bar-col">
+              <div class="price-bar-track"><div class="price-bar-fill" style="height:25%"></div></div>
+              <div style="font-size:0.8rem;font-weight:700;color:var(--text-dark)">₱22</div>
+              <div style="font-size:0.7rem;color:var(--text-light)">🥬 Cabbage</div>
+            </div>
+            <div class="price-bar-col">
+              <div class="price-bar-track"><div class="price-bar-fill" style="height:35%"></div></div>
+              <div style="font-size:0.8rem;font-weight:700;color:var(--text-dark)">₱32</div>
+              <div style="font-size:0.7rem;color:var(--text-light)">🍆 Eggplant</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!-- /buyer-content -->
+
+  </div>
+  <!-- /content -->
+
+</main>
+
+<!-- FAB — farmers only, hidden until role confirmed -->
+<div class="fab" id="fab" onclick="openModal()" title="Add New Listing" style="display:none">➕</div>
+
+<!-- NEW LISTING MODAL — farmers only -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h3>🌾 Create New Harvest Listing</h3>
+    <div class="form-grid">
+      <div class="form-group form-full">
+        <label>Crop Name</label>
+        <input type="text" placeholder="e.g. White Corn, Organic Tomatoes">
+      </div>
+      <div class="form-group">
+        <label>Category</label>
+        <select>
+          <option>Vegetables</option><option>Fruits</option>
+          <option>Grains</option><option>Root Crops</option><option>Herbs</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Harvest Date</label>
+        <input type="date">
+      </div>
+      <div class="form-group">
+        <label>Quantity</label>
+        <input type="number" placeholder="e.g. 150">
+      </div>
+      <div class="form-group">
+        <label>Unit</label>
+        <select>
+          <option>kg</option><option>grams</option>
+          <option>pieces</option><option>sacks</option><option>crates</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Price per Unit (₱)</label>
+        <input type="number" placeholder="e.g. 45">
+      </div>
+      <div class="form-group">
+        <label>Expiry Date</label>
+        <input type="date">
+      </div>
+      <div class="form-group form-full">
+        <label>Description</label>
+        <textarea rows="3" placeholder="Describe freshness, farming method, or special notes..."></textarea>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-submit">Publish Listing</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── MODAL ──
+  function openModal()  { document.getElementById('modal').classList.add('open'); }
+  function closeModal() { document.getElementById('modal').classList.remove('open'); }
+  document.getElementById('modal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  // ── SESSION & ROLE GUARD ──
+  const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
+
+  if (!currentUser) {
+    window.location.href = 'login.html';
+  }
+
+  if (currentUser && currentUser.role === 'admin') {
+    window.location.href = 'admin_dashboard.html';
+  }
+
+  // ── APPLY ROLE VIEW ──
+  if (currentUser) {
+    const firstName = currentUser.full_name
+      ? currentUser.full_name.split(' ')[0]
+      : 'there';
+
+    document.getElementById('sidebar-name').textContent  = currentUser.full_name || 'User';
+    document.getElementById('sidebar-email').textContent = currentUser.email || '';
+
+    if (currentUser.role === 'farmer') {
+      applyFarmerView(firstName);
+    } else {
+      applyBuyerView(firstName);
+    }
+  }
+
+  function applyFarmerView(firstName) {
+    document.getElementById('topbar-greeting').textContent = `Good morning, ${firstName} 👋`;
+    document.getElementById('topbar-sub').textContent      = 'Harvest season is active · Manage your listings';
+    document.getElementById('topbar-search').placeholder   = 'Search listings, orders...';
+
+    document.getElementById('sidebar-avatar').textContent  = '🧑‍🌾';
+    document.getElementById('farmer-badge').style.display  = 'inline-flex';
+    document.getElementById('buyer-badge').style.display   = 'none';
+
+    document.getElementById('farmer-nav').style.display     = 'block';
+    document.getElementById('buyer-nav').style.display      = 'none';
+    document.getElementById('farmer-content').style.display = 'block';
+    document.getElementById('buyer-content').style.display  = 'none';
+
+    document.getElementById('fab').style.display = 'flex';
+  }
+
+  function applyBuyerView(firstName) {
+    document.getElementById('topbar-greeting').textContent = `Welcome back, ${firstName} 👋`;
+    document.getElementById('topbar-sub').textContent      = 'Fresh local produce is available near you';
+    document.getElementById('topbar-search').placeholder   = 'Search crops, farmers, locations...';
+
+    document.getElementById('sidebar-avatar').textContent  = '🛍️';
+    document.getElementById('farmer-badge').style.display  = 'none';
+    document.getElementById('buyer-badge').style.display   = 'inline-flex';
+
+    document.getElementById('farmer-nav').style.display     = 'none';
+    document.getElementById('buyer-nav').style.display      = 'block';
+    document.getElementById('farmer-content').style.display = 'none';
+    document.getElementById('buyer-content').style.display  = 'block';
+
+    document.getElementById('fab').style.display = 'none';
+  }
+
+  // ── LOGOUT ──
+  function logout() {
+    localStorage.removeItem('user');
+    window.location.href = 'login.html';
+  }
+</script>
 </body>
 </html>

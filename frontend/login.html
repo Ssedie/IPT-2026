@@ -10,7 +10,6 @@
 <body>
 
 <div class="card">
-  <!-- LEFT -->
   <div class="left">
     <div class="logo">
       <div class="logo-icon"><img src="images\logo.png" alt="FarmVille Logo" style="width:38px;height:38px;object-fit:contain;" /></div>
@@ -49,10 +48,8 @@
     </ul>
   </div>
 
-  <!-- RIGHT -->
   <div class="right">
 
-    <!-- STICKY TOP: Go Back + Tabs -->
     <div class="right-header">
       <button class="go-back" onclick="goBack()">→ Go Back</button>
       <div class="tabs">
@@ -61,10 +58,8 @@
       </div>
     </div>
 
-    <!-- SCROLLABLE MIDDLE: Form fields only -->
     <div class="right-body">
 
-      <!-- LOGIN PANEL -->
       <div class="form-panel active" id="panel-login">
         <div class="welcome-title">Welcome Back!</div>
         <div class="welcome-sub">Enter your credentials to access your account</div>
@@ -87,7 +82,6 @@
         </div>
       </div>
 
-      <!-- REGISTER PANEL -->
       <div class="form-panel" id="panel-register">
         <div class="welcome-title">Create Your Account</div>
         <div class="welcome-sub">Join thousands of farmers growing smarter!</div>
@@ -149,12 +143,11 @@
         </div>
       </div>
 
-    </div><!-- /right-body -->
+    </div>
 
-    <!-- STICKY BOTTOM: Button + account toggle link -->
+
     <div class="right-footer">
 
-      <!-- Login footer -->
       <div id="footer-login">
         <button class="btn-primary" id="login-btn" onclick="handleLogin()">Sign In</button>
         <div class="link-row" style="margin-bottom:8px;">
@@ -165,7 +158,7 @@
         </div>
       </div>
 
-      <!-- Register footer -->
+
       <div id="footer-register" style="display:none;">
         <button class="btn-primary" id="register-btn" onclick="handleRegister()">Sign Up</button>
         <div class="link-row">
@@ -173,9 +166,9 @@
         </div>
       </div>
 
-    </div><!-- /right-footer -->
+    </div>
 
-  </div><!-- /right -->
+  </div>
 </div>
 
 <script src="script.js"></script>

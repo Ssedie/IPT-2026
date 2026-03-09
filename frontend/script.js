@@ -6,7 +6,6 @@ function switchTab(tab) {
     clearMessages();
   }
 
-  // ── PASSWORD TOGGLE ──
   function togglePassword(inputId, icon) {
     const input = document.getElementById(inputId);
     if (input.type === 'password') {
@@ -18,7 +17,7 @@ function switchTab(tab) {
     }
   }
 
-  // ── MESSAGES ──
+
   function showError(id, msg) {
     const el = document.getElementById(id);
     el.textContent = msg;
@@ -38,8 +37,6 @@ function switchTab(tab) {
     });
   }
 
-  // ── LOGIN ──
-  // ── corrected LOGIN ──
   async function handleLogin() {
     clearMessages();
     const email    = document.getElementById('login-email').value.trim();
@@ -63,7 +60,6 @@ function switchTab(tab) {
       const data = await response.json();
 
       if (response.ok) {
-        // SUCCESS: Store data and redirect
         localStorage.setItem('user', JSON.stringify(data.user));
         showSuccess('login-success', 'Login successful! Redirecting...');
         
@@ -75,7 +71,6 @@ function switchTab(tab) {
             }
         }, 1200);
       } else {
-        // ERROR: Show the specific message from PHP (e.g., "Invalid email or password")
         showError('login-error', data.message || 'Invalid email or password.');
       }
     } catch (err) {
@@ -86,7 +81,6 @@ function switchTab(tab) {
     }
   }
 
-  // ── REGISTER ──
   async function handleRegister() {
     clearMessages();
     const name     = document.getElementById('reg-name').value.trim();
@@ -136,7 +130,7 @@ function switchTab(tab) {
     }
   }
 
-  // ── FORGOT PASSWORD ──
+
   function showForgotPassword() {
     const email = document.getElementById('login-email').value.trim();
     if (!email) {
@@ -144,10 +138,9 @@ function switchTab(tab) {
       return;
     }
     showSuccess('login-success', `Password reset link sent to ${email} (if it exists).`);
-    // TODO: wire up to your Spring Boot forgot-password endpoint
+    // TODO: wire up to Spring Boot forgot-password endpoint
   }
 
-  // ── GO BACK ──
   function goBack() {
     window.history.back();
   }

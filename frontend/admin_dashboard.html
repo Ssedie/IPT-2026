@@ -492,18 +492,18 @@
 
   <nav class="sidebar-nav">
     <div class="nav-section-label">Overview</div>
-    <a href="#" class="nav-item active" onclick="showTab('overview'); return false;"><span class="icon">📊</span> Dashboard</a>
+    <a href="#" class="nav-item active" onclick="showTab('overview'); return false;"><span class="icon">📊</span> Home</a>
     <a href="#" class="nav-item"><span class="icon">📈</span> Analytics & Reports</a>
 
     <div class="nav-section-label" style="margin-top:8px">Moderation</div>
     <a href="#" class="nav-item" onclick="showTab('farmers'); return false;"><span class="icon">✅</span> Farmer Applications <span class="nav-badge amber">4</span></a>
-    <a href="#" class="nav-item" onclick="showTab('listings'); return false;"><span class="icon">📋</span> Listing Moderation <span class="nav-badge">2</span></a>
+    <a href="#" class="nav-item" onclick="showTab('listings'); return false;"><span class="icon">📋</span> Listings <span class="nav-badge">2</span></a>
+    <a href="#" class="nav-item"><span class="icon">✅</span> Listing Applications <span class="nav-badge">3</span></a>
     <a href="#" class="nav-item"><span class="icon">⚖️</span> Disputes <span class="nav-badge">3</span></a>
 
     <div class="nav-section-label" style="margin-top:8px">Management</div>
     <a href="#" class="nav-item" onclick="showTab('users'); return false;"><span class="icon">👥</span> User Management</a>
     <a href="#" class="nav-item" onclick="showTab('orders'); return false;"><span class="icon">📦</span> All Orders</a>
-    <a href="#" class="nav-item"><span class="icon">💰</span> Transactions</a>
     <a href="#" class="nav-item"><span class="icon">📉</span> Price Monitoring</a>
 
     <div class="nav-section-label" style="margin-top:8px">System</div>
@@ -517,9 +517,9 @@
   </div>
 </aside>
 
-<!-- MAIN -->
+
 <main class="main">
-  <!-- TOPBAR -->
+  
   <header class="topbar">
     <div class="topbar-left">
       <h2>Admin Dashboard 🏛️</h2>
@@ -537,10 +537,10 @@
       <div class="icon-btn">📥</div>
     </div>
   </header>
-
+<!--
   <div class="content">
 
-    <!-- STATS -->
+    
     <div class="stats-row">
       <div class="stat-card green">
         <div class="s-icon">👥</div>
@@ -574,7 +574,7 @@
       </div>
     </div>
 
-    <!-- TABS -->
+    
     <div class="tabs">
       <div class="tab active" onclick="switchTab(this,'overview')">Overview</div>
       <div class="tab" onclick="switchTab(this,'farmers')">Farmer Applications</div>
@@ -583,11 +583,11 @@
       <div class="tab" onclick="switchTab(this,'orders')">Orders</div>
     </div>
 
-    <!-- TAB: OVERVIEW -->
+    
     <div class="tab-panel active" id="tab-overview">
       <div class="two-col">
 
-        <!-- CHART -->
+        
         <div class="card">
           <div class="card-header">
             <div>
@@ -652,7 +652,7 @@
           </div>
         </div>
 
-        <!-- ACTIVITY -->
+        
         <div class="card">
           <div class="card-header">
             <div class="card-title">Recent Activity</div>
@@ -698,7 +698,7 @@
         </div>
       </div>
 
-      <!-- PRICE MONITORING -->
+      
       <div class="card">
         <div class="card-header">
           <div>
@@ -752,7 +752,7 @@
       </div>
     </div>
 
-    <!-- TAB: FARMER APPLICATIONS -->
+
     <div class="tab-panel" id="tab-farmers">
       <div class="card">
         <div class="card-header">
@@ -832,7 +832,7 @@
       </div>
     </div>
 
-    <!-- TAB: LISTINGS -->
+
     <div class="tab-panel" id="tab-listings">
       <div class="card">
         <div class="card-header">
@@ -918,7 +918,6 @@
       </div>
     </div>
 
-    <!-- TAB: USERS -->
     <div class="tab-panel" id="tab-users">
       <div class="card">
         <div class="card-header">
@@ -989,7 +988,7 @@
       </div>
     </div>
 
-    <!-- TAB: ORDERS -->
+
     <div class="tab-panel" id="tab-orders">
       <div class="card">
         <div class="card-header">
@@ -1068,6 +1067,7 @@
     </div>
 
   </div>
+  -->
 </main>
 
 <!-- VIEW DOCS MODAL -->

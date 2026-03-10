@@ -28,11 +28,9 @@ if (!$data) {
     exit;
 }
 
-
 $name     = trim($data['name'] ?? '');
 $email    = trim($data['email'] ?? '');
 $raw_pass = $data['password'] ?? '';
-
 
 if (empty($name) || empty($email) || strlen($raw_pass) < 8) {
     echo json_encode(["message" => "Validation failed. Check name, email, and password length."]);
@@ -50,9 +48,8 @@ try {
 
     $hashedPassword = password_hash($raw_pass, PASSWORD_BCRYPT);
 
-
-    $sql = "INSERT INTO users (full_name, email, password, street, barangay, city, province, zip_code) 
-            VALUES (:name, :email, :pass, :street, :barangay, :city, :province, :zip)";
+    $sql = "INSERT INTO users (full_name, email, password, role, street, barangay, city, province, zip_code) 
+            VALUES (:name, :email, :pass, 'buyer', :street, :barangay, :city, :province, :zip)";
     
     $stmt = $pdo->prepare($sql);
     $stmt->execute([

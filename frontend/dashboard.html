@@ -541,9 +541,9 @@
   <nav class="sidebar-nav">
 
     <!-- ── FARMER NAV ── -->
-    <div id="farmer-nav">
+    <div id="farmer-nav" style="display: none;">
       <div class="nav-section-label">Main</div>
-      <a href="#" class="nav-item active"><span class="icon">🏠</span> Dashboard</a>
+      <a href="#" class="nav-item active"><span class="icon">🏠</span> Home</a>
       <a href="#" class="nav-item"><span class="icon">📋</span> My Listings <span class="nav-badge">3</span></a>
       <a href="#" class="nav-item" onclick="openModal(); return false;"><span class="icon">➕</span> New Listing</a>
 
@@ -565,9 +565,8 @@
     <!-- ── BUYER NAV ── -->
     <div id="buyer-nav" style="display:none">
       <div class="nav-section-label">Marketplace</div>
-      <a href="#" class="nav-item active"><span class="icon">🏠</span> Dashboard</a>
+      <a href="#" class="nav-item active"><span class="icon">🏠</span> Home</a>
       <a href="#" class="nav-item"><span class="icon">🔍</span> Browse Listings</a>
-      <a href="#" class="nav-item"><span class="icon">⭐</span> Saved Listings</a>
 
       <div class="nav-section-label" style="margin-top:8px">My Orders</div>
       <a href="#" class="nav-item"><span class="icon">📦</span> Active Orders <span class="nav-badge blue">2</span></a>
@@ -588,12 +587,10 @@
   </div>
 </aside>
 
-<!-- ══════════════════════════════════════
-     MAIN
-══════════════════════════════════════ -->
-<main class="main">
 
-  <!-- TOPBAR -->
+
+<main class="main">
+  
   <header class="topbar">
     <div class="topbar-left">
       <h2 id="topbar-greeting">Welcome 👋</h2>
@@ -608,15 +605,13 @@
       <div class="icon-btn">🔔<div class="notif-dot"></div></div>
     </div>
   </header>
-
+  <!--
   <div class="content">
 
-    <!-- ══════════════════════════════
-         FARMER CONTENT
-    ══════════════════════════════ -->
+    
     <div id="farmer-content" style="display:none">
 
-      <!-- Stats -->
+      
       <div class="stats-row">
         <div class="stat-card green">
           <div class="s-icon">📋</div>
@@ -644,7 +639,7 @@
         </div>
       </div>
 
-      <!-- Quick Actions -->
+      
       <div class="quick-grid">
         <a href="#" class="quick-btn" onclick="openModal(); return false;">
           <div class="q-icon">➕</div>
@@ -664,10 +659,10 @@
         </a>
       </div>
 
-      <!-- Main Grid -->
+      
       <div class="dashboard-grid">
 
-        <!-- Listings Table -->
+        
         <div class="card">
           <div class="card-header">
             <div>
@@ -725,10 +720,10 @@
           </div>
         </div>
 
-        <!-- Right Column -->
+        
         <div style="display:flex; flex-direction:column; gap:20px;">
 
-          <!-- Recent Orders -->
+          
           <div class="card">
             <div class="card-header">
               <div>
@@ -777,7 +772,7 @@
             </div>
           </div>
 
-          <!-- Notifications -->
+          
           <div class="card">
             <div class="card-header">
               <div class="card-title">Notifications</div>
@@ -811,7 +806,7 @@
         </div>
       </div>
 
-      <!-- Price Trends -->
+      
       <div class="card">
         <div class="card-header">
           <div>
@@ -857,15 +852,13 @@
       </div>
 
     </div>
-    <!-- /farmer-content -->
+    
 
 
-    <!-- ══════════════════════════════
-         BUYER CONTENT
-    ══════════════════════════════ -->
+    
     <div id="buyer-content" style="display:none">
 
-      <!-- Stats -->
+      
       <div class="stats-row">
         <div class="stat-card green">
           <div class="s-icon">🔍</div>
@@ -893,7 +886,7 @@
         </div>
       </div>
 
-      <!-- Quick Actions -->
+      
       <div class="quick-grid">
         <a href="#" class="quick-btn">
           <div class="q-icon">🔍</div>
@@ -904,19 +897,15 @@
           <div class="q-text"><h4>My Orders</h4><p>Track your purchases</p></div>
         </a>
         <a href="#" class="quick-btn">
-          <div class="q-icon">⭐</div>
-          <div class="q-text"><h4>Saved Listings</h4><p>Your bookmarked crops</p></div>
-        </a>
-        <a href="#" class="quick-btn">
           <div class="q-icon">💬</div>
           <div class="q-text"><h4>Messages</h4><p>Chat with farmers</p></div>
         </a>
       </div>
 
-      <!-- Main Grid -->
+      
       <div class="dashboard-grid">
 
-        <!-- Recent Purchases Table -->
+        
         <div class="card">
           <div class="card-header">
             <div>
@@ -962,10 +951,10 @@
           </div>
         </div>
 
-        <!-- Right Column -->
+        
         <div style="display:flex; flex-direction:column; gap:20px;">
 
-          <!-- Fresh Near You -->
+          
           <div class="card">
             <div class="card-header">
               <div>
@@ -1013,7 +1002,7 @@
             </div>
           </div>
 
-          <!-- Notifications -->
+          
           <div class="card">
             <div class="card-header">
               <div class="card-title">Notifications</div>
@@ -1047,7 +1036,7 @@
         </div>
       </div>
 
-      <!-- Market Prices for Buyers -->
+      
       <div class="card">
         <div class="card-header">
           <div>
@@ -1093,11 +1082,11 @@
       </div>
 
     </div>
-    <!-- /buyer-content -->
+    
 
   </div>
-  <!-- /content -->
-
+  
+  -->
 </main>
 
 <!-- FAB — farmers only, hidden until role confirmed -->
@@ -1190,38 +1179,46 @@
   }
 
   function applyFarmerView(firstName) {
-    document.getElementById('topbar-greeting').textContent = `Good morning, ${firstName} 👋`;
-    document.getElementById('topbar-sub').textContent      = 'Harvest season is active · Manage your listings';
-    document.getElementById('topbar-search').placeholder   = 'Search listings, orders...';
+    const topbarGreeting = document.getElementById('topbar-greeting');
+    const topbarSub      = document.getElementById('topbar-sub');
+    const topbarSearch   = document.getElementById('topbar-search');
+    const farmerContent  = document.getElementById('farmer-content');
+    const buyerContent   = document.getElementById('buyer-content');
 
-    document.getElementById('sidebar-avatar').textContent  = '🧑‍🌾';
-    document.getElementById('farmer-badge').style.display  = 'inline-flex';
-    document.getElementById('buyer-badge').style.display   = 'none';
+    if (topbarGreeting) topbarGreeting.textContent = `Good morning, ${firstName} 👋`;
+    if (topbarSub)      topbarSub.textContent      = 'Harvest season is active · Manage your listings';
+    if (topbarSearch)   topbarSearch.placeholder   = 'Search listings, orders...';
+    if (farmerContent)  farmerContent.style.display = 'block';
+    if (buyerContent)   buyerContent.style.display  = 'none';
 
-    document.getElementById('farmer-nav').style.display     = 'block';
-    document.getElementById('buyer-nav').style.display      = 'none';
-    document.getElementById('farmer-content').style.display = 'block';
-    document.getElementById('buyer-content').style.display  = 'none';
+    document.getElementById('sidebar-avatar').textContent = '🧑‍🌾';
+    document.getElementById('farmer-badge').style.display = 'inline-flex';
+    document.getElementById('buyer-badge').style.display  = 'none';
+    document.getElementById('farmer-nav').style.display   = 'block';
+    document.getElementById('buyer-nav').style.display    = 'none';
+    document.getElementById('fab').style.display          = 'flex';
+}
 
-    document.getElementById('fab').style.display = 'flex';
-  }
+function applyBuyerView(firstName) {
+    const topbarGreeting = document.getElementById('topbar-greeting');
+    const topbarSub      = document.getElementById('topbar-sub');
+    const topbarSearch   = document.getElementById('topbar-search');
+    const farmerContent  = document.getElementById('farmer-content');
+    const buyerContent   = document.getElementById('buyer-content');
 
-  function applyBuyerView(firstName) {
-    document.getElementById('topbar-greeting').textContent = `Welcome back, ${firstName} 👋`;
-    document.getElementById('topbar-sub').textContent      = 'Fresh local produce is available near you';
-    document.getElementById('topbar-search').placeholder   = 'Search crops, farmers, locations...';
+    if (topbarGreeting) topbarGreeting.textContent = `Welcome back, ${firstName} 👋`;
+    if (topbarSub)      topbarSub.textContent      = 'Fresh local produce is available near you';
+    if (topbarSearch)   topbarSearch.placeholder   = 'Search crops, farmers, locations...';
+    if (farmerContent)  farmerContent.style.display = 'none';
+    if (buyerContent)   buyerContent.style.display  = 'block';
 
-    document.getElementById('sidebar-avatar').textContent  = '🛍️';
-    document.getElementById('farmer-badge').style.display  = 'none';
-    document.getElementById('buyer-badge').style.display   = 'inline-flex';
-
-    document.getElementById('farmer-nav').style.display     = 'none';
-    document.getElementById('buyer-nav').style.display      = 'block';
-    document.getElementById('farmer-content').style.display = 'none';
-    document.getElementById('buyer-content').style.display  = 'block';
-
-    document.getElementById('fab').style.display = 'none';
-  }
+    document.getElementById('sidebar-avatar').textContent = '🛍️';
+    document.getElementById('farmer-badge').style.display = 'none';
+    document.getElementById('buyer-badge').style.display  = 'inline-flex';
+    document.getElementById('farmer-nav').style.display   = 'none';
+    document.getElementById('buyer-nav').style.display    = 'block';
+    document.getElementById('fab').style.display          = 'none';
+}
 
   // ── LOGOUT ──
   function logout() {

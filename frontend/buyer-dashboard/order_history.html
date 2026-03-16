@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Messages</title>
+<title>Order History</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap');
 
@@ -315,248 +315,119 @@ hr.divider {
 
 </style>
 <style>
-  body { padding: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+  .history-row {
+    background: var(--white); border-radius: var(--radius);
+    border: 1.5px solid var(--border); padding: 16px 20px;
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    margin-bottom: 10px; box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .history-row:hover { box-shadow: var(--shadow-md); transform: translateX(2px); }
 
-  .chat-layout {
-    display: flex; flex: 1; min-height: 0; overflow: hidden;
-  }
+  .h-emoji { font-size: 2rem; flex-shrink: 0; }
+  .h-info  { flex: 1; min-width: 160px; }
+  .h-info h4 { font-size: 0.92rem; font-weight: 700; color: var(--text-dark); margin-bottom: 2px; }
+  .h-info p  { font-size: 0.76rem; color: var(--text-light); }
+  .h-stars   { display: flex; gap: 1px; margin-top: 4px; }
+  .star      { font-size: 0.75rem; color: var(--amber); }
+  .h-amount  { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 900; color: var(--text-dark); min-width: 70px; text-align: right; }
+  .h-actions { display: flex; gap: 8px; flex-shrink: 0; }
 
-  /* Thread list */
-  .threads {
-    width: 270px; min-width: 270px;
-    border-right: 1.5px solid var(--border);
-    display: flex; flex-direction: column;
-    background: var(--white);
+  .summary-band {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px; margin-bottom: 24px;
   }
-  .threads-head {
-    padding: 16px; border-bottom: 1px solid var(--border);
-    background: var(--cream);
+  .summary-tile {
+    background: var(--white); border: 1.5px solid var(--border);
+    border-radius: var(--radius); padding: 16px 18px;
+    box-shadow: var(--shadow-sm); position: relative; overflow: hidden;
   }
-  .threads-head h2 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.1rem; font-weight: 700; color: var(--text-dark); margin-bottom: 10px;
+  .summary-tile::after {
+    content: attr(data-icon);
+    position: absolute; right: 10px; bottom: 2px;
+    font-size: 2rem; opacity: 0.08;
   }
-  .thread-search {
-    width: 100%; padding: 8px 12px; border-radius: 8px;
-    border: 1.5px solid var(--border); background: var(--green-xpale);
-    font-family: 'DM Sans', sans-serif; font-size: 0.83rem;
-    color: var(--text-dark); outline: none;
-  }
-  .thread-search:focus { border-color: var(--green-light); }
-  .thread-list { flex: 1; overflow-y: auto; }
-
-  .thread {
-    display: flex; gap: 11px; padding: 14px 16px;
-    cursor: pointer; border-bottom: 1px solid rgba(0,0,0,0.04);
-    transition: background 0.12s; align-items: flex-start;
-  }
-  .thread:hover { background: var(--green-xpale); }
-  .thread.active { background: var(--amber-pale); border-left: 3px solid var(--amber); }
-
-  .t-avatar {
-    width: 40px; height: 40px; border-radius: 50%;
-    background: var(--green-pale); border: 2px solid var(--border);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.2rem; flex-shrink: 0;
-  }
-  .t-meta { flex: 1; min-width: 0; }
-  .t-name { font-size: 0.85rem; font-weight: 700; color: var(--text-dark); }
-  .t-preview {
-    font-size: 0.74rem; color: var(--text-light);
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px;
-  }
-  .t-time { font-size: 0.67rem; color: var(--text-light); flex-shrink: 0; margin-top: 2px; }
-  .t-unread {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: var(--amber); flex-shrink: 0; margin-top: 6px;
-  }
-
-  /* Chat panel */
-  .chat-panel { flex: 1; display: flex; flex-direction: column; min-width: 0; }
-
-  .chat-head {
-    padding: 14px 20px; border-bottom: 1.5px solid var(--border);
-    display: flex; align-items: center; gap: 12px;
-    background: var(--white);
-  }
-  .chat-head-avatar { font-size: 1.6rem; }
-  .chat-head h3 { font-size: 0.95rem; font-weight: 700; color: var(--text-dark); }
-  .chat-head p  { font-size: 0.74rem; color: var(--text-light); }
-
-  .chat-msgs {
-    flex: 1; overflow-y: auto; padding: 20px;
-    display: flex; flex-direction: column; gap: 12px;
-    background: var(--green-xpale);
-  }
-
-  .msg { display: flex; gap: 8px; max-width: 72%; }
-  .msg.mine { align-self: flex-end; flex-direction: row-reverse; }
-
-  .msg-av {
-    width: 30px; height: 30px; border-radius: 50%;
-    background: var(--green-pale); border: 1.5px solid var(--border);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.9rem; flex-shrink: 0;
-  }
-
-  .msg-wrap {}
-  .msg-bubble {
-    background: var(--white); border-radius: 12px;
-    padding: 10px 14px; font-size: 0.85rem; color: var(--text-dark);
-    border: 1.5px solid var(--border); line-height: 1.5;
-    box-shadow: var(--shadow-sm);
-  }
-  .msg.mine .msg-bubble {
-    background: var(--green-dark); color: white; border-color: transparent;
-  }
-  .msg-time {
-    font-size: 0.65rem; color: var(--text-light);
-    margin-top: 4px; text-align: right;
-  }
-  .msg.mine .msg-time { color: rgba(255,255,255,0.5); }
-
-  .chat-input-bar {
-    padding: 12px 16px; border-top: 1.5px solid var(--border);
-    display: flex; gap: 10px; align-items: center; background: var(--white);
-  }
-  .chat-input {
-    flex: 1; padding: 10px 16px; border-radius: 22px;
-    border: 1.5px solid var(--border); background: var(--cream);
-    font-family: 'DM Sans', sans-serif; font-size: 0.875rem;
-    color: var(--text-dark); outline: none;
-    transition: border-color 0.18s;
-  }
-  .chat-input:focus { border-color: var(--green-light); background: white; }
-  .send-btn {
-    width: 40px; height: 40px; border-radius: 50%;
-    background: var(--green-dark); color: var(--amber);
-    border: none; cursor: pointer; font-size: 1rem;
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.18s;
-  }
-  .send-btn:hover { background: var(--green-mid); transform: scale(1.08); }
-
-  .no-chat {
-    flex: 1; display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    color: var(--text-light); gap: 10px;
-    background: var(--green-xpale);
-  }
-  .no-chat .icon { font-size: 3rem; opacity: 0.3; }
-  .no-chat p { font-size: 0.85rem; }
+  .summary-tile .t-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-light); margin-bottom: 4px; }
+  .summary-tile .t-value { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 900; color: var(--text-dark); }
 </style>
 </head>
 <body>
 
-<div class="chat-layout">
-
-  <!-- Thread list -->
-  <div class="threads">
-    <div class="threads-head">
-      <h2>💬 Messages</h2>
-      <input class="thread-search" type="text" placeholder="Search conversations…">
-    </div>
-    <div class="thread-list" id="thread-list"></div>
-  </div>
-
-  <!-- Chat panel -->
-  <div class="chat-panel" id="chat-panel">
-    <div class="chat-head" id="chat-head">
-      <div class="chat-head-avatar" id="chat-av">💬</div>
-      <div>
-        <h3 id="chat-name">Select a conversation</h3>
-        <p id="chat-sub">—</p>
-      </div>
-    </div>
-    <div class="no-chat" id="no-chat">
-      <div class="icon">💬</div>
-      <p>Select a conversation to start chatting</p>
-    </div>
-    <div class="chat-msgs" id="chat-msgs" style="display:none;"></div>
-    <div class="chat-input-bar">
-      <input class="chat-input" id="msg-input" type="text" placeholder="Type a message…" onkeydown="if(event.key==='Enter') send()">
-      <button class="send-btn" onclick="send()">➤</button>
-    </div>
-  </div>
-
+<div class="page-header">
+  <h1>🕐 Order History</h1>
+  <p>All your past and completed orders</p>
 </div>
 
+<div class="summary-band stagger">
+  <div class="summary-tile" data-icon="📦"><div class="t-label">Total Orders</div><div class="t-value">18</div></div>
+  <div class="summary-tile" data-icon="💶"><div class="t-label">Total Spent</div><div class="t-value">€642</div></div>
+  <div class="summary-tile" data-icon="⭐"><div class="t-label">Avg. Rating Given</div><div class="t-value">4.7</div></div>
+  <div class="summary-tile" data-icon="🧑‍🌾"><div class="t-label">Farmers Ordered From</div><div class="t-value">4</div></div>
+</div>
+
+<div class="filter-bar">
+  <select id="f-year" onchange="go()">
+    <option value="">All Time</option>
+    <option value="2026">2026</option>
+    <option value="2025">2025</option>
+  </select>
+  <select id="f-status" onchange="go()">
+    <option value="">All Status</option>
+    <option value="Completed">Completed</option>
+    <option value="Cancelled">Cancelled</option>
+  </select>
+  <input type="text" id="f-q" placeholder="Search…" oninput="go()" style="padding:8px 14px;border-radius:8px;border:1.5px solid var(--border);font-family:'DM Sans',sans-serif;font-size:0.83rem;outline:none;">
+  <span id="f-count" style="font-size:0.8rem;color:var(--text-light);margin-left:auto;"></span>
+</div>
+
+<div id="list" class="stagger"></div>
+
 <script>
-const THREADS = [
-  { id:1, name:'Jan de Boer',    av:'🧑‍🌾', order:'Order #1042 — Tomatoes',  unread:true,
-    msgs:[
-      {mine:false,text:'Hello! Your order for 20kg of organic tomatoes has been received.',time:'14 Mar, 10:15'},
-      {mine:true, text:'Great, thanks! Will they be ready by Thursday?',                   time:'14 Mar, 10:22'},
-      {mine:false,text:'Yes, the tomatoes will be ready Thursday. I\'ll confirm that morning.',time:'14 Mar, 10:45'},
-    ]},
-  { id:2, name:'Klaas Hoekstra', av:'👨‍🌾', order:'Order #1038 — Blueberries', unread:true,
-    msgs:[
-      {mine:true, text:'Hi Klaas, any update on my blueberries order?',          time:'15 Mar, 09:00'},
-      {mine:false,text:'Package is on the way, ETA tomorrow between 10-12.',      time:'15 Mar, 09:30'},
-    ]},
-  { id:3, name:'Anja Smits',     av:'👩‍🌾', order:'Order #1037 — Broccoli',    unread:false,
-    msgs:[
-      {mine:false,text:'Your broccoli order has been confirmed and packed.',       time:'10 Mar, 14:00'},
-      {mine:true, text:'Received! Quality was excellent — 5 stars from me!',       time:'11 Mar, 08:10'},
-      {mine:false,text:'Thank you so much! Happy to serve you again.',              time:'11 Mar, 09:00'},
-    ]},
+const H = [
+  { emoji:'🥦', name:'Broccoli',          qty:'8 kg',  farmer:'Anja Smits',     date:'Mar 10, 2026', amount:14.40, status:'Completed', rated:true,  stars:5, year:'2026', id:'#1037' },
+  { emoji:'🥕', name:'Carrots',           qty:'15 kg', farmer:'Klaas Hoekstra', date:'Mar 2, 2026',  amount:18.00, status:'Completed', rated:true,  stars:4, year:'2026', id:'#1033' },
+  { emoji:'🥔', name:'Potatoes',          qty:'30 kg', farmer:'Jan de Boer',    date:'Feb 22, 2026', amount:21.00, status:'Completed', rated:false, stars:0, year:'2026', id:'#1029' },
+  { emoji:'🍅', name:'Organic Tomatoes',  qty:'10 kg', farmer:'Jan de Boer',    date:'Feb 14, 2026', amount:24.00, status:'Completed', rated:true,  stars:5, year:'2026', id:'#1025' },
+  { emoji:'🧅', name:'Onions',            qty:'5 kg',  farmer:'Boer Bert',      date:'Feb 5, 2026',  amount:4.00,  status:'Cancelled', rated:false, stars:0, year:'2026', id:'#1021' },
+  { emoji:'🫐', name:'Blueberries',       qty:'2 kg',  farmer:'Klaas Hoekstra', date:'Jan 28, 2026', amount:14.00, status:'Completed', rated:true,  stars:5, year:'2026', id:'#1017' },
+  { emoji:'🌾', name:'Wheat Flour',       qty:'10 kg', farmer:'Anja Smits',     date:'Jan 10, 2026', amount:11.00, status:'Completed', rated:true,  stars:4, year:'2026', id:'#1010' },
+  { emoji:'🍓', name:'Strawberries',      qty:'4 kg',  farmer:'Jan de Boer',    date:'Dec 12, 2025', amount:18.00, status:'Completed', rated:true,  stars:5, year:'2025', id:'#0995' },
+  { emoji:'🥛', name:'Fresh Whole Milk',  qty:'10 L',  farmer:'Boer Bert',      date:'Nov 30, 2025', amount:9.00,  status:'Completed', rated:false, stars:0, year:'2025', id:'#0981' },
 ];
 
-let active = null;
-
-function renderThreads() {
-  document.getElementById('thread-list').innerHTML = THREADS.map(t => `
-    <div class="thread ${active===t.id?'active':''}" onclick="open(${t.id})">
-      <div class="t-avatar">${t.av}</div>
-      <div class="t-meta">
-        <div class="t-name">${t.name}</div>
-        <div class="t-preview">${t.msgs[t.msgs.length-1].text}</div>
-        <div class="t-time">${t.msgs[t.msgs.length-1].time}</div>
-      </div>
-      ${t.unread ? '<div class="t-unread"></div>' : ''}
-    </div>`).join('');
+function stars(n) {
+  return '<div class="h-stars">' + Array.from({length:5},(_,i)=>`<span class="star">${i<n?'★':'☆'}</span>`).join('') + '</div>';
 }
 
-function open(id) {
-  const t = THREADS.find(x=>x.id===id);
-  t.unread = false;
-  active = id;
-  renderThreads();
-  document.getElementById('chat-av').textContent   = t.av;
-  document.getElementById('chat-name').textContent = t.name;
-  document.getElementById('chat-sub').textContent  = t.order;
-  document.getElementById('no-chat').style.display  = 'none';
-  document.getElementById('chat-msgs').style.display= 'flex';
-  renderMsgs(t);
+function go() {
+  const q  = document.getElementById('f-q').value.toLowerCase();
+  const yr = document.getElementById('f-year').value;
+  const st = document.getElementById('f-status').value;
+  const list = H.filter(h =>
+    (!q  || h.name.toLowerCase().includes(q) || h.farmer.toLowerCase().includes(q)) &&
+    (!yr || h.year === yr) &&
+    (!st || h.status === st)
+  );
+  document.getElementById('f-count').textContent = `${list.length} order${list.length!==1?'s':''}`;
+  document.getElementById('list').innerHTML = list.length === 0
+    ? `<div class="empty-state"><div class="es-icon">📭</div><h3>No orders match</h3><p>Try adjusting your filters.</p></div>`
+    : list.map(h => `
+      <div class="history-row">
+        <div class="h-emoji">${h.emoji}</div>
+        <div class="h-info">
+          <h4>${h.name} <span style="font-weight:400;color:var(--text-light)">· ${h.qty}</span></h4>
+          <p>🧑‍🌾 ${h.farmer} · ${h.date} · ${h.id}</p>
+          ${h.rated ? stars(h.stars) : ''}
+        </div>
+        <span class="badge ${h.status==='Completed'?'badge-success':'badge-danger'}">${h.status}</span>
+        <div class="h-amount">€${h.amount.toFixed(2)}</div>
+        <div class="h-actions">
+          ${!h.rated && h.status==='Completed' ? `<button class="btn btn-outline btn-sm" onclick="alert('Rating flow for ${h.id}')">⭐ Rate</button>` : ''}
+          <button class="btn btn-primary btn-sm" onclick="alert('Reorder for ${h.name}!')">↩ Reorder</button>
+        </div>
+      </div>`).join('');
 }
-
-function renderMsgs(t) {
-  const el = document.getElementById('chat-msgs');
-  el.innerHTML = t.msgs.map(m=>`
-    <div class="msg ${m.mine?'mine':''}">
-      <div class="msg-av">${m.mine?'🛍️':t.av}</div>
-      <div class="msg-wrap">
-        <div class="msg-bubble">${m.text}</div>
-        <div class="msg-time">${m.time}</div>
-      </div>
-    </div>`).join('');
-  el.scrollTop = el.scrollHeight;
-}
-
-function send() {
-  const input = document.getElementById('msg-input');
-  const text  = input.value.trim();
-  if (!text || !active) return;
-  const t = THREADS.find(x=>x.id===active);
-  const now = new Date().toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
-  t.msgs.push({mine:true,text,time:now});
-  input.value = '';
-  renderThreads();
-  renderMsgs(t);
-}
-
-renderThreads();
-open(1);
+go();
 </script>
 </body>
 </html>

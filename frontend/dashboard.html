@@ -121,8 +121,6 @@
     padding: 10px 12px 4px;
     overflow-y: scroll;
     overflow-x: hidden;
-
-    /* Amber-tinted themed scrollbar */
     scrollbar-width: thin;
     scrollbar-color: rgba(232,160,32,0.3) rgba(255,255,255,0.04);
   }
@@ -265,10 +263,13 @@
     border-radius: 50%; border: 2px solid var(--white);
   }
 
-  /* ── Empty content area ── */
-  .content-empty {
+  /* ── iframe content area ── */
+  #content-frame {
     flex: 1;
+    border: none;
     background: #f0f4ea;
+    width: 100%;
+    height: 100%;
   }
 </style>
 </head>
@@ -297,44 +298,46 @@
   <!-- Scrollable nav -->
   <nav class="sidebar-nav">
 
-    <!-- FARMER NAV -->
+    <!-- ══ FARMER NAV ══ -->
     <div id="farmer-nav">
       <div class="nav-section-label">Main</div>
-      <a href="#" class="nav-item active" onclick="setActive(this);return false;"><span class="icon">🏠</span> Dashboard</a>
-      <a href="#" class="nav-item" onclick="setActive(this);return false;"><span class="icon">📋</span> My Listings <span class="nav-badge">3</span></a>
-      <a href="#" class="nav-item" onclick="setActive(this);return false;"><span class="icon">➕</span> New Listing</a>
+      <a href="farmer-dashboard/index.html"        class="nav-item active" target="content-frame" onclick="setActive(this)"><span class="icon">🏠</span> Dashboard</a>
+      <a href="farmer-dashboard/listings.html"     class="nav-item"        target="content-frame" onclick="setActive(this)"><span class="icon">📋</span> My Listings <span class="nav-badge">3</span></a>
+      <a href="farmer-dashboard/new-listing.html"  class="nav-item"        target="content-frame" onclick="setActive(this)"><span class="icon">➕</span> New Listing</a>
 
       <div class="nav-section-label">Orders</div>
-      <a href="#" class="nav-item" onclick="setActive(this);return false;"><span class="icon">📦</span> Incoming Orders <span class="nav-badge">2</span></a>
-      <a href="#" class="nav-item" onclick="setActive(this);return false;"><span class="icon">🕐</span> Order History</a>
-      <a href="#" class="nav-item" onclick="setActive(this);return false;"><span class="icon">⚖️</span> Disputes</a>
+      <a href="farmer-dashboard/orders.html"        class="nav-item" target="content-frame" onclick="setActive(this)"><span class="icon">📦</span> Incoming Orders <span class="nav-badge">2</span></a>
+      <a href="farmer-dashboard/order_history.html" class="nav-item" target="content-frame" onclick="setActive(this)"><span class="icon">🕐</span> Order History</a>
+      <a href="farmer-dashboard/disputes.html"      class="nav-item" target="content-frame" onclick="setActive(this)"><span class="icon">⚖️</span> Disputes</a>
 
       <div class="nav-section-label">Finance</div>
-      <a href="#" class="nav-item" onclick="setActive(this);return false;"><span class="icon">💰</span> Earnings</a>
-      <a href="#" class="nav-item" onclick="setActive(this);return false;"><span class="icon">🧾</span> Transactions</a>
+      <a href="farmer-dashboard/earnings.html"      class="nav-item" target="content-frame" onclick="setActive(this)"><span class="icon">💰</span> Earnings</a>
+      <a href="farmer-dashboard/notifications.html" class="nav-item" target="content-frame" onclick="setActive(this)"><span class="icon">🧾</span> Transactions</a>
 
       <div class="nav-section-label">Account</div>
-      <a href="#" class="nav-item" onclick="setActive(this);return false;"><span class="icon">💬</span> Messages <span class="nav-badge">5</span></a>
-      <a href="#" class="nav-item" onclick="setActive(this);return false;"><span class="icon">🔔</span> Notifications</a>
-      <a href="#" class="nav-item" onclick="setActive(this);return false;"><span class="icon">👤</span> My Profile</a>
+      <a href="farmer-dashboard/messages.html"      class="nav-item" target="content-frame" onclick="setActive(this)"><span class="icon">💬</span> Messages <span class="nav-badge">5</span></a>
+      <a href="farmer-dashboard/notifications.html" class="nav-item" target="content-frame" onclick="setActive(this)"><span class="icon">🔔</span> Notifications</a>
+      <a href="farmer-dashboard/profile.html"       class="nav-item" target="content-frame" onclick="setActive(this)"><span class="icon">👤</span> My Profile</a>
     </div>
 
-    <!-- BUYER NAV -->
+    <!-- ══ BUYER NAV ══ -->
     <div id="buyer-nav" style="display:none">
+
       <div class="nav-section-label">Marketplace</div>
-      <a href="#" class="nav-item active" onclick="setActive(this);return false;"><span class="icon">🏠</span> Dashboard</a>
-      <a href="#" class="nav-item" onclick="setActive(this);return false;"><span class="icon">🔍</span> Browse Listings</a>
-      <a href="#" class="nav-item" onclick="setActive(this);return false;"><span class="icon">⭐</span> Saved Listings</a>
+      <a href="buyer-dashboard/index.html"        class="nav-item active" target="content-frame" onclick="setActive(this)"><span class="icon">🏠</span> Dashboard</a>
+      <a href="buyer-dashboard/browse.html"        class="nav-item"        target="content-frame" onclick="setActive(this)"><span class="icon">🔍</span> Browse Listings</a>
+      <a href="buyer-dashboard/saved.html"         class="nav-item"        target="content-frame" onclick="setActive(this)"><span class="icon">⭐</span> Saved Listings</a>
 
       <div class="nav-section-label">My Orders</div>
-      <a href="#" class="nav-item" onclick="setActive(this);return false;"><span class="icon">📦</span> Active Orders <span class="nav-badge blue">2</span></a>
-      <a href="#" class="nav-item" onclick="setActive(this);return false;"><span class="icon">🕐</span> Order History</a>
-      <a href="#" class="nav-item" onclick="setActive(this);return false;"><span class="icon">⚖️</span> Disputes</a>
+      <a href="buyer-dashboard/orders.html"        class="nav-item" target="content-frame" onclick="setActive(this)"><span class="icon">📦</span> Active Orders <span class="nav-badge blue">2</span></a>
+      <a href="buyer-dashboard/order_history.html" class="nav-item" target="content-frame" onclick="setActive(this)"><span class="icon">🕐</span> Order History</a>
+      <a href="buyer-dashboard/dispute.html"       class="nav-item" target="content-frame" onclick="setActive(this)"><span class="icon">⚖️</span> Disputes</a>
 
       <div class="nav-section-label">Account</div>
-      <a href="#" class="nav-item" onclick="setActive(this);return false;"><span class="icon">💬</span> Messages <span class="nav-badge blue">3</span></a>
-      <a href="#" class="nav-item" onclick="setActive(this);return false;"><span class="icon">🔔</span> Notifications</a>
-      <a href="#" class="nav-item" onclick="setActive(this);return false;"><span class="icon">👤</span> My Profile</a>
+      <a href="buyer-dashboard/messages.html"     class="nav-item" target="content-frame" onclick="setActive(this)"><span class="icon">💬</span> Messages <span class="nav-badge blue">3</span></a>
+      <a href="buyer-dashboard/notification.html" class="nav-item" target="content-frame" onclick="setActive(this)"><span class="icon">🔔</span> Notifications</a>
+      <a href="buyer-dashboard/profile.html"      class="nav-item" target="content-frame" onclick="setActive(this)"><span class="icon">👤</span> My Profile</a>
+
     </div>
 
   </nav>
@@ -366,8 +369,8 @@
     </div>
   </header>
 
-  <!-- Empty content area -->
-  <div class="content-empty"></div>
+  <!-- Content loads here — sidebar stays visible -->
+  <iframe id="content-frame" name="content-frame" src="buyer-dashboard/index.html"></iframe>
 
 </main>
 
@@ -397,24 +400,24 @@
     document.getElementById('topbar-greeting').textContent = `Good morning, ${firstName} 👋`;
     document.getElementById('topbar-sub').textContent      = 'Harvest season is active · Manage your listings';
     document.getElementById('topbar-search').placeholder   = 'Search listings, orders...';
-
     document.getElementById('sidebar-avatar').textContent  = '🧑‍🌾';
     document.getElementById('farmer-badge').style.display  = 'inline-flex';
     document.getElementById('buyer-badge').style.display   = 'none';
     document.getElementById('farmer-nav').style.display    = 'block';
     document.getElementById('buyer-nav').style.display     = 'none';
+    document.getElementById('content-frame').src = 'farmer-dashboard/index.html';
   }
 
   function applyBuyerView(firstName) {
     document.getElementById('topbar-greeting').textContent = `Welcome back, ${firstName} 👋`;
     document.getElementById('topbar-sub').textContent      = 'Fresh local produce is available near you';
     document.getElementById('topbar-search').placeholder   = 'Search crops, farmers, locations...';
-
     document.getElementById('sidebar-avatar').textContent  = '🛍️';
     document.getElementById('farmer-badge').style.display  = 'none';
     document.getElementById('buyer-badge').style.display   = 'inline-flex';
     document.getElementById('farmer-nav').style.display    = 'none';
     document.getElementById('buyer-nav').style.display     = 'block';
+    document.getElementById('content-frame').src = 'buyer-dashboard/index.html';
   }
 
   function logout() {

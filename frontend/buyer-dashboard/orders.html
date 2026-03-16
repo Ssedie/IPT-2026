@@ -1,1 +1,480 @@
-s
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Active Orders</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+/* ═══════════════════════════════════════════
+   FARMVILLE — Page CSS (loads inside iframe)
+   All pages share this file via <link>
+═══════════════════════════════════════════ */
+
+:root {
+  --green-dark:  #1a3a1a;
+  --green-mid:   #2d5a1b;
+  --green-light: #4a7c2f;
+  --green-pale:  #e8f0e0;
+  --green-xpale: #f2f7ee;
+  --amber:       #e8a020;
+  --amber-light: #f5c842;
+  --amber-pale:  #fdf3e0;
+  --cream:       #faf6ed;
+  --white:       #ffffff;
+  --text-dark:   #1a2a0a;
+  --text-mid:    #3a4a2a;
+  --text-light:  #6a7a5a;
+  --border:      #d4e0c4;
+  --red:         #c94040;
+  --red-pale:    #fdf0f0;
+  --blue:        #3a7bd5;
+  --blue-pale:   #eef4fd;
+  --shadow-sm:   0 1px 4px rgba(26,58,26,0.06);
+  --shadow-md:   0 4px 20px rgba(26,58,26,0.10);
+  --shadow-lg:   0 12px 40px rgba(26,58,26,0.14);
+  --radius:      14px;
+  --radius-sm:   8px;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--green-xpale);
+  color: var(--text-dark);
+  min-height: 100%;
+  padding: 28px 32px 40px;
+  animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Page header ── */
+.page-header {
+  margin-bottom: 28px;
+}
+.page-header h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.75rem; font-weight: 900;
+  color: var(--text-dark); line-height: 1.1;
+  margin-bottom: 4px;
+}
+.page-header p {
+  font-size: 0.85rem; color: var(--text-light);
+}
+
+/* ── Stat grid ── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.stat-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  position: relative; overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+
+.stat-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+}
+.stat-card.green::before { background: linear-gradient(90deg, var(--green-mid), var(--green-light)); }
+.stat-card.amber::before { background: linear-gradient(90deg, var(--amber), var(--amber-light)); }
+.stat-card.blue::before  { background: linear-gradient(90deg, var(--blue), #6ba3e8); }
+.stat-card.red::before   { background: linear-gradient(90deg, var(--red), #e07070); }
+
+.stat-icon {
+  font-size: 1.5rem; margin-bottom: 10px; display: block;
+}
+.stat-label {
+  font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--text-light); margin-bottom: 4px;
+}
+.stat-value {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem; font-weight: 900; color: var(--text-dark);
+  line-height: 1; margin-bottom: 4px;
+}
+.stat-sub { font-size: 0.75rem; color: var(--text-light); }
+.stat-sub.up   { color: var(--green-mid); }
+.stat-sub.down { color: var(--red); }
+
+/* ── Card ── */
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 22px;
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 16px 22px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--cream);
+}
+.card-header h2 {
+  font-size: 0.95rem; font-weight: 700; color: var(--text-dark);
+}
+.card-body { padding: 20px 22px; }
+
+/* ── Section title ── */
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem; font-weight: 700;
+  color: var(--text-dark); margin-bottom: 14px;
+}
+
+/* ── Buttons ── */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 18px; border-radius: var(--radius-sm);
+  font-family: 'DM Sans', sans-serif; font-size: 0.83rem; font-weight: 600;
+  border: none; cursor: pointer; transition: all 0.18s;
+  text-decoration: none; white-space: nowrap;
+}
+.btn-primary { background: var(--amber); color: var(--green-dark); }
+.btn-primary:hover { background: var(--amber-light); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(232,160,32,0.3); }
+.btn-green { background: var(--green-mid); color: white; }
+.btn-green:hover { background: var(--green-light); transform: translateY(-1px); }
+.btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text-mid); }
+.btn-outline:hover { background: var(--green-pale); border-color: var(--green-light); }
+.btn-danger { background: var(--red-pale); color: var(--red); border: 1.5px solid rgba(201,64,64,0.2); }
+.btn-danger:hover { background: rgba(201,64,64,0.12); }
+.btn-sm { padding: 5px 12px; font-size: 0.76rem; }
+.btn-full { width: 100%; justify-content: center; padding: 12px; }
+
+/* ── Badges ── */
+.badge {
+  display: inline-flex; align-items: center;
+  padding: 3px 10px; border-radius: 20px;
+  font-size: 0.7rem; font-weight: 700;
+}
+.badge-success { background: rgba(45,90,27,0.1); color: var(--green-mid); }
+.badge-warning { background: rgba(232,160,32,0.12); color: #9a6800; }
+.badge-danger  { background: rgba(201,64,64,0.1); color: var(--red); }
+.badge-info    { background: rgba(58,123,213,0.1); color: var(--blue); }
+.badge-grey    { background: rgba(0,0,0,0.06); color: var(--text-light); }
+
+/* ── Table ── */
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th {
+  text-align: left; font-size: 0.68rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--text-light); padding: 10px 20px;
+  background: var(--cream); border-bottom: 1px solid var(--border);
+}
+.data-table td {
+  padding: 13px 20px; font-size: 0.85rem; color: var(--text-mid);
+  border-bottom: 1px solid var(--border);
+  transition: background 0.12s;
+}
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tbody tr:hover td { background: var(--green-xpale); }
+
+/* ── Form ── */
+.form-group { margin-bottom: 16px; }
+.form-group label {
+  display: block; font-size: 0.78rem; font-weight: 600;
+  color: var(--text-mid); margin-bottom: 6px;
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%; padding: 10px 14px;
+  border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+  font-family: 'DM Sans', sans-serif; font-size: 0.875rem;
+  color: var(--text-dark); background: var(--cream);
+  outline: none; transition: border-color 0.18s, box-shadow 0.18s;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--green-light);
+  box-shadow: 0 0 0 3px rgba(74,124,47,0.1);
+  background: white;
+}
+.form-group textarea { resize: vertical; min-height: 90px; }
+.form-group input:disabled { opacity: 0.5; cursor: not-allowed; background: var(--green-pale); }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-grid .span2 { grid-column: span 2; }
+
+/* ── Toggle switch ── */
+.toggle { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
+.toggle input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+  position: absolute; inset: 0; background: var(--border);
+  border-radius: 24px; cursor: pointer; transition: background 0.2s;
+}
+.toggle-slider::before {
+  content: ''; position: absolute;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: white; top: 3px; left: 3px;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+.toggle input:checked + .toggle-slider { background: var(--green-mid); }
+.toggle input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+/* ── Empty state ── */
+.empty-state {
+  text-align: center; padding: 60px 20px;
+  color: var(--text-light);
+}
+.empty-state .es-icon { font-size: 3rem; margin-bottom: 14px; opacity: 0.5; }
+.empty-state h3 { font-size: 1.05rem; font-weight: 700; color: var(--text-mid); margin-bottom: 6px; }
+.empty-state p  { font-size: 0.85rem; margin-bottom: 20px; }
+
+/* ── Filter bar ── */
+.filter-bar {
+  display: flex; gap: 10px; flex-wrap: wrap;
+  align-items: center; margin-bottom: 22px;
+}
+.filter-bar select,
+.filter-bar input[type="text"] {
+  padding: 8px 14px; border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border); background: var(--white);
+  font-family: 'DM Sans', sans-serif; font-size: 0.83rem;
+  color: var(--text-dark); outline: none;
+  transition: border-color 0.18s;
+}
+.filter-bar select:focus,
+.filter-bar input:focus { border-color: var(--green-light); }
+
+/* ── Tabs ── */
+.tabs {
+  display: flex; gap: 4px;
+  background: var(--white); border: 1.5px solid var(--border);
+  border-radius: 10px; padding: 4px; width: fit-content;
+  margin-bottom: 22px;
+}
+.tab {
+  padding: 7px 18px; border-radius: 7px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem; font-weight: 600;
+  color: var(--text-light); border: none; background: none;
+  cursor: pointer; transition: all 0.15s;
+}
+.tab.active { background: var(--amber); color: var(--green-dark); }
+.tab:hover:not(.active) { background: var(--green-pale); color: var(--text-dark); }
+
+/* ── Chip ── */
+.chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 12px; border-radius: 20px;
+  font-size: 0.75rem; font-weight: 600;
+  background: var(--green-pale); color: var(--green-mid);
+  border: 1px solid var(--border);
+}
+
+/* ── Divider ── */
+hr.divider {
+  border: none; border-top: 1px solid var(--border); margin: 20px 0;
+}
+
+/* ── Row util ── */
+.row { display: flex; gap: 16px; align-items: center; }
+.row.between { justify-content: space-between; }
+.row.wrap { flex-wrap: wrap; }
+
+/* ── Stagger animation for lists ── */
+.stagger > * {
+  animation: slideUp 0.3s ease both;
+}
+.stagger > *:nth-child(1) { animation-delay: 0.04s; }
+.stagger > *:nth-child(2) { animation-delay: 0.08s; }
+.stagger > *:nth-child(3) { animation-delay: 0.12s; }
+.stagger > *:nth-child(4) { animation-delay: 0.16s; }
+.stagger > *:nth-child(5) { animation-delay: 0.20s; }
+.stagger > *:nth-child(6) { animation-delay: 0.24s; }
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+</style>
+<style>
+  .order-card {
+    background: var(--white); border-radius: var(--radius);
+    border: 1.5px solid var(--border); box-shadow: var(--shadow-sm);
+    margin-bottom: 18px; overflow: hidden;
+  }
+  .order-top {
+    padding: 14px 22px;
+    background: var(--cream); border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  }
+  .order-num { font-weight: 700; font-size: 0.88rem; color: var(--text-dark); }
+  .order-date { font-size: 0.76rem; color: var(--text-light); }
+  .order-farmer { font-size: 0.8rem; color: var(--text-mid); }
+
+  .order-body {
+    padding: 20px 22px;
+    display: flex; gap: 20px; flex-wrap: wrap; align-items: center;
+  }
+  .order-product { display: flex; align-items: center; gap: 16px; flex: 1; min-width: 200px; }
+  .order-emoji { font-size: 2.5rem; line-height: 1; }
+  .order-info h3 { font-size: 1rem; font-weight: 700; color: var(--text-dark); margin-bottom: 2px; }
+  .order-info p  { font-size: 0.8rem; color: var(--text-light); }
+  .order-total { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 900; color: var(--text-dark); }
+  .order-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  /* Progress bar */
+  .progress-section {
+    padding: 18px 22px 20px;
+    border-top: 1px solid var(--border);
+    background: var(--green-xpale);
+  }
+  .progress-label {
+    font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--text-light); margin-bottom: 14px;
+  }
+  .steps { display: flex; align-items: center; }
+  .step  { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; }
+  .step-dot {
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem; border: 2px solid var(--border);
+    background: var(--white); color: var(--text-light);
+    position: relative; z-index: 1; transition: all 0.3s;
+  }
+  .step-dot.done   { background: var(--green-mid); border-color: var(--green-mid); color: white; box-shadow: 0 0 0 4px rgba(45,90,27,0.12); }
+  .step-dot.active { background: var(--amber); border-color: var(--amber); color: var(--green-dark); box-shadow: 0 0 0 4px rgba(232,160,32,0.2); animation: pulse 1.8s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{box-shadow:0 0 0 4px rgba(232,160,32,0.2);} 50%{box-shadow:0 0 0 8px rgba(232,160,32,0.08);} }
+  .step-label { font-size: 0.64rem; color: var(--text-light); text-align: center; max-width: 58px; line-height: 1.3; }
+  .step-label.done   { color: var(--green-mid); font-weight: 700; }
+  .step-label.active { color: var(--amber); font-weight: 700; }
+  .step-line { flex: 1; height: 2px; background: var(--border); margin-top: -22px; position: relative; z-index: 0; }
+  .step-line.done { background: var(--green-mid); }
+</style>
+</head>
+<body>
+
+<div class="page-header row between">
+  <div>
+    <h1>📦 Active Orders</h1>
+    <p>Track and manage your current orders</p>
+  </div>
+  <a href="browse.html" class="btn btn-primary">+ New Order</a>
+</div>
+
+<div class="stats-grid stagger" style="grid-template-columns:repeat(3,1fr);margin-bottom:24px;">
+  <div class="stat-card blue">
+    <span class="stat-icon">📦</span>
+    <div class="stat-label">Active</div>
+    <div class="stat-value">2</div>
+    <div class="stat-sub">Orders in progress</div>
+  </div>
+  <div class="stat-card amber">
+    <span class="stat-icon">⏳</span>
+    <div class="stat-label">Awaiting</div>
+    <div class="stat-value">1</div>
+    <div class="stat-sub">Pending confirmation</div>
+  </div>
+  <div class="stat-card green">
+    <span class="stat-icon">🚚</span>
+    <div class="stat-label">En Route</div>
+    <div class="stat-value">1</div>
+    <div class="stat-sub">Expected tomorrow</div>
+  </div>
+</div>
+
+<!-- Order 1 -->
+<div class="order-card stagger">
+  <div class="order-top">
+    <span class="order-num">Order #1042</span>
+    <span class="order-date">📅 March 14, 2026</span>
+    <span class="order-farmer">🧑‍🌾 Jan de Boer · Lelystad</span>
+    <span class="badge badge-warning" style="margin-left:auto;">⏳ Awaiting Confirmation</span>
+  </div>
+  <div class="order-body">
+    <div class="order-product">
+      <div class="order-emoji">🍅</div>
+      <div class="order-info">
+        <h3>Organic Tomatoes</h3>
+        <p>20 kg · €2.40 / kg · Pickup from farm</p>
+      </div>
+    </div>
+    <div class="order-total">€48.00</div>
+    <div class="order-actions">
+      <a href="messages.html" class="btn btn-outline btn-sm">💬 Message</a>
+      <a href="dispute.html"  class="btn btn-danger  btn-sm">⚖️ Dispute</a>
+    </div>
+  </div>
+  <div class="progress-section">
+    <div class="progress-label">Order progress</div>
+    <div class="steps">
+      <div class="step"><div class="step-dot done">✓</div><div class="step-label done">Placed</div></div>
+      <div class="step-line done"></div>
+      <div class="step"><div class="step-dot active">⏳</div><div class="step-label active">Confirming</div></div>
+      <div class="step-line"></div>
+      <div class="step"><div class="step-dot">📦</div><div class="step-label">Preparing</div></div>
+      <div class="step-line"></div>
+      <div class="step"><div class="step-dot">🚚</div><div class="step-label">In Transit</div></div>
+      <div class="step-line"></div>
+      <div class="step"><div class="step-dot">✅</div><div class="step-label">Delivered</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Order 2 -->
+<div class="order-card stagger">
+  <div class="order-top">
+    <span class="order-num">Order #1038</span>
+    <span class="order-date">📅 March 11, 2026</span>
+    <span class="order-farmer">🧑‍🌾 Klaas Hoekstra · Dronten</span>
+    <span class="badge badge-info" style="margin-left:auto;">🚚 On the Way</span>
+  </div>
+  <div class="order-body">
+    <div class="order-product">
+      <div class="order-emoji">🫐</div>
+      <div class="order-info">
+        <h3>Blueberries</h3>
+        <p>3 kg · €7.00 / kg · Delivery to Lelystad</p>
+      </div>
+    </div>
+    <div class="order-total">€21.00</div>
+    <div class="order-actions">
+      <a href="messages.html" class="btn btn-outline btn-sm">💬 Message</a>
+      <button class="btn btn-green btn-sm" onclick="if(confirm('Mark order #1038 as received?')) alert('Order marked complete!')">✓ Mark Received</button>
+    </div>
+  </div>
+  <div class="progress-section">
+    <div class="progress-label">Order progress</div>
+    <div class="steps">
+      <div class="step"><div class="step-dot done">✓</div><div class="step-label done">Placed</div></div>
+      <div class="step-line done"></div>
+      <div class="step"><div class="step-dot done">✓</div><div class="step-label done">Confirmed</div></div>
+      <div class="step-line done"></div>
+      <div class="step"><div class="step-dot done">✓</div><div class="step-label done">Prepared</div></div>
+      <div class="step-line done"></div>
+      <div class="step"><div class="step-dot active">🚚</div><div class="step-label active">In Transit</div></div>
+      <div class="step-line"></div>
+      <div class="step"><div class="step-dot">✅</div><div class="step-label">Delivered</div></div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

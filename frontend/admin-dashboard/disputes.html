@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FarmVille — Disputes</title>
+    <link rel="stylesheet" href="admin.css" />
+  </head>
+  <body>
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon">🌾</div>
+        <div class="logo-text">
+          <span class="wordmark">FARMVILLE</span
+          ><span class="admin-badge">Admin Control Panel</span>
+        </div>
+      </div>
+      <div class="sidebar-user">
+        <div class="user-avatar">🏛️</div>
+        <div class="user-info">
+          <h4 id="admin-name">Antonio Cruz</h4>
+          <p id="admin-email">Municipal Agri Officer</p>
+          <div class="admin-pill">⚡ Super Admin</div>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">Overview</div>
+        <a href="index.html" class="nav-item" data-page="dashboard"
+          ><span class="icon">📊</span> Dashboard</a
+        >
+        <a
+          href="analytics_and_reports.html"
+          class="nav-item"
+          data-page="analytics"
+          ><span class="icon">📈</span> Analytics &amp; Reports</a
+        >
+        <div class="nav-section-label" style="margin-top: 8px">Moderation</div>
+        <a
+          href="farmer_applications.html"
+          class="nav-item"
+          data-page="applications"
+          ><span class="icon">✅</span> Farmer Applications
+          <span class="nav-badge amber">4</span></a
+        >
+        <a href="listings.html" class="nav-item" data-page="listings"
+          ><span class="icon">📋</span> Listing Moderation
+          <span class="nav-badge">2</span></a
+        >
+        <a href="disputes.html" class="nav-item" data-page="disputes"
+          ><span class="icon">⚖️</span> Disputes
+          <span class="nav-badge">3</span></a
+        >
+        <div class="nav-section-label" style="margin-top: 8px">Management</div>
+        <a href="users.html" class="nav-item" data-page="users"
+          ><span class="icon">👥</span> User Management</a
+        >
+        <a href="orders.html" class="nav-item" data-page="orders"
+          ><span class="icon">📦</span> All Orders</a
+        >
+        <a href="transactions.html" class="nav-item" data-page="transactions"
+          ><span class="icon">💰</span> Transactions</a
+        >
+        <a href="price_monitoring.html" class="nav-item" data-page="prices"
+          ><span class="icon">📉</span> Price Monitoring</a
+        >
+        <div class="nav-section-label" style="margin-top: 8px">System</div>
+        <a href="audit_log.html" class="nav-item" data-page="audit"
+          ><span class="icon">📝</span> Audit Log</a
+        >
+        <a href="settings.html" class="nav-item" data-page="settings"
+          ><span class="icon">⚙️</span> Settings</a
+        >
+      </nav>
+      <div class="sidebar-footer">
+        <a href="#" class="nav-item"
+          ><span class="icon">🌐</span> Back to Site</a
+        >
+        <a
+          href="#"
+          class="nav-item"
+          onclick="
+            logout();
+            return false;
+          "
+          ><span class="icon">🚪</span> Logout</a
+        >
+      </div>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <h2>Disputes ⚖️</h2>
+          <p>Manage and resolve buyer-seller disputes</p>
+        </div>
+        <div class="topbar-right">
+          <div class="search-box">
+            <span>🔍</span
+            ><input type="text" placeholder="Search disputes..." />
+          </div>
+          <div class="icon-btn">
+            🔔
+            <div class="notif-dot"></div>
+          </div>
+        </div>
+      </header>
+      <div class="content">
+        <div class="stat-row">
+          <div class="stat-box">
+            <div class="label">Open</div>
+            <div class="value" style="color: #d94f4f">3</div>
+            <div class="sub">Needs action</div>
+          </div>
+          <div class="stat-box">
+            <div class="label">In Review</div>
+            <div class="value" style="color: #b07d10">2</div>
+            <div class="sub">Being investigated</div>
+          </div>
+          <div class="stat-box">
+            <div class="label">Resolved (March)</div>
+            <div class="value" style="color: #2d8a3e">14</div>
+            <div class="sub">This month</div>
+          </div>
+          <div class="stat-box">
+            <div class="label">Avg Resolution</div>
+            <div class="value">2.3</div>
+            <div class="sub">Days</div>
+          </div>
+        </div>
+
+        <div class="filters-row">
+          <button
+            class="filter-btn active"
+            onclick="filterRows('all', this, 'disputes-tbody')"
+          >
+            All
+          </button>
+          <button
+            class="filter-btn"
+            onclick="filterRows('urgent', this, 'disputes-tbody')"
+          >
+            🔴 Urgent
+          </button>
+          <button
+            class="filter-btn"
+            onclick="filterRows('open', this, 'disputes-tbody')"
+          >
+            🟡 Open
+          </button>
+          <button
+            class="filter-btn"
+            onclick="filterRows('review', this, 'disputes-tbody')"
+          >
+            🔵 In Review
+          </button>
+          <button
+            class="filter-btn"
+            onclick="filterRows('resolved', this, 'disputes-tbody')"
+          >
+            ✅ Resolved
+          </button>
+        </div>
+
+        <div class="card">
+          <div class="data-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Dispute ID</th>
+                  <th>Buyer</th>
+                  <th>Seller / Farm</th>
+                  <th>Issue</th>
+                  <th>Order</th>
+                  <th>Filed</th>
+                  <th>Priority</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="disputes-tbody">
+                <tr data-status="urgent">
+                  <td><strong>#DSP-041</strong></td>
+                  <td>Ana Gomez</td>
+                  <td>Mang Teban Farm</td>
+                  <td>Wrong item received</td>
+                  <td>#ORD-2837</td>
+                  <td>Mar 15, 2026</td>
+                  <td><span class="badge red">Urgent</span></td>
+                  <td><span class="badge red">Open</span></td>
+                  <td>
+                    <button
+                      class="btn btn-primary btn-sm"
+                      onclick="resolveDispute(this)"
+                    >
+                      Resolve
+                    </button>
+                  </td>
+                </tr>
+                <tr data-status="open">
+                  <td><strong>#DSP-040</strong></td>
+                  <td>Jojo Ramirez</td>
+                  <td>SunFarm Co.</td>
+                  <td>Late delivery (5 days)</td>
+                  <td>#ORD-2820</td>
+                  <td>Mar 13, 2026</td>
+                  <td><span class="badge yellow">Normal</span></td>
+                  <td><span class="badge yellow">Open</span></td>
+                  <td>
+                    <button
+                      class="btn btn-primary btn-sm"
+                      onclick="resolveDispute(this)"
+                    >
+                      Resolve
+                    </button>
+                  </td>
+                </tr>
+                <tr data-status="open">
+                  <td><strong>#DSP-039</strong></td>
+                  <td>Linda Tan</td>
+                  <td>GreenHarvest</td>
+                  <td>Quality not as described</td>
+                  <td>#ORD-2811</td>
+                  <td>Mar 12, 2026</td>
+                  <td><span class="badge yellow">Normal</span></td>
+                  <td><span class="badge yellow">Open</span></td>
+                  <td>
+                    <button
+                      class="btn btn-primary btn-sm"
+                      onclick="resolveDispute(this)"
+                    >
+                      Resolve
+                    </button>
+                  </td>
+                </tr>
+                <tr data-status="review">
+                  <td><strong>#DSP-038</strong></td>
+                  <td>Carlo Bautista</td>
+                  <td>Agri Plus</td>
+                  <td>Item not delivered</td>
+                  <td>#ORD-2798</td>
+                  <td>Mar 10, 2026</td>
+                  <td><span class="badge blue">Normal</span></td>
+                  <td><span class="badge blue">In Review</span></td>
+                  <td>
+                    <button
+                      class="btn btn-sm"
+                      style="border: 1px solid var(--border)"
+                    >
+                      View
+                    </button>
+                  </td>
+                </tr>
+                <tr data-status="review">
+                  <td><strong>#DSP-037</strong></td>
+                  <td>Maria Santos</td>
+                  <td>Mang Pedro Farm</td>
+                  <td>Partial shipment</td>
+                  <td>#ORD-2784</td>
+                  <td>Mar 8, 2026</td>
+                  <td><span class="badge blue">Normal</span></td>
+                  <td><span class="badge blue">In Review</span></td>
+                  <td>
+                    <button
+                      class="btn btn-sm"
+                      style="border: 1px solid var(--border)"
+                    >
+                      View
+                    </button>
+                  </td>
+                </tr>
+                <tr data-status="resolved">
+                  <td><strong>#DSP-036</strong></td>
+                  <td>Jay Reyes</td>
+                  <td>FreshFields</td>
+                  <td>Damaged goods</td>
+                  <td>#ORD-2770</td>
+                  <td>Mar 5, 2026</td>
+                  <td><span class="badge gray">Low</span></td>
+                  <td><span class="badge green">Resolved</span></td>
+                  <td>
+                    <button
+                      class="btn btn-sm"
+                      style="border: 1px solid var(--border)"
+                    >
+                      View
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script src="shared.js"></script>
+    <script>
+      initAdmin("disputes");
+      function filterRows(status, btn, tbodyId) {
+        document
+          .querySelectorAll(".filters-row .filter-btn")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        document.querySelectorAll("#" + tbodyId + " tr").forEach((row) => {
+          row.style.display =
+            status === "all" || row.dataset.status === status ? "" : "none";
+        });
+      }
+      function resolveDispute(btn) {
+        const row = btn.closest("tr");
+        row.dataset.status = "resolved";
+        row.querySelectorAll(".badge").forEach((b) => {
+          b.className = "badge green";
+          b.textContent = "Resolved";
+        });
+        btn.closest("td").innerHTML =
+          '<button class="btn btn-sm" style="border:1px solid var(--border)">View</button>';
+      }
+    </script>
+  </body>
+</html>

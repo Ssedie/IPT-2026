@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FarmVille — Listing Moderation</title>
+    <link rel="stylesheet" href="admin.css" />
+  </head>
+  <body>
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon">🌾</div>
+        <div class="logo-text">
+          <span class="wordmark">FARMVILLE</span
+          ><span class="admin-badge">Admin Control Panel</span>
+        </div>
+      </div>
+      <div class="sidebar-user">
+        <div class="user-avatar">🏛️</div>
+        <div class="user-info">
+          <h4 id="admin-name">Antonio Cruz</h4>
+          <p id="admin-email">Municipal Agri Officer</p>
+          <div class="admin-pill">⚡ Super Admin</div>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">Overview</div>
+        <a href="index.html" class="nav-item" data-page="dashboard"
+          ><span class="icon">📊</span> Dashboard</a
+        >
+        <a
+          href="analytics_and_reports.html"
+          class="nav-item"
+          data-page="analytics"
+          ><span class="icon">📈</span> Analytics &amp; Reports</a
+        >
+        <div class="nav-section-label" style="margin-top: 8px">Moderation</div>
+        <a
+          href="farmer_applications.html"
+          class="nav-item"
+          data-page="applications"
+          ><span class="icon">✅</span> Farmer Applications
+          <span class="nav-badge amber">4</span></a
+        >
+        <a href="listings.html" class="nav-item" data-page="listings"
+          ><span class="icon">📋</span> Listing Moderation
+          <span class="nav-badge">2</span></a
+        >
+        <a href="disputes.html" class="nav-item" data-page="disputes"
+          ><span class="icon">⚖️</span> Disputes
+          <span class="nav-badge">3</span></a
+        >
+        <div class="nav-section-label" style="margin-top: 8px">Management</div>
+        <a href="users.html" class="nav-item" data-page="users"
+          ><span class="icon">👥</span> User Management</a
+        >
+        <a href="orders.html" class="nav-item" data-page="orders"
+          ><span class="icon">📦</span> All Orders</a
+        >
+        <a href="transactions.html" class="nav-item" data-page="transactions"
+          ><span class="icon">💰</span> Transactions</a
+        >
+        <a href="price_monitoring.html" class="nav-item" data-page="prices"
+          ><span class="icon">📉</span> Price Monitoring</a
+        >
+        <div class="nav-section-label" style="margin-top: 8px">System</div>
+        <a href="audit_log.html" class="nav-item" data-page="audit"
+          ><span class="icon">📝</span> Audit Log</a
+        >
+        <a href="settings.html" class="nav-item" data-page="settings"
+          ><span class="icon">⚙️</span> Settings</a
+        >
+      </nav>
+      <div class="sidebar-footer">
+        <a href="#" class="nav-item"
+          ><span class="icon">🌐</span> Back to Site</a
+        >
+        <a
+          href="#"
+          class="nav-item"
+          onclick="
+            logout();
+            return false;
+          "
+          ><span class="icon">🚪</span> Logout</a
+        >
+      </div>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <h2>Listing Moderation 📋</h2>
+          <p>Review and approve product listings before they go live</p>
+        </div>
+        <div class="topbar-right">
+          <div class="search-box">
+            <span>🔍</span
+            ><input type="text" placeholder="Search listings..." />
+          </div>
+          <div class="icon-btn">
+            🔔
+            <div class="notif-dot"></div>
+          </div>
+        </div>
+      </header>
+      <div class="content">
+        <div class="stat-row">
+          <div class="stat-box">
+            <div class="label">Flagged / Review</div>
+            <div class="value" style="color: #d94f4f">2</div>
+            <div class="sub">Needs action</div>
+          </div>
+          <div class="stat-box">
+            <div class="label">Active Listings</div>
+            <div class="value">3,471</div>
+            <div class="sub">Live on marketplace</div>
+          </div>
+          <div class="stat-box">
+            <div class="label">Approved (March)</div>
+            <div class="value" style="color: #2d8a3e">184</div>
+            <div class="sub">This month</div>
+          </div>
+          <div class="stat-box">
+            <div class="label">Removed</div>
+            <div class="value" style="color: #d94f4f">7</div>
+            <div class="sub">Policy violations</div>
+          </div>
+        </div>
+
+        <div class="filters-row">
+          <button
+            class="filter-btn active"
+            onclick="filterRows('all', this, 'listings-tbody')"
+          >
+            All
+          </button>
+          <button
+            class="filter-btn"
+            onclick="filterRows('flagged', this, 'listings-tbody')"
+          >
+            🚩 Flagged
+          </button>
+          <button
+            class="filter-btn"
+            onclick="filterRows('active', this, 'listings-tbody')"
+          >
+            ✅ Active
+          </button>
+          <button
+            class="filter-btn"
+            onclick="filterRows('removed', this, 'listings-tbody')"
+          >
+            ❌ Removed
+          </button>
+        </div>
+
+        <div class="card">
+          <div class="data-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Listing ID</th>
+                  <th>Product</th>
+                  <th>Farmer</th>
+                  <th>Price</th>
+                  <th>Stock</th>
+                  <th>Listed</th>
+                  <th>Flag Reason</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="listings-tbody">
+                <tr data-status="flagged">
+                  <td><strong>#LST-4412</strong></td>
+                  <td>🌾 Palay Premium Grade A</td>
+                  <td>Ramon dela Torre</td>
+                  <td>₱35.00/kg</td>
+                  <td>500 kg</td>
+                  <td>Mar 15, 2026</td>
+                  <td>
+                    <span style="font-size: 0.78rem; color: #d94f4f"
+                      >Price 55% above market</span
+                    >
+                  </td>
+                  <td><span class="badge red">Flagged</span></td>
+                  <td>
+                    <button
+                      class="btn btn-primary btn-sm"
+                      onclick="approveListing(this)"
+                    >
+                      Approve
+                    </button>
+                    <button
+                      class="btn btn-danger btn-sm"
+                      onclick="removeListing(this)"
+                      style="margin-left: 4px"
+                    >
+                      Remove
+                    </button>
+                  </td>
+                </tr>
+                <tr data-status="flagged">
+                  <td><strong>#LST-4408</strong></td>
+                  <td>🍅 Organic Kamatis</td>
+                  <td>Nora Castillo</td>
+                  <td>₱95.00/kg</td>
+                  <td>80 kg</td>
+                  <td>Mar 14, 2026</td>
+                  <td>
+                    <span style="font-size: 0.78rem; color: #d94f4f"
+                      >No organic cert on file</span
+                    >
+                  </td>
+                  <td><span class="badge red">Flagged</span></td>
+                  <td>
+                    <button
+                      class="btn btn-primary btn-sm"
+                      onclick="approveListing(this)"
+                    >
+                      Approve
+                    </button>
+                    <button
+                      class="btn btn-danger btn-sm"
+                      onclick="removeListing(this)"
+                      style="margin-left: 4px"
+                    >
+                      Remove
+                    </button>
+                  </td>
+                </tr>
+                <tr data-status="active">
+                  <td><strong>#LST-4400</strong></td>
+                  <td>🌽 Mais Dilaw</td>
+                  <td>Jorge Villanueva</td>
+                  <td>₱18.00/kg</td>
+                  <td>1,200 kg</td>
+                  <td>Mar 11, 2026</td>
+                  <td>—</td>
+                  <td><span class="badge green">Active</span></td>
+                  <td>
+                    <button
+                      class="btn btn-sm"
+                      style="border: 1px solid var(--border)"
+                    >
+                      View
+                    </button>
+                  </td>
+                </tr>
+                <tr data-status="active">
+                  <td><strong>#LST-4395</strong></td>
+                  <td>🧅 Sibuyas Tagalog</td>
+                  <td>Tessie Ramos</td>
+                  <td>₱110.00/kg</td>
+                  <td>300 kg</td>
+                  <td>Mar 9, 2026</td>
+                  <td>—</td>
+                  <td><span class="badge green">Active</span></td>
+                  <td>
+                    <button
+                      class="btn btn-sm"
+                      style="border: 1px solid var(--border)"
+                    >
+                      View
+                    </button>
+                  </td>
+                </tr>
+                <tr data-status="removed">
+                  <td><strong>#LST-4380</strong></td>
+                  <td>🌾 Bigas Malagkit</td>
+                  <td>Pedro Lacson</td>
+                  <td>₱55.00/kg</td>
+                  <td>—</td>
+                  <td>Mar 5, 2026</td>
+                  <td>
+                    <span style="font-size: 0.78rem; color: #6a7a5a"
+                      >Misleading description</span
+                    >
+                  </td>
+                  <td><span class="badge gray">Removed</span></td>
+                  <td>
+                    <button
+                      class="btn btn-sm"
+                      style="border: 1px solid var(--border)"
+                    >
+                      View
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script src="shared.js"></script>
+    <script>
+      initAdmin("listings");
+      function filterRows(status, btn, tbodyId) {
+        document
+          .querySelectorAll(".filters-row .filter-btn")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        document.querySelectorAll("#" + tbodyId + " tr").forEach((row) => {
+          row.style.display =
+            status === "all" || row.dataset.status === status ? "" : "none";
+        });
+      }
+      function approveListing(btn) {
+        const row = btn.closest("tr");
+        row.dataset.status = "active";
+        row.querySelector(".badge").className = "badge green";
+        row.querySelector(".badge").textContent = "Active";
+        row.querySelectorAll("td")[6].textContent = "—";
+        row.querySelector("td:last-child").innerHTML =
+          '<button class="btn btn-sm" style="border:1px solid var(--border)">View</button>';
+      }
+      function removeListing(btn) {
+        const row = btn.closest("tr");
+        row.dataset.status = "removed";
+        row.querySelector(".badge").className = "badge gray";
+        row.querySelector(".badge").textContent = "Removed";
+        row.querySelector("td:last-child").innerHTML =
+          '<button class="btn btn-sm" style="border:1px solid var(--border)">View</button>';
+      }
+    </script>
+  </body>
+</html>

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FarmVille — User Management</title>
+    <title>FarmVille — All Orders</title>
     <link rel="stylesheet" href="admin.css" />
   </head>
   <body>
@@ -90,15 +90,15 @@
     <main class="main">
       <header class="topbar">
         <div class="topbar-left">
-          <h2>User Management 👥</h2>
-          <p>View, edit and manage all registered users</p>
+          <h2>All Orders 📦</h2>
+          <p>Track and manage all marketplace orders</p>
         </div>
         <div class="topbar-right">
           <div class="search-box">
             <span>🔍</span
             ><input
               type="text"
-              placeholder="Search users..."
+              placeholder="Search buyer or order ID..."
               oninput="handleSearch(this.value)"
             />
           </div>
@@ -112,40 +112,43 @@
       <div class="content">
         <div class="stat-row">
           <div class="stat-box">
-            <div class="label">Total Users</div>
+            <div class="label">Total Orders</div>
             <div class="value" id="stat-total">—</div>
           </div>
           <div class="stat-box">
-            <div class="label">Farmers</div>
-            <div class="value" id="stat-farmers">—</div>
+            <div class="label">Pending</div>
+            <div class="value" style="color: #b07d10" id="stat-pending">—</div>
           </div>
           <div class="stat-box">
-            <div class="label">Buyers</div>
-            <div class="value" id="stat-buyers">—</div>
-          </div>
-          <div class="stat-box">
-            <div class="label">Suspended</div>
-            <div class="value" style="color: #d94f4f" id="stat-suspended">
+            <div class="label">Delivered</div>
+            <div class="value" style="color: #2d8a3e" id="stat-delivered">
               —
             </div>
+          </div>
+          <div class="stat-box">
+            <div class="label">Disputed</div>
+            <div class="value" style="color: #d94f4f" id="stat-disputed">—</div>
           </div>
         </div>
 
         <div class="filters-row">
-          <button class="filter-btn active" onclick="loadUsers('all', this)">
-            All Users
+          <button class="filter-btn active" onclick="filterOrders('all', this)">
+            All
           </button>
-          <button class="filter-btn" onclick="loadUsers('farmer', this)">
-            👨‍🌾 Farmers
+          <button class="filter-btn" onclick="filterOrders('pending', this)">
+            ⏳ Pending
           </button>
-          <button class="filter-btn" onclick="loadUsers('buyer', this)">
-            🛒 Buyers
+          <button class="filter-btn" onclick="filterOrders('shipped', this)">
+            🚚 Shipped
           </button>
-          <button class="filter-btn" onclick="loadUsers('admin', this)">
-            ⚡ Admins
+          <button class="filter-btn" onclick="filterOrders('delivered', this)">
+            ✅ Delivered
           </button>
-          <button class="filter-btn" onclick="loadUsers('suspended', this)">
-            🚫 Suspended
+          <button class="filter-btn" onclick="filterOrders('disputed', this)">
+            ⚖️ Disputed
+          </button>
+          <button class="filter-btn" onclick="filterOrders('cancelled', this)">
+            ❌ Cancelled
           </button>
         </div>
 
@@ -154,18 +157,19 @@
             <table class="data-table">
               <thead>
                 <tr>
-                  <th>User</th>
-                  <th>Email</th>
-                  <th>Role</th>
-                  <th>Joined</th>
+                  <th>Order ID</th>
+                  <th>Buyer</th>
+                  <th>Seller</th>
+                  <th>Total</th>
+                  <th>Date</th>
                   <th>Status</th>
                   <th>Actions</th>
                 </tr>
               </thead>
-              <tbody id="users-tbody">
+              <tbody id="orders-tbody">
                 <tr>
                   <td
-                    colspan="6"
+                    colspan="7"
                     style="
                       text-align: center;
                       padding: 32px;
@@ -184,125 +188,84 @@
 
     <script src="shared.js"></script>
     <script>
-      initAdmin("users");
+      initAdmin("orders");
 
-      let currentRole = "all";
-      let searchTimeout = null;
-      let allUsers = [];
+      let allOrders = [];
+      let currentFilter = "all";
 
-      async function loadUsers(role = "all", btn = null) {
-        currentRole = role;
+      async function loadOrders() {
+        showTableLoading("orders-tbody", 7);
+        try {
+          allOrders = await apiFetch("admin-dashboard/api/orders.php");
+          filterOrders("all");
+          updateStats(allOrders);
+        } catch (e) {
+          showTableError("orders-tbody", 7, "❌ Failed to load orders.");
+        }
+      }
 
+      function filterOrders(status, btn = null) {
+        currentFilter = status;
         if (btn) {
           document
             .querySelectorAll(".filters-row .filter-btn")
             .forEach((b) => b.classList.remove("active"));
           btn.classList.add("active");
         }
-
-        showTableLoading("users-tbody", 6);
-
-        try {
-          const params =
-            role === "suspended"
-              ? "?role=all" // filter client-side for suspended
-              : `?role=${role === "all" ? "" : role}`;
-
-          allUsers = await apiFetch("admin-dashboard/api/users.php" + params);
-
-          // Client-side suspended filter
-          const filtered =
-            role === "suspended"
-              ? allUsers.filter((u) => u.status === "suspended")
-              : allUsers;
-
-          renderUsers(filtered);
-          updateStats(allUsers);
-        } catch (e) {
-          showTableError(
-            "users-tbody",
-            6,
-            "❌ Failed to load users. Check your server connection.",
-          );
-        }
+        const filtered =
+          status === "all"
+            ? allOrders
+            : allOrders.filter((o) => o.status === status);
+        renderOrders(filtered);
       }
 
-      function renderUsers(users) {
-        const tbody = document.getElementById("users-tbody");
-        if (!users.length) {
+      function renderOrders(orders) {
+        const tbody = document.getElementById("orders-tbody");
+        if (!orders.length) {
           tbody.innerHTML =
-            '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--text-light)">No users found</td></tr>';
+            '<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text-light)">No orders found</td></tr>';
           return;
         }
-
-        const roleIcon = { farmer: "👨‍🌾", buyer: "🛒", admin: "🏛️" };
-
-        tbody.innerHTML = users
+        tbody.innerHTML = orders
           .map(
-            (u) => `
+            (o) => `
       <tr>
-        <td><span class="user-ava">${roleIcon[u.role] || "👤"}</span><strong>${u.full_name}</strong></td>
-        <td>${u.email}</td>
-        <td>${statusBadge(u.role)}</td>
-        <td>${formatDate(u.created_at)}</td>
-        <td>${statusBadge(u.status || "active")}</td>
-        <td>
-          ${
-            u.status === "suspended"
-              ? `<button class="btn btn-primary btn-sm" onclick="updateUser(${u.id},'reinstate',this)">Reinstate</button>`
-              : u.role !== "admin"
-                ? `<button class="btn btn-danger btn-sm" onclick="updateUser(${u.id},'suspend',this)">Suspend</button>`
-                : '<span style="font-size:0.75rem;color:var(--text-light)">Protected</span>'
-          }
-        </td>
+        <td><strong>#ORD-${o.id}</strong></td>
+        <td>${o.buyer_name}</td>
+        <td>${o.seller_name}</td>
+        <td>${formatCurrency(o.total_amount)}</td>
+        <td>${formatDate(o.created_at)}</td>
+        <td>${statusBadge(o.status)}</td>
+        <td><button class="btn btn-sm" style="border:1px solid var(--border)">View</button></td>
       </tr>
     `,
           )
           .join("");
       }
 
-      function updateStats(users) {
-        document.getElementById("stat-total").textContent = users.length;
-        document.getElementById("stat-farmers").textContent = users.filter(
-          (u) => u.role === "farmer",
+      function updateStats(orders) {
+        document.getElementById("stat-total").textContent = orders.length;
+        document.getElementById("stat-pending").textContent = orders.filter(
+          (o) => o.status === "pending",
         ).length;
-        document.getElementById("stat-buyers").textContent = users.filter(
-          (u) => u.role === "buyer",
+        document.getElementById("stat-delivered").textContent = orders.filter(
+          (o) => o.status === "delivered",
         ).length;
-        document.getElementById("stat-suspended").textContent = users.filter(
-          (u) => u.status === "suspended",
+        document.getElementById("stat-disputed").textContent = orders.filter(
+          (o) => o.status === "disputed",
         ).length;
-      }
-
-      async function updateUser(userId, action, btn) {
-        btn.disabled = true;
-        btn.textContent = "...";
-        try {
-          await apiFetch("admin-dashboard/api/users.php", "POST", {
-            action,
-            user_id: userId,
-          });
-          loadUsers(currentRole);
-        } catch (e) {
-          alert("Action failed: " + e.message);
-          btn.disabled = false;
-          btn.textContent = action === "suspend" ? "Suspend" : "Reinstate";
-        }
       }
 
       function handleSearch(q) {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(() => {
-          const filtered = allUsers.filter(
-            (u) =>
-              u.full_name.toLowerCase().includes(q.toLowerCase()) ||
-              u.email.toLowerCase().includes(q.toLowerCase()),
-          );
-          renderUsers(filtered);
-        }, 300);
+        const filtered = allOrders.filter(
+          (o) =>
+            String(o.id).includes(q) ||
+            o.buyer_name.toLowerCase().includes(q.toLowerCase()),
+        );
+        renderOrders(filtered);
       }
 
-      loadUsers("all");
+      loadOrders();
     </script>
   </body>
 </html>

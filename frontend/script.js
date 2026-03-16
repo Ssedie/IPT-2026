@@ -65,7 +65,7 @@ function switchTab(tab) {
         
         setTimeout(() => {
             if (data.user.role === 'admin') {
-                window.location.href = 'admin_dashboard.html';
+                window.location.href = 'admin-dashboard/index.html';
             } else {
                 window.location.href = 'dashboard.html';
             }

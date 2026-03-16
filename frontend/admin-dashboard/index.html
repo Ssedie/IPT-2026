@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FarmVille — Admin Dashboard</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="admin.css" />
+  </head>
+  <body>
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon">🌾</div>
+        <div class="logo-text">
+          <span class="wordmark">FARMVILLE</span
+          ><span class="admin-badge">Admin Control Panel</span>
+        </div>
+      </div>
+      <div class="sidebar-user">
+        <div class="user-avatar">🏛️</div>
+        <div class="user-info">
+          <h4 id="admin-name">—</h4>
+          <p id="admin-email">—</p>
+          <div class="admin-pill">⚡ Super Admin</div>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">Overview</div>
+        <a href="index.html" class="nav-item" data-page="dashboard"
+          ><span class="icon">📊</span> Dashboard</a
+        >
+        <a
+          href="analytics_and_reports.html"
+          class="nav-item"
+          data-page="analytics"
+          ><span class="icon">📈</span> Analytics &amp; Reports</a
+        >
+        <div class="nav-section-label" style="margin-top: 8px">Moderation</div>
+        <a
+          href="farmer_applications.html"
+          class="nav-item"
+          data-page="applications"
+          ><span class="icon">✅</span> Farmer Applications
+          <span class="nav-badge amber" id="badge-apps">—</span></a
+        >
+        <a href="listings.html" class="nav-item" data-page="listings"
+          ><span class="icon">📋</span> Listing Moderation
+          <span class="nav-badge" id="badge-listings">—</span></a
+        >
+        <a href="disputes.html" class="nav-item" data-page="disputes"
+          ><span class="icon">⚖️</span> Disputes
+          <span class="nav-badge" id="badge-disputes">—</span></a
+        >
+        <div class="nav-section-label" style="margin-top: 8px">Management</div>
+        <a href="users.html" class="nav-item" data-page="users"
+          ><span class="icon">👥</span> User Management</a
+        >
+        <a href="orders.html" class="nav-item" data-page="orders"
+          ><span class="icon">📦</span> All Orders</a
+        >
+        <a href="transactions.html" class="nav-item" data-page="transactions"
+          ><span class="icon">💰</span> Transactions</a
+        >
+        <a href="price_monitoring.html" class="nav-item" data-page="prices"
+          ><span class="icon">📉</span> Price Monitoring</a
+        >
+        <div class="nav-section-label" style="margin-top: 8px">System</div>
+        <a href="audit_log.html" class="nav-item" data-page="audit"
+          ><span class="icon">📝</span> Audit Log</a
+        >
+        <a href="settings.html" class="nav-item" data-page="settings"
+          ><span class="icon">⚙️</span> Settings</a
+        >
+      </nav>
+      <div class="sidebar-footer">
+        <a href="#" class="nav-item"
+          ><span class="icon">🌐</span> Back to Site</a
+        >
+        <a
+          href="#"
+          class="nav-item"
+          onclick="
+            logout();
+            return false;
+          "
+          ><span class="icon">🚪</span> Logout</a
+        >
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <h2>Admin Dashboard 🏛️</h2>
+          <p id="topbar-date">Loading...</p>
+        </div>
+        <div class="topbar-right">
+          <div class="search-box">
+            <span>🔍</span
+            ><input
+              type="text"
+              placeholder="Search users, listings, orders..."
+            />
+          </div>
+          <div class="icon-btn">
+            🔔
+            <div class="notif-dot"></div>
+          </div>
+        </div>
+      </header>
+
+      <div class="content">
+        <!-- KPI CARDS -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-icon" style="background: #e8f5e9; color: #2d5a1b">
+              👨‍🌾
+            </div>
+            <div class="kpi-body">
+              <div class="kpi-label">Registered Farmers</div>
+              <div class="kpi-value" id="kpi-farmers">—</div>
+              <div class="kpi-change neutral" id="kpi-farmers-sub">
+                Loading...
+              </div>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon" style="background: #fff8e1; color: #e8a020">
+              🛒
+            </div>
+            <div class="kpi-body">
+              <div class="kpi-label">Active Listings</div>
+              <div class="kpi-value" id="kpi-listings">—</div>
+              <div class="kpi-change neutral">Live on marketplace</div>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon" style="background: #e3f2fd; color: #3a7bd5">
+              📦
+            </div>
+            <div class="kpi-body">
+              <div class="kpi-label">Orders This Month</div>
+              <div class="kpi-value" id="kpi-orders">—</div>
+              <div class="kpi-change neutral">This month</div>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon" style="background: #fce4ec; color: #d94f4f">
+              ⚖️
+            </div>
+            <div class="kpi-body">
+              <div class="kpi-label">Open Disputes</div>
+              <div class="kpi-value" id="kpi-disputes">—</div>
+              <div class="kpi-change down" id="kpi-disputes-sub">
+                Needs resolution
+              </div>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon" style="background: #ede7f6; color: #7c4fd4">
+              💰
+            </div>
+            <div class="kpi-body">
+              <div class="kpi-label">Revenue (This Month)</div>
+              <div class="kpi-value" id="kpi-revenue">—</div>
+              <div class="kpi-change neutral">Gross sales</div>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon" style="background: #e8f5e9; color: #2d5a1b">
+              🌱
+            </div>
+            <div class="kpi-body">
+              <div class="kpi-label">Pending Applications</div>
+              <div class="kpi-value" id="kpi-pending">—</div>
+              <div class="kpi-change neutral">Awaiting review</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Orders -->
+        <div class="dashboard-grid">
+          <div class="card">
+            <div class="card-header">
+              <h3>Recent Orders</h3>
+              <a href="orders.html" class="card-link">View all →</a>
+            </div>
+            <table class="mini-table">
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Buyer</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="recent-orders-tbody">
+                <tr>
+                  <td
+                    colspan="4"
+                    style="
+                      text-align: center;
+                      padding: 24px;
+                      color: var(--text-light);
+                    "
+                  >
+                    Loading...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pending Applications -->
+          <div class="card">
+            <div class="card-header">
+              <h3>Pending Applications</h3>
+              <a href="farmer_applications.html" class="card-link">Review →</a>
+            </div>
+            <div class="app-list" id="pending-apps-list">
+              <div
+                style="
+                  text-align: center;
+                  padding: 24px;
+                  color: var(--text-light);
+                "
+              >
+                Loading...
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Open Disputes -->
+        <div class="card" style="margin-bottom: 20px">
+          <div class="card-header">
+            <h3>Open Disputes</h3>
+            <a href="disputes.html" class="card-link">Manage →</a>
+          </div>
+          <div class="dispute-list" id="disputes-list">
+            <div
+              style="
+                text-align: center;
+                padding: 24px;
+                color: var(--text-light);
+              "
+            >
+              Loading...
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script src="shared.js"></script>
+    <script>
+      initAdmin("dashboard");
+
+      // Date
+      document.getElementById("topbar-date").textContent =
+        new Date().toLocaleDateString("en-PH", {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        }) + " · Municipality Agricultural Office";
+
+      // ── Load KPIs ──────────────────────────────────────────────────────────
+      async function loadStats() {
+        try {
+          const s = await apiFetch("admin-dashboard/api/stats.php");
+
+          document.getElementById("kpi-farmers").textContent =
+            s.farmers.toLocaleString();
+          document.getElementById("kpi-listings").textContent =
+            s.listings.toLocaleString();
+          document.getElementById("kpi-orders").textContent =
+            s.orders.toLocaleString();
+          document.getElementById("kpi-disputes").textContent =
+            s.disputes.toLocaleString();
+          document.getElementById("kpi-revenue").textContent = formatCurrency(
+            s.revenue,
+          );
+          document.getElementById("kpi-pending").textContent =
+            s.pending_apps.toLocaleString();
+
+          // Update sidebar badges
+          document.getElementById("badge-apps").textContent = s.pending_apps;
+          document.getElementById("badge-disputes").textContent = s.disputes;
+        } catch (e) {
+          console.error("Stats error:", e);
+        }
+      }
+
+      // ── Load Recent Orders ──────────────────────────────────────────────────
+      async function loadRecentOrders() {
+        const tbody = document.getElementById("recent-orders-tbody");
+        try {
+          const orders = await apiFetch("admin-dashboard/api/orders.php");
+          const recent = orders.slice(0, 6);
+
+          if (!recent.length) {
+            tbody.innerHTML =
+              '<tr><td colspan="4" style="text-align:center;padding:24px;color:var(--text-light)">No orders yet</td></tr>';
+            return;
+          }
+
+          tbody.innerHTML = recent
+            .map(
+              (o) => `
+        <tr>
+          <td><strong>#ORD-${o.id}</strong></td>
+          <td>${o.buyer_name}</td>
+          <td>${formatCurrency(o.total_amount)}</td>
+          <td>${statusBadge(o.status)}</td>
+        </tr>
+      `,
+            )
+            .join("");
+        } catch (e) {
+          tbody.innerHTML =
+            '<tr><td colspan="4" style="text-align:center;color:var(--red)">Failed to load orders</td></tr>';
+        }
+      }
+
+      // ── Load Pending Applications ───────────────────────────────────────────
+      async function loadPendingApps() {
+        const list = document.getElementById("pending-apps-list");
+        try {
+          const apps = await apiFetch(
+            "admin-dashboard/api/applications.php?status=pending",
+          );
+          const show = apps.slice(0, 4);
+
+          if (!show.length) {
+            list.innerHTML =
+              '<div style="text-align:center;padding:24px;color:var(--text-light)">No pending applications</div>';
+            return;
+          }
+
+          list.innerHTML = show
+            .map(
+              (a) => `
+        <div class="app-row">
+          <div class="app-avatar">👨‍🌾</div>
+          <div class="app-info">
+            <strong>${a.full_name}</strong>
+            <p>${a.barangay ? a.barangay + ", " : ""}${a.city || ""}</p>
+          </div>
+          <span class="badge yellow">Pending</span>
+        </div>
+      `,
+            )
+            .join("");
+        } catch (e) {
+          list.innerHTML =
+            '<div style="color:var(--red);padding:16px">Failed to load</div>';
+        }
+      }
+
+      // ── Load Open Disputes ──────────────────────────────────────────────────
+      async function loadDisputes() {
+        const list = document.getElementById("disputes-list");
+        try {
+          const all = await apiFetch("admin-dashboard/api/disputes.php");
+          const open = all
+            .filter((d) => ["open", "urgent"].includes(d.status))
+            .slice(0, 4);
+
+          if (!open.length) {
+            list.innerHTML =
+              '<div style="text-align:center;padding:24px;color:var(--text-light)">No open disputes 🎉</div>';
+            return;
+          }
+
+          list.innerHTML = open
+            .map(
+              (d) => `
+        <div class="dispute-row">
+          <div class="dispute-icon">⚖️</div>
+          <div class="dispute-info">
+            <strong>${d.reason}</strong>
+            <p>${d.buyer_name} vs. ${d.seller_name}</p>
+          </div>
+          ${statusBadge(d.priority || d.status)}
+        </div>
+      `,
+            )
+            .join("");
+        } catch (e) {
+          list.innerHTML =
+            '<div style="color:var(--red);padding:16px">Failed to load</div>';
+        }
+      }
+
+      // Run all
+      loadStats();
+      loadRecentOrders();
+      loadPendingApps();
+      loadDisputes();
+    </script>
+  </body>
+</html>

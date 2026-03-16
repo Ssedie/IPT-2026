@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FarmVille — Transactions</title>
+    <link rel="stylesheet" href="admin.css" />
+  </head>
+  <body>
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon">🌾</div>
+        <div class="logo-text">
+          <span class="wordmark">FARMVILLE</span
+          ><span class="admin-badge">Admin Control Panel</span>
+        </div>
+      </div>
+      <div class="sidebar-user">
+        <div class="user-avatar">🏛️</div>
+        <div class="user-info">
+          <h4 id="admin-name">Antonio Cruz</h4>
+          <p id="admin-email">Municipal Agri Officer</p>
+          <div class="admin-pill">⚡ Super Admin</div>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">Overview</div>
+        <a href="index.html" class="nav-item" data-page="dashboard"
+          ><span class="icon">📊</span> Dashboard</a
+        >
+        <a
+          href="analytics_and_reports.html"
+          class="nav-item"
+          data-page="analytics"
+          ><span class="icon">📈</span> Analytics &amp; Reports</a
+        >
+        <div class="nav-section-label" style="margin-top: 8px">Moderation</div>
+        <a
+          href="farmer_applications.html"
+          class="nav-item"
+          data-page="applications"
+          ><span class="icon">✅</span> Farmer Applications
+          <span class="nav-badge amber">4</span></a
+        >
+        <a href="listings.html" class="nav-item" data-page="listings"
+          ><span class="icon">📋</span> Listing Moderation
+          <span class="nav-badge">2</span></a
+        >
+        <a href="disputes.html" class="nav-item" data-page="disputes"
+          ><span class="icon">⚖️</span> Disputes
+          <span class="nav-badge">3</span></a
+        >
+        <div class="nav-section-label" style="margin-top: 8px">Management</div>
+        <a href="users.html" class="nav-item" data-page="users"
+          ><span class="icon">👥</span> User Management</a
+        >
+        <a href="orders.html" class="nav-item" data-page="orders"
+          ><span class="icon">📦</span> All Orders</a
+        >
+        <a href="transactions.html" class="nav-item" data-page="transactions"
+          ><span class="icon">💰</span> Transactions</a
+        >
+        <a href="price_monitoring.html" class="nav-item" data-page="prices"
+          ><span class="icon">📉</span> Price Monitoring</a
+        >
+        <div class="nav-section-label" style="margin-top: 8px">System</div>
+        <a href="audit_log.html" class="nav-item" data-page="audit"
+          ><span class="icon">📝</span> Audit Log</a
+        >
+        <a href="settings.html" class="nav-item" data-page="settings"
+          ><span class="icon">⚙️</span> Settings</a
+        >
+      </nav>
+      <div class="sidebar-footer">
+        <a href="#" class="nav-item"
+          ><span class="icon">🌐</span> Back to Site</a
+        >
+        <a
+          href="#"
+          class="nav-item"
+          onclick="
+            logout();
+            return false;
+          "
+          ><span class="icon">🚪</span> Logout</a
+        >
+      </div>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <h2>Transactions 💰</h2>
+          <p>Financial records and payment history</p>
+        </div>
+        <div class="topbar-right">
+          <div class="search-box">
+            <span>🔍</span
+            ><input
+              type="text"
+              placeholder="Search TXN ID or user..."
+              oninput="searchTxn(this.value)"
+            />
+          </div>
+          <div class="icon-btn">
+            🔔
+            <div class="notif-dot"></div>
+          </div>
+          <button
+            class="btn btn-amber"
+            style="padding: 8px 16px; font-size: 0.82rem"
+          >
+            📥 Export CSV
+          </button>
+        </div>
+      </header>
+      <div class="content">
+        <div class="stat-row">
+          <div class="stat-box">
+            <div class="label">Revenue (March)</div>
+            <div class="value">₱482,310</div>
+            <div class="sub">Gross sales</div>
+          </div>
+          <div class="stat-box">
+            <div class="label">Platform Fee</div>
+            <div class="value">₱14,469</div>
+            <div class="sub">3% commission</div>
+          </div>
+          <div class="stat-box">
+            <div class="label">Refunds</div>
+            <div class="value" style="color: #d94f4f">₱8,240</div>
+            <div class="sub">This month</div>
+          </div>
+          <div class="stat-box">
+            <div class="label">Net Revenue</div>
+            <div class="value" style="color: #2d8a3e">₱6,229</div>
+            <div class="sub">After refunds</div>
+          </div>
+        </div>
+
+        <div class="filters-row">
+          <button class="filter-btn active" onclick="filterTxn('all', this)">
+            All
+          </button>
+          <button class="filter-btn" onclick="filterTxn('payment', this)">
+            💳 Payments
+          </button>
+          <button class="filter-btn" onclick="filterTxn('refund', this)">
+            ↩️ Refunds
+          </button>
+          <button class="filter-btn" onclick="filterTxn('payout', this)">
+            📤 Payouts
+          </button>
+          <button class="filter-btn" onclick="filterTxn('fee', this)">
+            🏦 Fees
+          </button>
+        </div>
+
+        <div class="card">
+          <div class="data-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>TXN ID</th>
+                  <th>User</th>
+                  <th>Type</th>
+                  <th>Method</th>
+                  <th>Amount</th>
+                  <th>Order</th>
+                  <th>Date &amp; Time</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="txn-tbody">
+                <tr data-status="payment">
+                  <td><strong>TXN-88421</strong></td>
+                  <td>Maria Santos</td>
+                  <td><span class="badge blue">Payment</span></td>
+                  <td>GCash</td>
+                  <td style="color: #2d8a3e; font-weight: 700">+₱1,240</td>
+                  <td>#ORD-2841</td>
+                  <td>Mar 16, 2026 · 10:42 AM</td>
+                  <td><span class="badge green">Completed</span></td>
+                </tr>
+                <tr data-status="payment">
+                  <td><strong>TXN-88420</strong></td>
+                  <td>Juan dela Cruz</td>
+                  <td><span class="badge blue">Payment</span></td>
+                  <td>Maya</td>
+                  <td style="color: #2d8a3e; font-weight: 700">+₱890</td>
+                  <td>#ORD-2840</td>
+                  <td>Mar 15, 2026 · 3:18 PM</td>
+                  <td><span class="badge green">Completed</span></td>
+                </tr>
+                <tr data-status="refund">
+                  <td><strong>TXN-88419</strong></td>
+                  <td>Ana Gomez</td>
+                  <td><span class="badge red">Refund</span></td>
+                  <td>GCash</td>
+                  <td style="color: #d94f4f; font-weight: 700">−₱1,780</td>
+                  <td>#ORD-2837</td>
+                  <td>Mar 15, 2026 · 1:05 PM</td>
+                  <td><span class="badge yellow">Pending</span></td>
+                </tr>
+                <tr data-status="payout">
+                  <td><strong>TXN-88418</strong></td>
+                  <td>Mang Teban Farm</td>
+                  <td><span class="badge purple">Payout</span></td>
+                  <td>BDO Transfer</td>
+                  <td style="color: #3a7bd5; font-weight: 700">−₱12,400</td>
+                  <td>Batch #B-112</td>
+                  <td>Mar 15, 2026 · 9:00 AM</td>
+                  <td><span class="badge green">Completed</span></td>
+                </tr>
+                <tr data-status="fee">
+                  <td><strong>TXN-88417</strong></td>
+                  <td>System</td>
+                  <td><span class="badge gray">Fee</span></td>
+                  <td>Auto-deduct</td>
+                  <td style="color: #2d8a3e; font-weight: 700">+₱372</td>
+                  <td>Batch #B-112</td>
+                  <td>Mar 15, 2026 · 9:00 AM</td>
+                  <td><span class="badge green">Completed</span></td>
+                </tr>
+                <tr data-status="payment">
+                  <td><strong>TXN-88416</strong></td>
+                  <td>Liza Reyes</td>
+                  <td><span class="badge blue">Payment</span></td>
+                  <td>GCash</td>
+                  <td style="color: #2d8a3e; font-weight: 700">+₱3,100</td>
+                  <td>#ORD-2839</td>
+                  <td>Mar 15, 2026 · 8:22 AM</td>
+                  <td><span class="badge green">Completed</span></td>
+                </tr>
+                <tr data-status="payment">
+                  <td><strong>TXN-88415</strong></td>
+                  <td>Carlo Bautista</td>
+                  <td><span class="badge blue">Payment</span></td>
+                  <td>COD</td>
+                  <td style="color: #2d8a3e; font-weight: 700">+₱560</td>
+                  <td>#ORD-2838</td>
+                  <td>Mar 14, 2026 · 4:47 PM</td>
+                  <td><span class="badge green">Completed</span></td>
+                </tr>
+                <tr data-status="payout">
+                  <td><strong>TXN-88414</strong></td>
+                  <td>SunFarm Co.</td>
+                  <td><span class="badge purple">Payout</span></td>
+                  <td>UnionBank</td>
+                  <td style="color: #3a7bd5; font-weight: 700">−₱8,900</td>
+                  <td>Batch #B-111</td>
+                  <td>Mar 14, 2026 · 9:00 AM</td>
+                  <td><span class="badge green">Completed</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script src="shared.js"></script>
+    <script>
+      initAdmin("transactions");
+      function filterTxn(status, btn) {
+        document
+          .querySelectorAll(".filters-row .filter-btn")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        document.querySelectorAll("#txn-tbody tr").forEach((row) => {
+          row.style.display =
+            status === "all" || row.dataset.status === status ? "" : "none";
+        });
+      }
+      function searchTxn(q) {
+        document.querySelectorAll("#txn-tbody tr").forEach((row) => {
+          row.style.display = row.textContent
+            .toLowerCase()
+            .includes(q.toLowerCase())
+            ? ""
+            : "none";
+        });
+      }
+    </script>
+  </body>
+</html>

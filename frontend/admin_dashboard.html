@@ -27,29 +27,40 @@
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  body {
+  html, body {
+    height: 100%;
     font-family: 'DM Sans', sans-serif;
     background: #edf2e8;
     color: var(--text-dark);
-    display: flex;
-    min-height: 100vh;
+    overflow: hidden;
   }
 
-  /* ── SIDEBAR ── */
+  body { display: flex; }
+
+  /* ══════════════════════════════
+     SIDEBAR
+  ══════════════════════════════ */
   .sidebar {
     width: var(--sidebar-w);
+    min-width: var(--sidebar-w);
     background: var(--green-dark);
-    min-height: 100vh;
-    position: fixed; left: 0; top: 0; bottom: 0;
-    display: flex; flex-direction: column;
+    height: 100vh;
+    position: fixed;
+    left: 0; top: 0;
+    display: flex;
+    flex-direction: column;
     z-index: 50;
     box-shadow: 4px 0 24px rgba(0,0,0,0.15);
   }
 
+  /* ── Logo ── */
   .sidebar-logo {
-    padding: 28px 24px 24px;
+    flex-shrink: 0;
+    padding: 24px 24px 20px;
     border-bottom: 1px solid rgba(255,255,255,0.08);
-    display: flex; align-items: center; gap: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
   }
 
   .logo-icon {
@@ -58,24 +69,30 @@
     border-radius: 10px;
     display: flex; align-items: center; justify-content: center;
     font-size: 1.2rem;
+    flex-shrink: 0;
+    box-shadow: 0 2px 10px rgba(232,160,32,0.3);
   }
 
-  .sidebar-logo span {
+  .logo-text .wordmark {
     font-family: 'Playfair Display', serif;
-    font-size: 1.3rem; font-weight: 900;
+    font-size: 1.25rem; font-weight: 900;
     color: var(--amber);
-  }
-
-  .admin-badge {
     display: block;
-    font-size: 0.65rem; font-weight: 700;
-    letter-spacing: 0.12em; text-transform: uppercase;
-    color: rgba(232,160,32,0.6);
-    margin-top: 2px;
+    line-height: 1.15;
   }
 
+  .logo-text .admin-badge {
+    display: block;
+    font-size: 0.6rem; font-weight: 700;
+    letter-spacing: 0.13em; text-transform: uppercase;
+    color: rgba(232,160,32,0.55);
+    margin-top: 3px;
+  }
+
+  /* ── User ── */
   .sidebar-user {
-    padding: 20px 24px;
+    flex-shrink: 0;
+    padding: 18px 24px;
     border-bottom: 1px solid rgba(255,255,255,0.08);
     display: flex; align-items: center; gap: 12px;
   }
@@ -91,7 +108,7 @@
   }
 
   .user-info h4 { font-size: 0.875rem; font-weight: 600; color: var(--white); }
-  .user-info p { font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-top: 2px; }
+  .user-info p  { font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-top: 2px; }
 
   .admin-pill {
     display: inline-flex; align-items: center; gap: 4px;
@@ -101,7 +118,37 @@
     padding: 2px 8px; border-radius: 10px; margin-top: 4px;
   }
 
-  .sidebar-nav { flex: 1; padding: 16px 12px; overflow-y: auto; }
+  /* ── Nav — only scrollable zone ── */
+  .sidebar-nav {
+    flex: 1;
+    min-height: 0;           /* critical: lets flex child compress */
+    padding: 14px 12px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+
+    /* Amber-tinted themed scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(232,160,32,0.3) rgba(255,255,255,0.04);
+  }
+
+  .sidebar-nav::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .sidebar-nav::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.03);
+    border-radius: 4px;
+    margin: 8px 0;
+  }
+
+  .sidebar-nav::-webkit-scrollbar-thumb {
+    background: rgba(232,160,32,0.3);
+    border-radius: 4px;
+  }
+
+  .sidebar-nav::-webkit-scrollbar-thumb:hover {
+    background: rgba(232,160,32,0.6);
+  }
 
   .nav-section-label {
     font-size: 0.65rem; font-weight: 700;
@@ -114,37 +161,74 @@
     display: flex; align-items: center; gap: 10px;
     padding: 10px 12px; border-radius: 10px;
     cursor: pointer; transition: all 0.2s;
-    margin-bottom: 2px; color: rgba(255,255,255,0.6);
+    margin-bottom: 2px;
+    color: rgba(255,255,255,0.6);
     font-size: 0.875rem; font-weight: 500;
     text-decoration: none;
   }
 
   .nav-item:hover { background: rgba(255,255,255,0.08); color: var(--white); }
-  .nav-item.active { background: var(--amber); color: var(--green-dark); font-weight: 700; }
+
+  .nav-item.active {
+    background: var(--amber);
+    color: var(--green-dark);
+    font-weight: 700;
+    box-shadow: 0 2px 10px rgba(232,160,32,0.25);
+  }
+
   .nav-item .icon { font-size: 1.1rem; width: 22px; text-align: center; }
 
   .nav-badge {
-    margin-left: auto; background: var(--red); color: white;
+    margin-left: auto;
+    background: var(--red); color: white;
     font-size: 0.65rem; font-weight: 700;
-    padding: 2px 7px; border-radius: 10px; min-width: 20px; text-align: center;
+    padding: 2px 7px; border-radius: 10px;
+    min-width: 20px; text-align: center;
+    animation: blink 2.8s ease-in-out infinite;
   }
 
-  .nav-badge.amber { background: var(--amber); color: var(--green-dark); }
+  .nav-badge.amber {
+    background: var(--amber);
+    color: var(--green-dark);
+    animation: none;
+  }
 
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.5; }
+  }
+
+  /* ── Footer ── */
   .sidebar-footer {
-    padding: 16px 12px;
+    flex-shrink: 0;
+    padding: 14px 12px;
     border-top: 1px solid rgba(255,255,255,0.08);
+    background: rgba(0,0,0,0.1);
   }
 
-  /* ── MAIN ── */
-  .main { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; }
+  .sidebar-footer .nav-item { color: rgba(255,255,255,0.4); }
+  .sidebar-footer .nav-item:hover { color: rgba(255,255,255,0.7); }
 
-  /* ── TOPBAR ── */
+  /* ══════════════════════════════
+     MAIN
+  ══════════════════════════════ */
+  .main {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* ── Topbar ── */
   .topbar {
-    background: var(--white); padding: 16px 32px;
+    flex-shrink: 0;
+    background: var(--white);
+    padding: 16px 32px;
     display: flex; align-items: center; justify-content: space-between;
     border-bottom: 1px solid var(--border);
-    position: sticky; top: 0; z-index: 40;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.05);
   }
 
   .topbar-left h2 {
@@ -183,343 +267,73 @@
     border-radius: 50%; border: 2px solid var(--white);
   }
 
-  /* ── CONTENT ── */
-  .content { padding: 32px; flex: 1; }
-
-  /* ── STAT CARDS ── */
-  .stats-row {
-    display: grid; grid-template-columns: repeat(5, 1fr);
-    gap: 16px; margin-bottom: 28px;
+  /* ── Empty content area ── */
+  .content-empty {
+    flex: 1;
+    background: #edf2e8;
   }
-
-  .stat-card {
-    background: var(--white); border: 1px solid var(--border);
-    border-radius: 16px; padding: 20px 16px;
-    position: relative; overflow: hidden; transition: all 0.2s;
-  }
-
-  .stat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.07); }
-
-  .stat-card::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-  }
-
-  .stat-card.green::before { background: var(--green-light); }
-  .stat-card.amber::before { background: var(--amber); }
-  .stat-card.blue::before { background: var(--blue); }
-  .stat-card.red::before { background: var(--red); }
-  .stat-card.purple::before { background: var(--purple); }
-
-  .s-icon {
-    width: 40px; height: 40px; border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.1rem; margin-bottom: 12px;
-  }
-
-  .stat-card.green .s-icon { background: rgba(74,124,47,0.12); }
-  .stat-card.amber .s-icon { background: rgba(232,160,32,0.12); }
-  .stat-card.blue .s-icon { background: rgba(58,123,213,0.12); }
-  .stat-card.red .s-icon { background: rgba(217,79,79,0.12); }
-  .stat-card.purple .s-icon { background: rgba(124,79,212,0.12); }
-
-  .s-value {
-    font-family: 'Playfair Display', serif; font-size: 1.8rem;
-    font-weight: 700; color: var(--text-dark); line-height: 1; margin-bottom: 4px;
-  }
-
-  .s-label { font-size: 0.75rem; color: var(--text-light); font-weight: 500; }
-
-  .s-change { font-size: 0.72rem; font-weight: 600; margin-top: 6px; }
-  .s-change.up { color: var(--green-light); }
-  .s-change.down { color: var(--red); }
-  .s-change.warn { color: var(--amber); }
-
-  /* ── TABS ── */
-  .tabs {
-    display: flex; gap: 4px; background: var(--white);
-    border: 1px solid var(--border); border-radius: 12px;
-    padding: 4px; margin-bottom: 24px; width: fit-content;
-  }
-
-  .tab {
-    padding: 8px 20px; border-radius: 8px; cursor: pointer;
-    font-size: 0.875rem; font-weight: 600; transition: all 0.2s;
-    color: var(--text-light);
-  }
-
-  .tab.active { background: var(--green-dark); color: var(--white); }
-  .tab:hover:not(.active) { background: var(--green-pale); color: var(--text-dark); }
-
-  /* ── CARD ── */
-  .card {
-    background: var(--white); border: 1px solid var(--border);
-    border-radius: 16px; overflow: hidden; margin-bottom: 24px;
-  }
-
-  .card-header {
-    padding: 20px 24px 16px; border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: space-between;
-  }
-
-  .card-title {
-    font-family: 'Playfair Display', serif; font-size: 1.05rem;
-    font-weight: 700; color: var(--text-dark);
-  }
-
-  .card-subtitle { font-size: 0.75rem; color: var(--text-light); margin-top: 2px; }
-
-  .card-actions { display: flex; gap: 10px; align-items: center; }
-
-  .filter-select {
-    padding: 6px 12px; border: 1px solid var(--border);
-    border-radius: 8px; font-family: 'DM Sans', sans-serif;
-    font-size: 0.8rem; color: var(--text-mid); background: var(--cream);
-    outline: none; cursor: pointer;
-  }
-
-  /* ── TABLE ── */
-  .data-table { width: 100%; border-collapse: collapse; }
-
-  .data-table th {
-    text-align: left; font-size: 0.72rem; font-weight: 700;
-    letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--text-light); padding: 10px 16px;
-    border-bottom: 1px solid var(--border);
-    background: #f8faf4;
-  }
-
-  .data-table td {
-    padding: 14px 16px; font-size: 0.875rem;
-    border-bottom: 1px solid rgba(212,224,196,0.4);
-    vertical-align: middle;
-  }
-
-  .data-table tr:last-child td { border-bottom: none; }
-  .data-table tr:hover td { background: var(--green-pale); }
-
-  .user-cell { display: flex; align-items: center; gap: 10px; }
-
-  .user-thumb {
-    width: 36px; height: 36px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1rem; flex-shrink: 0;
-  }
-
-  .user-thumb.farmer { background: rgba(74,124,47,0.15); }
-  .user-thumb.buyer { background: rgba(58,123,213,0.15); }
-  .user-thumb.admin { background: rgba(124,79,212,0.15); }
-
-  .user-cell h4 { font-size: 0.875rem; font-weight: 600; color: var(--text-dark); }
-  .user-cell p { font-size: 0.75rem; color: var(--text-light); margin-top: 1px; }
-
-  .status-badge {
-    display: inline-block; font-size: 0.7rem; font-weight: 700;
-    padding: 3px 10px; border-radius: 20px;
-  }
-
-  .badge-active { background: rgba(74,124,47,0.12); color: var(--green-light); }
-  .badge-pending { background: rgba(232,160,32,0.12); color: #c07010; }
-  .badge-rejected { background: rgba(217,79,79,0.1); color: var(--red); }
-  .badge-suspended { background: rgba(100,100,100,0.1); color: #666; }
-  .badge-sold { background: rgba(58,123,213,0.12); color: var(--blue); }
-  .badge-flagged { background: rgba(217,79,79,0.1); color: var(--red); }
-  .badge-verified { background: rgba(74,124,47,0.12); color: var(--green-light); }
-  .badge-open { background: rgba(217,79,79,0.1); color: var(--red); }
-  .badge-resolved { background: rgba(74,124,47,0.12); color: var(--green-light); }
-
-  .action-btns { display: flex; gap: 6px; flex-wrap: wrap; }
-
-  .tbl-btn {
-    font-size: 0.72rem; font-weight: 600;
-    padding: 4px 10px; border-radius: 6px;
-    cursor: pointer; border: 1px solid; transition: all 0.2s;
-    white-space: nowrap;
-  }
-
-  .tbl-btn.approve { border-color: rgba(74,124,47,0.3); color: var(--green-light); background: rgba(74,124,47,0.06); }
-  .tbl-btn.approve:hover { background: rgba(74,124,47,0.15); }
-  .tbl-btn.reject { border-color: rgba(217,79,79,0.2); color: var(--red); background: rgba(217,79,79,0.05); }
-  .tbl-btn.reject:hover { background: rgba(217,79,79,0.1); }
-  .tbl-btn.view { border-color: var(--border); color: var(--text-mid); background: var(--cream); }
-  .tbl-btn.view:hover { border-color: var(--blue); color: var(--blue); }
-  .tbl-btn.suspend { border-color: rgba(100,100,100,0.2); color: #888; background: rgba(100,100,100,0.04); }
-  .tbl-btn.suspend:hover { background: rgba(100,100,100,0.1); }
-  .tbl-btn.flag { border-color: rgba(232,160,32,0.3); color: #c07010; background: rgba(232,160,32,0.06); }
-  .tbl-btn.resolve { border-color: rgba(74,124,47,0.3); color: var(--green-light); background: rgba(74,124,47,0.06); }
-
-  /* ── 2 COL ── */
-  .two-col { display: grid; grid-template-columns: 1.4fr 1fr; gap: 24px; margin-bottom: 24px; }
-
-  /* ── CHART BARS ── */
-  .chart-container { padding: 0 0 8px; }
-
-  .chart-bar-group {
-    display: flex; align-items: flex-end; gap: 6px;
-    height: 120px; padding: 8px 0 0;
-  }
-
-  .chart-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-
-  .bar-stack { width: 100%; display: flex; flex-direction: column; justify-content: flex-end; height: 100px; }
-
-  .bar-seg {
-    width: 100%; border-radius: 3px 3px 0 0;
-    transition: opacity 0.2s; cursor: pointer;
-  }
-
-  .bar-seg:hover { opacity: 0.8; }
-
-  .chart-col span { font-size: 0.65rem; color: var(--text-light); }
-
-  .chart-legend {
-    display: flex; gap: 16px; margin-top: 12px;
-    flex-wrap: wrap;
-  }
-
-  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: var(--text-mid); }
-
-  .legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
-
-  /* ── ACTIVITY FEED ── */
-  .activity-item {
-    display: flex; gap: 12px; padding: 12px 0;
-    border-bottom: 1px solid rgba(212,224,196,0.4);
-    align-items: flex-start;
-  }
-
-  .activity-item:last-child { border-bottom: none; }
-
-  .act-icon {
-    width: 36px; height: 36px; border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.95rem; flex-shrink: 0;
-  }
-
-  .act-icon.green { background: rgba(74,124,47,0.12); }
-  .act-icon.amber { background: rgba(232,160,32,0.12); }
-  .act-icon.red { background: rgba(217,79,79,0.1); }
-  .act-icon.blue { background: rgba(58,123,213,0.1); }
-
-  .act-body p { font-size: 0.825rem; color: var(--text-mid); line-height: 1.5; }
-  .act-body span { font-size: 0.7rem; color: var(--text-light); margin-top: 2px; display: block; }
-
-  /* ── PRICE TABLE ── */
-  .price-row {
-    display: flex; align-items: center; gap: 12px;
-    padding: 12px 0; border-bottom: 1px solid rgba(212,224,196,0.4);
-  }
-
-  .price-row:last-child { border-bottom: none; }
-
-  .price-emoji { font-size: 1.2rem; width: 28px; text-align: center; }
-
-  .price-info { flex: 1; }
-  .price-info h4 { font-size: 0.875rem; font-weight: 600; color: var(--text-dark); }
-  .price-info p { font-size: 0.72rem; color: var(--text-light); }
-
-  .price-val { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--text-dark); }
-  .price-change { font-size: 0.72rem; font-weight: 600; text-align: right; }
-  .price-change.up { color: var(--red); }
-  .price-change.dn { color: var(--green-light); }
-
-  /* ── TAB PANELS ── */
-  .tab-panel { display: none; }
-  .tab-panel.active { display: block; }
-
-  /* ── MODAL ── */
-  .modal-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.5);
-    z-index: 200; display: none; align-items: center; justify-content: center;
-  }
-
-  .modal-overlay.open { display: flex; }
-
-  .modal {
-    background: var(--white); border-radius: 20px; padding: 32px;
-    width: 100%; max-width: 500px;
-    box-shadow: 0 24px 64px rgba(0,0,0,0.2);
-    animation: scaleIn 0.2s ease;
-  }
-
-  @keyframes scaleIn {
-    from { transform: scale(0.95); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-  }
-
-  .modal h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 8px; color: var(--text-dark); }
-  .modal p { font-size: 0.875rem; color: var(--text-light); margin-bottom: 20px; }
-
-  .modal-detail { background: var(--cream); border-radius: 12px; padding: 16px; margin-bottom: 20px; }
-  .modal-detail-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem; }
-  .modal-detail-row:last-child { margin-bottom: 0; }
-  .modal-detail-row span:first-child { color: var(--text-light); }
-  .modal-detail-row span:last-child { font-weight: 600; color: var(--text-dark); }
-
-  .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
-  .form-group label { font-size: 0.78rem; font-weight: 600; color: var(--text-mid); text-transform: uppercase; letter-spacing: 0.05em; }
-  .form-group textarea {
-    padding: 10px 14px; border: 1px solid var(--border); border-radius: 10px;
-    font-family: 'DM Sans', sans-serif; font-size: 0.875rem; color: var(--text-dark);
-    background: var(--cream); outline: none;
-  }
-
-  .modal-actions { display: flex; gap: 12px; justify-content: flex-end; }
-  .btn-cancel { padding: 10px 24px; background: var(--cream); border: 1px solid var(--border); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 600; cursor: pointer; color: var(--text-mid); }
-  .btn-approve { padding: 10px 24px; background: var(--green-mid); border: none; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 700; cursor: pointer; color: var(--white); }
-  .btn-reject-confirm { padding: 10px 24px; background: var(--red); border: none; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 700; cursor: pointer; color: var(--white); }
 </style>
 </head>
 <body>
 
-<!-- SIDEBAR -->
+<!-- ════ SIDEBAR ════ -->
 <aside class="sidebar">
+
+  <!-- Logo -->
   <div class="sidebar-logo">
     <div class="logo-icon">🌾</div>
-    <div>
-      <span>FARMVILLE</span>
+    <div class="logo-text">
+      <span class="wordmark">FARMVILLE</span>
       <span class="admin-badge">Admin Control Panel</span>
     </div>
   </div>
 
+  <!-- User -->
   <div class="sidebar-user">
     <div class="user-avatar">🏛️</div>
     <div class="user-info">
-      <h4>Antonio Cruz</h4>
-      <p>Municipal Agri Officer</p>
+      <h4 id="admin-name">Antonio Cruz</h4>
+      <p id="admin-email">Municipal Agri Officer</p>
       <div class="admin-pill">⚡ Super Admin</div>
     </div>
   </div>
 
+  <!-- Scrollable nav -->
   <nav class="sidebar-nav">
+
     <div class="nav-section-label">Overview</div>
-    <a href="#" class="nav-item active" onclick="showTab('overview'); return false;"><span class="icon">📊</span> Home</a>
-    <a href="#" class="nav-item"><span class="icon">📈</span> Analytics & Reports</a>
+    <a href="#" class="nav-item active" onclick="setActive(this);return false;"><span class="icon">📊</span> Dashboard</a>
+    <a href="#" class="nav-item" onclick="setActive(this);return false;"><span class="icon">📈</span> Analytics &amp; Reports</a>
 
     <div class="nav-section-label" style="margin-top:8px">Moderation</div>
-    <a href="#" class="nav-item" onclick="showTab('farmers'); return false;"><span class="icon">✅</span> Farmer Applications <span class="nav-badge amber">4</span></a>
-    <a href="#" class="nav-item" onclick="showTab('listings'); return false;"><span class="icon">📋</span> Listings <span class="nav-badge">2</span></a>
-    <a href="#" class="nav-item"><span class="icon">✅</span> Listing Applications <span class="nav-badge">3</span></a>
-    <a href="#" class="nav-item"><span class="icon">⚖️</span> Disputes <span class="nav-badge">3</span></a>
+    <a href="#" class="nav-item" onclick="setActive(this);return false;"><span class="icon">✅</span> Farmer Applications <span class="nav-badge amber">4</span></a>
+    <a href="#" class="nav-item" onclick="setActive(this);return false;"><span class="icon">📋</span> Listing Moderation <span class="nav-badge">2</span></a>
+    <a href="#" class="nav-item" onclick="setActive(this);return false;"><span class="icon">⚖️</span> Disputes <span class="nav-badge">3</span></a>
 
     <div class="nav-section-label" style="margin-top:8px">Management</div>
-    <a href="#" class="nav-item" onclick="showTab('users'); return false;"><span class="icon">👥</span> User Management</a>
-    <a href="#" class="nav-item" onclick="showTab('orders'); return false;"><span class="icon">📦</span> All Orders</a>
-    <a href="#" class="nav-item"><span class="icon">📉</span> Price Monitoring</a>
+    <a href="#" class="nav-item" onclick="setActive(this);return false;"><span class="icon">👥</span> User Management</a>
+    <a href="#" class="nav-item" onclick="setActive(this);return false;"><span class="icon">📦</span> All Orders</a>
+    <a href="#" class="nav-item" onclick="setActive(this);return false;"><span class="icon">💰</span> Transactions</a>
+    <a href="#" class="nav-item" onclick="setActive(this);return false;"><span class="icon">📉</span> Price Monitoring</a>
 
     <div class="nav-section-label" style="margin-top:8px">System</div>
-    <a href="#" class="nav-item"><span class="icon">📝</span> Audit Log</a>
-    <a href="#" class="nav-item"><span class="icon">⚙️</span> Settings</a>
+    <a href="#" class="nav-item" onclick="setActive(this);return false;"><span class="icon">📝</span> Audit Log</a>
+    <a href="#" class="nav-item" onclick="setActive(this);return false;"><span class="icon">⚙️</span> Settings</a>
+
   </nav>
 
+  <!-- Footer -->
   <div class="sidebar-footer">
     <a href="index.html" class="nav-item"><span class="icon">🌐</span> Back to Site</a>
-    <a href="#" class="nav-item" onclick="logout(); return false;"><span class="icon">🚪</span> Logout</a>
+    <a href="#" class="nav-item" onclick="logout();return false;"><span class="icon">🚪</span> Logout</a>
   </div>
+
 </aside>
 
-
+<!-- ════ MAIN ════ -->
 <main class="main">
-  
+
+  <!-- Topbar / Header -->
   <header class="topbar">
     <div class="topbar-left">
       <h2>Admin Dashboard 🏛️</h2>
@@ -530,600 +344,30 @@
         <span>🔍</span>
         <input type="text" placeholder="Search users, listings, orders...">
       </div>
-      <div class="icon-btn">
-        🔔
-        <div class="notif-dot"></div>
-      </div>
+      <div class="icon-btn">🔔<div class="notif-dot"></div></div>
       <div class="icon-btn">📥</div>
     </div>
   </header>
-<!--
-  <div class="content">
 
-    
-    <div class="stats-row">
-      <div class="stat-card green">
-        <div class="s-icon">👥</div>
-        <div class="s-value">248</div>
-        <div class="s-label">Total Users</div>
-        <div class="s-change up">↑ 12 this week</div>
-      </div>
-      <div class="stat-card amber">
-        <div class="s-icon">🧑‍🌾</div>
-        <div class="s-value">4</div>
-        <div class="s-label">Pending Applications</div>
-        <div class="s-change warn">⚠ Needs review</div>
-      </div>
-      <div class="stat-card blue">
-        <div class="s-icon">📋</div>
-        <div class="s-value">2</div>
-        <div class="s-label">Flagged Listings</div>
-        <div class="s-change warn">⚠ Pending action</div>
-      </div>
-      <div class="stat-card red">
-        <div class="s-icon">⚖️</div>
-        <div class="s-value">3</div>
-        <div class="s-label">Open Disputes</div>
-        <div class="s-change down">↑ 1 new today</div>
-      </div>
-      <div class="stat-card purple">
-        <div class="s-icon">💰</div>
-        <div class="s-value">₱142K</div>
-        <div class="s-label">Total Trade Volume</div>
-        <div class="s-change up">↑ ₱18K this month</div>
-      </div>
-    </div>
+  <!-- Empty content — no main content intentionally -->
+  <div class="content-empty"></div>
 
-    
-    <div class="tabs">
-      <div class="tab active" onclick="switchTab(this,'overview')">Overview</div>
-      <div class="tab" onclick="switchTab(this,'farmers')">Farmer Applications</div>
-      <div class="tab" onclick="switchTab(this,'listings')">Listings</div>
-      <div class="tab" onclick="switchTab(this,'users')">Users</div>
-      <div class="tab" onclick="switchTab(this,'orders')">Orders</div>
-    </div>
-
-    
-    <div class="tab-panel active" id="tab-overview">
-      <div class="two-col">
-
-        
-        <div class="card">
-          <div class="card-header">
-            <div>
-              <div class="card-title">Harvest Volume & Trade</div>
-              <div class="card-subtitle">Monthly activity across the municipality (kg)</div>
-            </div>
-            <select class="filter-select">
-              <option>Last 6 Months</option>
-              <option>This Year</option>
-              <option>Last Year</option>
-            </select>
-          </div>
-          <div class="card-body">
-            <div class="chart-bar-group">
-              <div class="chart-col">
-                <div class="bar-stack">
-                  <div class="bar-seg" style="height:35px;background:var(--green-light)"></div>
-                  <div class="bar-seg" style="height:25px;background:var(--amber);margin-top:2px"></div>
-                </div>
-                <span>Oct</span>
-              </div>
-              <div class="chart-col">
-                <div class="bar-stack">
-                  <div class="bar-seg" style="height:50px;background:var(--green-light)"></div>
-                  <div class="bar-seg" style="height:35px;background:var(--amber);margin-top:2px"></div>
-                </div>
-                <span>Nov</span>
-              </div>
-              <div class="chart-col">
-                <div class="bar-stack">
-                  <div class="bar-seg" style="height:45px;background:var(--green-light)"></div>
-                  <div class="bar-seg" style="height:40px;background:var(--amber);margin-top:2px"></div>
-                </div>
-                <span>Dec</span>
-              </div>
-              <div class="chart-col">
-                <div class="bar-stack">
-                  <div class="bar-seg" style="height:60px;background:var(--green-light)"></div>
-                  <div class="bar-seg" style="height:30px;background:var(--amber);margin-top:2px"></div>
-                </div>
-                <span>Jan</span>
-              </div>
-              <div class="chart-col">
-                <div class="bar-stack">
-                  <div class="bar-seg" style="height:55px;background:var(--green-light)"></div>
-                  <div class="bar-seg" style="height:45px;background:var(--amber);margin-top:2px"></div>
-                </div>
-                <span>Feb</span>
-              </div>
-              <div class="chart-col">
-                <div class="bar-stack">
-                  <div class="bar-seg" style="height:70px;background:var(--green-light)"></div>
-                  <div class="bar-seg" style="height:50px;background:var(--amber);margin-top:2px"></div>
-                </div>
-                <span>Mar</span>
-              </div>
-            </div>
-            <div class="chart-legend">
-              <div class="legend-item"><div class="legend-dot" style="background:var(--green-light)"></div> Listed Volume (kg)</div>
-              <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div> Sold Volume (kg)</div>
-            </div>
-          </div>
-        </div>
-
-        
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">Recent Activity</div>
-            <a href="#" style="font-size:0.8rem;font-weight:600;color:var(--green-light);text-decoration:none">View Audit Log</a>
-          </div>
-          <div class="card-body">
-            <div class="activity-item">
-              <div class="act-icon green">✅</div>
-              <div class="act-body">
-                <p>Farmer <strong>Mongju Lloyd</strong> was approved and verified</p>
-                <span>10 minutes ago · by Admin Cruz</span>
-              </div>
-            </div>
-            <div class="activity-item">
-              <div class="act-icon amber">⚠️</div>
-              <div class="act-body">
-                <p>Listing <strong>"Organic Onions – 200kg"</strong> flagged for price review</p>
-                <span>1 hour ago · auto-flagged</span>
-              </div>
-            </div>
-            <div class="activity-item">
-              <div class="act-icon red">⚖️</div>
-              <div class="act-body">
-                <p>Dispute opened on Order <strong>#ORD-2024-089</strong> by buyer</p>
-                <span>2 hours ago</span>
-              </div>
-            </div>
-            <div class="activity-item">
-              <div class="act-icon blue">📋</div>
-              <div class="act-body">
-                <p>New listing <strong>"Sweet Corn 150kg"</strong> submitted for approval</p>
-                <span>3 hours ago · Mongju Lloyd</span>
-              </div>
-            </div>
-            <div class="activity-item">
-              <div class="act-icon green">👤</div>
-              <div class="act-body">
-                <p>New buyer <strong>Clara Reyes</strong> registered from Barangay Poblacion</p>
-                <span>5 hours ago</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <div class="card-title">Price Monitoring — Current Market Rates</div>
-            <div class="card-subtitle">Live price tracking across all active listings</div>
-          </div>
-          <div class="card-actions">
-            <button style="padding:7px 16px;background:var(--green-mid);color:white;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.8rem;font-weight:600;cursor:pointer">📥 Export Report</button>
-          </div>
-        </div>
-        <div class="card-body">
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0 32px">
-            <div>
-              <div class="price-row">
-                <div class="price-emoji">🌽</div>
-                <div class="price-info"><h4>Corn (White)</h4><p>38 listings active</p></div>
-                <div><div class="price-val">₱28/kg</div><div class="price-change dn">▼ stable</div></div>
-              </div>
-              <div class="price-row">
-                <div class="price-emoji">🍅</div>
-                <div class="price-info"><h4>Tomatoes</h4><p>22 listings active</p></div>
-                <div><div class="price-val">₱45/kg</div><div class="price-change up">▲ +₱3</div></div>
-              </div>
-            </div>
-            <div>
-              <div class="price-row">
-                <div class="price-emoji">🧅</div>
-                <div class="price-info"><h4>Onions</h4><p>15 listings active</p></div>
-                <div><div class="price-val">₱85/kg</div><div class="price-change up">▲ +₱10 ⚠</div></div>
-              </div>
-              <div class="price-row">
-                <div class="price-emoji">🥬</div>
-                <div class="price-info"><h4>Cabbage</h4><p>19 listings active</p></div>
-                <div><div class="price-val">₱22/kg</div><div class="price-change dn">▼ -₱2</div></div>
-              </div>
-            </div>
-            <div>
-              <div class="price-row">
-                <div class="price-emoji">🥕</div>
-                <div class="price-info"><h4>Carrots</h4><p>11 listings active</p></div>
-                <div><div class="price-val">₱38/kg</div><div class="price-change dn">▼ stable</div></div>
-              </div>
-              <div class="price-row">
-                <div class="price-emoji">🍆</div>
-                <div class="price-info"><h4>Eggplant</h4><p>9 listings active</p></div>
-                <div><div class="price-val">₱32/kg</div><div class="price-change dn">▼ -₱1</div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-    <div class="tab-panel" id="tab-farmers">
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <div class="card-title">Farmer Verification Applications</div>
-            <div class="card-subtitle">4 applications awaiting review</div>
-          </div>
-          <div class="card-actions">
-            <select class="filter-select">
-              <option>All Status</option>
-              <option>Pending</option>
-              <option>Verified</option>
-              <option>Rejected</option>
-            </select>
-          </div>
-        </div>
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Applicant</th>
-              <th>Location</th>
-              <th>Farm Size</th>
-              <th>Documents</th>
-              <th>Submitted</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><div class="user-cell"><div class="user-thumb farmer">🧑‍🌾</div><div><h4>Pedro Bautista</h4><p>pedro@email.com</p></div></div></td>
-              <td>Brgy. San Jose</td>
-              <td>4.5 ha</td>
-              <td><span class="status-badge badge-active">3/3 submitted</span></td>
-              <td>Mar 8, 2026</td>
-              <td><span class="status-badge badge-pending">Pending</span></td>
-              <td><div class="action-btns"><button class="tbl-btn view" onclick="openModal()">View Docs</button><button class="tbl-btn approve">Approve</button><button class="tbl-btn reject">Reject</button></div></td>
-            </tr>
-            <tr>
-              <td><div class="user-cell"><div class="user-thumb farmer">🧑‍🌾</div><div><h4>Rosa Dela Cruz</h4><p>rosa@email.com</p></div></div></td>
-              <td>Brgy. Maligaya</td>
-              <td>2.0 ha</td>
-              <td><span class="status-badge badge-pending">2/3 submitted</span></td>
-              <td>Mar 7, 2026</td>
-              <td><span class="status-badge badge-pending">Pending</span></td>
-              <td><div class="action-btns"><button class="tbl-btn view" onclick="openModal()">View Docs</button><button class="tbl-btn approve">Approve</button><button class="tbl-btn reject">Reject</button></div></td>
-            </tr>
-            <tr>
-              <td><div class="user-cell"><div class="user-thumb farmer">🧑‍🌾</div><div><h4>Jose Reyes</h4><p>jose@email.com</p></div></div></td>
-              <td>Brgy. Rizal</td>
-              <td>8.2 ha</td>
-              <td><span class="status-badge badge-active">3/3 submitted</span></td>
-              <td>Mar 6, 2026</td>
-              <td><span class="status-badge badge-pending">Pending</span></td>
-              <td><div class="action-btns"><button class="tbl-btn view" onclick="openModal()">View Docs</button><button class="tbl-btn approve">Approve</button><button class="tbl-btn reject">Reject</button></div></td>
-            </tr>
-            <tr>
-              <td><div class="user-cell"><div class="user-thumb farmer">🧑‍🌾</div><div><h4>Lina Gonzales</h4><p>lina@email.com</p></div></div></td>
-              <td>Brgy. Poblacion</td>
-              <td>1.5 ha</td>
-              <td><span class="status-badge badge-active">3/3 submitted</span></td>
-              <td>Mar 5, 2026</td>
-              <td><span class="status-badge badge-pending">Pending</span></td>
-              <td><div class="action-btns"><button class="tbl-btn view" onclick="openModal()">View Docs</button><button class="tbl-btn approve">Approve</button><button class="tbl-btn reject">Reject</button></div></td>
-            </tr>
-            <tr>
-              <td><div class="user-cell"><div class="user-thumb farmer">🧑‍🌾</div><div><h4>Mongju Lloyd</h4><p>mongju@email.com</p></div></div></td>
-              <td>Brgy. Santa Cruz</td>
-              <td>5.0 ha</td>
-              <td><span class="status-badge badge-active">3/3 submitted</span></td>
-              <td>Mar 1, 2026</td>
-              <td><span class="status-badge badge-verified">✓ Verified</span></td>
-              <td><div class="action-btns"><button class="tbl-btn view">View Docs</button><button class="tbl-btn suspend">Revoke</button></div></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-
-    <div class="tab-panel" id="tab-listings">
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <div class="card-title">Listing Moderation</div>
-            <div class="card-subtitle">Approve, flag, or remove crop listings</div>
-          </div>
-          <div class="card-actions">
-            <select class="filter-select">
-              <option>All Status</option>
-              <option>Pending Approval</option>
-              <option>Active</option>
-              <option>Flagged</option>
-            </select>
-            <select class="filter-select">
-              <option>All Categories</option>
-              <option>Vegetables</option>
-              <option>Grains</option>
-              <option>Fruits</option>
-            </select>
-          </div>
-        </div>
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Crop / Listing</th>
-              <th>Farmer</th>
-              <th>Qty</th>
-              <th>Price</th>
-              <th>Harvest Date</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>🥬 Cabbage (Fresh)</strong><br><span style="font-size:0.75rem;color:var(--text-light)">Vegetables · Brgy. Santa Cruz</span></td>
-              <td>Mongju Lloyd</td>
-              <td>200 kg</td>
-              <td>₱22/kg</td>
-              <td>Mar 7, 2026</td>
-              <td><span class="status-badge badge-pending">Pending</span></td>
-              <td><div class="action-btns"><button class="tbl-btn view">View</button><button class="tbl-btn approve">Approve</button><button class="tbl-btn reject">Reject</button></div></td>
-            </tr>
-            <tr>
-              <td><strong>🧅 Organic Onions</strong><br><span style="font-size:0.75rem;color:var(--text-light)">Vegetables · Brgy. Maligaya</span></td>
-              <td>Rosa Dela Cruz</td>
-              <td>150 kg</td>
-              <td>₱130/kg</td>
-              <td>Mar 5, 2026</td>
-              <td><span class="status-badge badge-flagged">⚑ Flagged</span></td>
-              <td><div class="action-btns"><button class="tbl-btn view">View</button><button class="tbl-btn approve">Approve</button><button class="tbl-btn reject">Remove</button></div></td>
-            </tr>
-            <tr>
-              <td><strong>🌽 White Corn</strong><br><span style="font-size:0.75rem;color:var(--text-light)">Grains · Brgy. Rizal</span></td>
-              <td>Mongju Lloyd</td>
-              <td>150 kg</td>
-              <td>₱28/kg</td>
-              <td>Mar 1, 2026</td>
-              <td><span class="status-badge badge-active">Active</span></td>
-              <td><div class="action-btns"><button class="tbl-btn view">View</button><button class="tbl-btn flag">Flag</button><button class="tbl-btn reject">Remove</button></div></td>
-            </tr>
-            <tr>
-              <td><strong>🍅 Cherry Tomatoes</strong><br><span style="font-size:0.75rem;color:var(--text-light)">Vegetables · Brgy. San Jose</span></td>
-              <td>Pedro Bautista</td>
-              <td>80 kg</td>
-              <td>₱55/kg</td>
-              <td>Feb 28, 2026</td>
-              <td><span class="status-badge badge-active">Active</span></td>
-              <td><div class="action-btns"><button class="tbl-btn view">View</button><button class="tbl-btn flag">Flag</button><button class="tbl-btn reject">Remove</button></div></td>
-            </tr>
-            <tr>
-              <td><strong>🥕 Baby Carrots</strong><br><span style="font-size:0.75rem;color:var(--text-light)">Vegetables · Brgy. Poblacion</span></td>
-              <td>Lina Gonzales</td>
-              <td>60 kg</td>
-              <td>₱40/kg</td>
-              <td>Feb 25, 2026</td>
-              <td><span class="status-badge badge-pending">Pending</span></td>
-              <td><div class="action-btns"><button class="tbl-btn view">View</button><button class="tbl-btn approve">Approve</button><button class="tbl-btn reject">Reject</button></div></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="tab-panel" id="tab-users">
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <div class="card-title">User Management</div>
-            <div class="card-subtitle">Manage all registered accounts</div>
-          </div>
-          <div class="card-actions">
-            <select class="filter-select">
-              <option>All Roles</option>
-              <option>Farmers</option>
-              <option>Buyers</option>
-              <option>Admins</option>
-            </select>
-            <select class="filter-select">
-              <option>All Status</option>
-              <option>Active</option>
-              <option>Suspended</option>
-            </select>
-          </div>
-        </div>
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>User</th>
-              <th>Role</th>
-              <th>Location</th>
-              <th>Registered</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><div class="user-cell"><div class="user-thumb farmer">🧑‍🌾</div><div><h4>Mongju Lloyd</h4><p>mongju@email.com · +63 912 345 6789</p></div></div></td>
-              <td><span class="status-badge badge-active">Farmer</span></td>
-              <td>Brgy. Santa Cruz</td>
-              <td>Jan 15, 2026</td>
-              <td><span class="status-badge badge-verified">Active</span></td>
-              <td><div class="action-btns"><button class="tbl-btn view">View</button><button class="tbl-btn suspend">Suspend</button></div></td>
-            </tr>
-            <tr>
-              <td><div class="user-cell"><div class="user-thumb buyer">🛍️</div><div><h4>Clara Reyes</h4><p>clara@email.com · +63 917 234 5678</p></div></div></td>
-              <td><span class="status-badge badge-sold">Buyer</span></td>
-              <td>Brgy. Poblacion</td>
-              <td>Feb 3, 2026</td>
-              <td><span class="status-badge badge-verified">Active</span></td>
-              <td><div class="action-btns"><button class="tbl-btn view">View</button><button class="tbl-btn suspend">Suspend</button></div></td>
-            </tr>
-            <tr>
-              <td><div class="user-cell"><div class="user-thumb buyer">🛍️</div><div><h4>Juan dela Cruz</h4><p>juan@email.com · +63 908 876 5432</p></div></div></td>
-              <td><span class="status-badge badge-sold">Buyer</span></td>
-              <td>Brgy. Rizal</td>
-              <td>Feb 10, 2026</td>
-              <td><span class="status-badge badge-suspended">Suspended</span></td>
-              <td><div class="action-btns"><button class="tbl-btn view">View</button><button class="tbl-btn approve">Reinstate</button></div></td>
-            </tr>
-            <tr>
-              <td><div class="user-cell"><div class="user-thumb farmer">🧑‍🌾</div><div><h4>Pedro Bautista</h4><p>pedro@email.com · +63 921 456 7890</p></div></div></td>
-              <td><span class="status-badge badge-active">Farmer</span></td>
-              <td>Brgy. San Jose</td>
-              <td>Mar 8, 2026</td>
-              <td><span class="status-badge badge-pending">Pending Verif.</span></td>
-              <td><div class="action-btns"><button class="tbl-btn view">View</button><button class="tbl-btn suspend">Suspend</button></div></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-
-    <div class="tab-panel" id="tab-orders">
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <div class="card-title">All Orders & Transactions</div>
-            <div class="card-subtitle">Platform-wide order monitoring</div>
-          </div>
-          <div class="card-actions">
-            <select class="filter-select">
-              <option>All Status</option>
-              <option>Pending</option>
-              <option>Confirmed</option>
-              <option>Completed</option>
-              <option>Disputed</option>
-            </select>
-            <button style="padding:7px 16px;background:var(--green-mid);color:white;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.8rem;font-weight:600;cursor:pointer">📥 Export</button>
-          </div>
-        </div>
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Order #</th>
-              <th>Buyer</th>
-              <th>Farmer</th>
-              <th>Crop</th>
-              <th>Amount</th>
-              <th>Payment</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style="font-weight:600">#ORD-2026-101</td>
-              <td>Clara Reyes</td>
-              <td>Mongju Lloyd</td>
-              <td>Tomatoes 30kg</td>
-              <td style="font-weight:700;color:var(--green-mid)">₱1,350</td>
-              <td>Cash Meetup</td>
-              <td><span class="status-badge badge-pending">Pending</span></td>
-              <td><div class="action-btns"><button class="tbl-btn view">View</button></div></td>
-            </tr>
-            <tr>
-              <td style="font-weight:600">#ORD-2026-100</td>
-              <td>Juan dela Cruz</td>
-              <td>Mongju Lloyd</td>
-              <td>Corn 50kg</td>
-              <td style="font-weight:700;color:var(--green-mid)">₱1,400</td>
-              <td>GCash</td>
-              <td><span class="status-badge badge-active">Confirmed</span></td>
-              <td><div class="action-btns"><button class="tbl-btn view">View</button></div></td>
-            </tr>
-            <tr>
-              <td style="font-weight:600">#ORD-2026-089</td>
-              <td>Maria Santos</td>
-              <td>Rosa Dela Cruz</td>
-              <td>Cabbage 40kg</td>
-              <td style="font-weight:700;color:var(--green-mid)">₱880</td>
-              <td>Bank Transfer</td>
-              <td><span class="status-badge badge-open">⚖ Disputed</span></td>
-              <td><div class="action-btns"><button class="tbl-btn view">View</button><button class="tbl-btn resolve">Resolve</button></div></td>
-            </tr>
-            <tr>
-              <td style="font-weight:600">#ORD-2026-085</td>
-              <td>Clara Reyes</td>
-              <td>Jose Reyes</td>
-              <td>Onions 20kg</td>
-              <td style="font-weight:700;color:var(--green-mid)">₱1,700</td>
-              <td>GCash</td>
-              <td><span class="status-badge badge-resolved">Completed</span></td>
-              <td><div class="action-btns"><button class="tbl-btn view">View</button></div></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-  </div>
-  -->
 </main>
 
-<!-- VIEW DOCS MODAL -->
-<div class="modal-overlay" id="modal">
-  <div class="modal">
-    <h3>📄 Farmer Application Review</h3>
-    <p>Review submitted documents before approving or rejecting this farmer.</p>
-    <div class="modal-detail">
-      <div class="modal-detail-row"><span>Applicant</span><span>Pedro Bautista</span></div>
-      <div class="modal-detail-row"><span>Location</span><span>Brgy. San Jose, Municipality</span></div>
-      <div class="modal-detail-row"><span>Farm Size</span><span>4.5 hectares</span></div>
-      <div class="modal-detail-row"><span>Submitted</span><span>March 8, 2026</span></div>
-      <div class="modal-detail-row"><span>Documents</span><span style="color:var(--green-light)">✓ Land Title · ✓ Barangay Cert. · ✓ Gov. ID</span></div>
-    </div>
-    <div class="form-group">
-      <label>Remarks (optional)</label>
-      <textarea rows="3" placeholder="Add notes for this farmer or reason for rejection..."></textarea>
-    </div>
-    <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeModal()">Close</button>
-      <button class="btn-reject-confirm" onclick="closeModal()">Reject</button>
-      <button class="btn-approve" onclick="closeModal()">✓ Approve</button>
-    </div>
-  </div>
-</div>
-
 <script>
-  function switchTab(el, name) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  function setActive(el) {
+    document.querySelectorAll('.sidebar-nav .nav-item').forEach(i => i.classList.remove('active'));
     el.classList.add('active');
-    document.getElementById('tab-' + name).classList.add('active');
   }
 
-  function openModal() { document.getElementById('modal').classList.add('open'); }
-  function closeModal() { document.getElementById('modal').classList.remove('open'); }
-  document.getElementById('modal').addEventListener('click', function(e) {
-    if (e.target === this) closeModal();
-  });
   const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
-
-  if (!currentUser) {
-    window.location.href = 'login.html';
-  }
-
-  if (currentUser && currentUser.role !== 'admin') {
-    window.location.href = 'admin_dashboard.html';
-  }
-
-  // ── POPULATE REAL USER INFO ──
+  if (!currentUser) window.location.href = 'login.html';
+  if (currentUser && currentUser.role !== 'admin') window.location.href = 'admin_dashboard.html';
   if (currentUser) {
-    document.querySelector('.user-info h4').textContent = currentUser.full_name;
-    document.querySelector('.user-info p').textContent  = currentUser.email;
+    document.getElementById('admin-name').textContent = currentUser.full_name;
+    document.getElementById('admin-email').textContent = currentUser.email;
   }
 
-  // ── LOGOUT ──
   function logout() {
     localStorage.removeItem('user');
     window.location.href = 'login.html';

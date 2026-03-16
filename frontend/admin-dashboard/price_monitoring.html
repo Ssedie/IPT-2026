@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FarmVille — Price Monitoring</title>
+    <link rel="stylesheet" href="admin.css" />
+  </head>
+  <body>
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon">🌾</div>
+        <div class="logo-text">
+          <span class="wordmark">FARMVILLE</span
+          ><span class="admin-badge">Admin Control Panel</span>
+        </div>
+      </div>
+      <div class="sidebar-user">
+        <div class="user-avatar">🏛️</div>
+        <div class="user-info">
+          <h4 id="admin-name">Antonio Cruz</h4>
+          <p id="admin-email">Municipal Agri Officer</p>
+          <div class="admin-pill">⚡ Super Admin</div>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">Overview</div>
+        <a href="index.html" class="nav-item" data-page="dashboard"
+          ><span class="icon">📊</span> Dashboard</a
+        >
+        <a
+          href="analytics_and_reports.html"
+          class="nav-item"
+          data-page="analytics"
+          ><span class="icon">📈</span> Analytics &amp; Reports</a
+        >
+        <div class="nav-section-label" style="margin-top: 8px">Moderation</div>
+        <a
+          href="farmer_applications.html"
+          class="nav-item"
+          data-page="applications"
+          ><span class="icon">✅</span> Farmer Applications
+          <span class="nav-badge amber">4</span></a
+        >
+        <a href="listings.html" class="nav-item" data-page="listings"
+          ><span class="icon">📋</span> Listing Moderation
+          <span class="nav-badge">2</span></a
+        >
+        <a href="disputes.html" class="nav-item" data-page="disputes"
+          ><span class="icon">⚖️</span> Disputes
+          <span class="nav-badge">3</span></a
+        >
+        <div class="nav-section-label" style="margin-top: 8px">Management</div>
+        <a href="users.html" class="nav-item" data-page="users"
+          ><span class="icon">👥</span> User Management</a
+        >
+        <a href="orders.html" class="nav-item" data-page="orders"
+          ><span class="icon">📦</span> All Orders</a
+        >
+        <a href="transactions.html" class="nav-item" data-page="transactions"
+          ><span class="icon">💰</span> Transactions</a
+        >
+        <a href="price_monitoring.html" class="nav-item" data-page="prices"
+          ><span class="icon">📉</span> Price Monitoring</a
+        >
+        <div class="nav-section-label" style="margin-top: 8px">System</div>
+        <a href="audit_log.html" class="nav-item" data-page="audit"
+          ><span class="icon">📝</span> Audit Log</a
+        >
+        <a href="settings.html" class="nav-item" data-page="settings"
+          ><span class="icon">⚙️</span> Settings</a
+        >
+      </nav>
+      <div class="sidebar-footer">
+        <a href="#" class="nav-item"
+          ><span class="icon">🌐</span> Back to Site</a
+        >
+        <a
+          href="#"
+          class="nav-item"
+          onclick="
+            logout();
+            return false;
+          "
+          ><span class="icon">🚪</span> Logout</a
+        >
+      </div>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <h2>Price Monitoring 📉</h2>
+          <p>Current market prices and trends for La Union produce</p>
+        </div>
+        <div class="topbar-right">
+          <div class="icon-btn">
+            🔔
+            <div class="notif-dot"></div>
+          </div>
+          <button class="btn btn-primary" style="font-size: 0.82rem">
+            + Set Price Alert
+          </button>
+        </div>
+      </header>
+      <div class="content">
+        <div
+          style="
+            background: #fff8e1;
+            border: 1px solid #f5c842;
+            border-radius: 12px;
+            padding: 12px 18px;
+            margin-bottom: 20px;
+            font-size: 0.84rem;
+            color: #7a5a00;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+          "
+        >
+          ⚠️ <strong>3 crops</strong> have price changes greater than 10% this
+          week. Review and consider intervention.
+        </div>
+
+        <div class="price-grid">
+          <div class="price-card">
+            <div class="price-crop">🌾</div>
+            <div class="price-name">Palay (Rice)</div>
+            <div class="price-current">
+              ₱22.50<span class="price-unit"> /kg</span>
+            </div>
+            <div class="price-change up" style="color: #2d8a3e">
+              ↑ +₱1.50 (+7.1%)
+            </div>
+          </div>
+          <div class="price-card">
+            <div class="price-crop">🌽</div>
+            <div class="price-name">Mais (Corn)</div>
+            <div class="price-current">
+              ₱18.00<span class="price-unit"> /kg</span>
+            </div>
+            <div class="price-change up" style="color: #2d8a3e">
+              ↑ +₱2.00 (+12.5%)
+            </div>
+          </div>
+          <div class="price-card">
+            <div class="price-crop">🧅</div>
+            <div class="price-name">Sibuyas</div>
+            <div class="price-current">
+              ₱110.00<span class="price-unit"> /kg</span>
+            </div>
+            <div class="price-change down" style="color: #d94f4f">
+              ↓ −₱15.00 (−12.0%)
+            </div>
+          </div>
+          <div class="price-card">
+            <div class="price-crop">🍅</div>
+            <div class="price-name">Kamatis</div>
+            <div class="price-current">
+              ₱45.00<span class="price-unit"> /kg</span>
+            </div>
+            <div class="price-change up" style="color: #2d8a3e">
+              ↑ +₱5.00 (+12.5%)
+            </div>
+          </div>
+          <div class="price-card">
+            <div class="price-crop">🥦</div>
+            <div class="price-name">Sitaw</div>
+            <div class="price-current">
+              ₱60.00<span class="price-unit"> /kg</span>
+            </div>
+            <div class="price-change neutral" style="color: #6a7a5a">
+              → No change
+            </div>
+          </div>
+          <div class="price-card">
+            <div class="price-crop">🍆</div>
+            <div class="price-name">Talong</div>
+            <div class="price-current">
+              ₱38.00<span class="price-unit"> /kg</span>
+            </div>
+            <div class="price-change up" style="color: #2d8a3e">
+              ↑ +₱3.00 (+8.6%)
+            </div>
+          </div>
+          <div class="price-card">
+            <div class="price-crop">🥬</div>
+            <div class="price-name">Pechay</div>
+            <div class="price-current">
+              ₱28.00<span class="price-unit"> /kg</span>
+            </div>
+            <div class="price-change down" style="color: #d94f4f">
+              ↓ −₱4.00 (−12.5%)
+            </div>
+          </div>
+          <div class="price-card">
+            <div class="price-crop">🎃</div>
+            <div class="price-name">Kalabasa</div>
+            <div class="price-current">
+              ₱25.00<span class="price-unit"> /kg</span>
+            </div>
+            <div class="price-change neutral" style="color: #6a7a5a">
+              → No change
+            </div>
+          </div>
+          <div class="price-card">
+            <div class="price-crop">🌿</div>
+            <div class="price-name">Ampalaya</div>
+            <div class="price-current">
+              ₱55.00<span class="price-unit"> /kg</span>
+            </div>
+            <div class="price-change up" style="color: #2d8a3e">
+              ↑ +₱5.00 (+10%)
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3>Full Price Table</h3>
+            <span class="card-sub">Updated: Mar 16, 2026 · 8:00 AM</span>
+          </div>
+          <div class="data-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Crop</th>
+                  <th>Current Price</th>
+                  <th>Last Week</th>
+                  <th>Change</th>
+                  <th>SRP / DA Reference</th>
+                  <th>Variance</th>
+                  <th>Alert</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>🌾 Palay</td>
+                  <td>₱22.50/kg</td>
+                  <td>₱21.00</td>
+                  <td style="color: #2d8a3e">+7.1%</td>
+                  <td>₱20.00</td>
+                  <td style="color: #d94f4f">+12.5% above SRP</td>
+                  <td><span class="badge yellow">Monitor</span></td>
+                </tr>
+                <tr>
+                  <td>🌽 Mais</td>
+                  <td>₱18.00/kg</td>
+                  <td>₱16.00</td>
+                  <td style="color: #2d8a3e">+12.5%</td>
+                  <td>₱17.00</td>
+                  <td style="color: #d94f4f">+5.9% above SRP</td>
+                  <td><span class="badge yellow">Monitor</span></td>
+                </tr>
+                <tr>
+                  <td>🧅 Sibuyas</td>
+                  <td>₱110.00/kg</td>
+                  <td>₱125.00</td>
+                  <td style="color: #d94f4f">−12.0%</td>
+                  <td>₱120.00</td>
+                  <td style="color: #2d8a3e">−8.3% below SRP</td>
+                  <td><span class="badge green">OK</span></td>
+                </tr>
+                <tr>
+                  <td>🍅 Kamatis</td>
+                  <td>₱45.00/kg</td>
+                  <td>₱40.00</td>
+                  <td style="color: #2d8a3e">+12.5%</td>
+                  <td>₱42.00</td>
+                  <td style="color: #d94f4f">+7.1% above SRP</td>
+                  <td><span class="badge red">Alert</span></td>
+                </tr>
+                <tr>
+                  <td>🥦 Sitaw</td>
+                  <td>₱60.00/kg</td>
+                  <td>₱60.00</td>
+                  <td style="color: #6a7a5a">0%</td>
+                  <td>₱58.00</td>
+                  <td style="color: #d94f4f">+3.4% above SRP</td>
+                  <td><span class="badge green">OK</span></td>
+                </tr>
+                <tr>
+                  <td>🍆 Talong</td>
+                  <td>₱38.00/kg</td>
+                  <td>₱35.00</td>
+                  <td style="color: #2d8a3e">+8.6%</td>
+                  <td>₱36.00</td>
+                  <td style="color: #d94f4f">+5.6% above SRP</td>
+                  <td><span class="badge yellow">Monitor</span></td>
+                </tr>
+                <tr>
+                  <td>🥬 Pechay</td>
+                  <td>₱28.00/kg</td>
+                  <td>₱32.00</td>
+                  <td style="color: #d94f4f">−12.5%</td>
+                  <td>₱30.00</td>
+                  <td style="color: #2d8a3e">−6.7% below SRP</td>
+                  <td><span class="badge green">OK</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script src="shared.js"></script>
+    <script>
+      initAdmin("prices");
+    </script>
+  </body>
+</html>

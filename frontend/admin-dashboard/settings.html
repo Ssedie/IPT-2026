@@ -1,0 +1,566 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FarmVille — Settings</title>
+    <link rel="stylesheet" href="admin.css" />
+    <style>
+      .settings-grid {
+        display: grid;
+        grid-template-columns: 220px 1fr;
+        gap: 24px;
+      }
+      .settings-tabs {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .settings-tab {
+        padding: 10px 14px;
+        border-radius: 10px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        color: var(--text-mid);
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
+        font-family: "DM Sans", sans-serif;
+      }
+      .settings-tab:hover {
+        background: var(--green-pale);
+      }
+      .settings-tab.active {
+        background: var(--green-dark);
+        color: white;
+        font-weight: 700;
+      }
+      .settings-panel {
+        display: none;
+      }
+      .settings-panel.active {
+        display: block;
+      }
+      .toggle-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .toggle-row:last-child {
+        border-bottom: none;
+      }
+      .toggle-label strong {
+        font-size: 0.875rem;
+        color: var(--text-dark);
+        display: block;
+      }
+      .toggle-label span {
+        font-size: 0.76rem;
+        color: var(--text-light);
+      }
+      .toggle {
+        width: 44px;
+        height: 24px;
+        background: var(--border);
+        border-radius: 12px;
+        position: relative;
+        cursor: pointer;
+        transition: background 0.2s;
+        flex-shrink: 0;
+      }
+      .toggle.on {
+        background: var(--green-mid);
+      }
+      .toggle::after {
+        content: "";
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 18px;
+        height: 18px;
+        background: white;
+        border-radius: 50%;
+        transition: left 0.2s;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+      }
+      .toggle.on::after {
+        left: 23px;
+      }
+      .save-bar {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 20px;
+        padding-top: 16px;
+        border-top: 1px solid var(--border);
+      }
+    </style>
+  </head>
+  <body>
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon">🌾</div>
+        <div class="logo-text">
+          <span class="wordmark">FARMVILLE</span
+          ><span class="admin-badge">Admin Control Panel</span>
+        </div>
+      </div>
+      <div class="sidebar-user">
+        <div class="user-avatar">🏛️</div>
+        <div class="user-info">
+          <h4 id="admin-name">Antonio Cruz</h4>
+          <p id="admin-email">Municipal Agri Officer</p>
+          <div class="admin-pill">⚡ Super Admin</div>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">Overview</div>
+        <a href="index.html" class="nav-item" data-page="dashboard"
+          ><span class="icon">📊</span> Dashboard</a
+        >
+        <a
+          href="analytics_and_reports.html"
+          class="nav-item"
+          data-page="analytics"
+          ><span class="icon">📈</span> Analytics &amp; Reports</a
+        >
+        <div class="nav-section-label" style="margin-top: 8px">Moderation</div>
+        <a
+          href="farmer_applications.html"
+          class="nav-item"
+          data-page="applications"
+          ><span class="icon">✅</span> Farmer Applications
+          <span class="nav-badge amber">4</span></a
+        >
+        <a href="listings.html" class="nav-item" data-page="listings"
+          ><span class="icon">📋</span> Listing Moderation
+          <span class="nav-badge">2</span></a
+        >
+        <a href="disputes.html" class="nav-item" data-page="disputes"
+          ><span class="icon">⚖️</span> Disputes
+          <span class="nav-badge">3</span></a
+        >
+        <div class="nav-section-label" style="margin-top: 8px">Management</div>
+        <a href="users.html" class="nav-item" data-page="users"
+          ><span class="icon">👥</span> User Management</a
+        >
+        <a href="orders.html" class="nav-item" data-page="orders"
+          ><span class="icon">📦</span> All Orders</a
+        >
+        <a href="transactions.html" class="nav-item" data-page="transactions"
+          ><span class="icon">💰</span> Transactions</a
+        >
+        <a href="price_monitoring.html" class="nav-item" data-page="prices"
+          ><span class="icon">📉</span> Price Monitoring</a
+        >
+        <div class="nav-section-label" style="margin-top: 8px">System</div>
+        <a href="audit_log.html" class="nav-item" data-page="audit"
+          ><span class="icon">📝</span> Audit Log</a
+        >
+        <a href="settings.html" class="nav-item" data-page="settings"
+          ><span class="icon">⚙️</span> Settings</a
+        >
+      </nav>
+      <div class="sidebar-footer">
+        <a href="#" class="nav-item"
+          ><span class="icon">🌐</span> Back to Site</a
+        >
+        <a
+          href="#"
+          class="nav-item"
+          onclick="
+            logout();
+            return false;
+          "
+          ><span class="icon">🚪</span> Logout</a
+        >
+      </div>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <h2>Settings ⚙️</h2>
+          <p>Platform configuration and preferences</p>
+        </div>
+        <div class="topbar-right">
+          <div class="icon-btn">
+            🔔
+            <div class="notif-dot"></div>
+          </div>
+        </div>
+      </header>
+      <div class="content">
+        <div class="settings-grid">
+          <!-- Tab Nav -->
+          <div>
+            <div class="settings-tabs">
+              <button
+                class="settings-tab active"
+                onclick="switchTab('general', this)"
+              >
+                🏪 General
+              </button>
+              <button
+                class="settings-tab"
+                onclick="switchTab('payments', this)"
+              >
+                💳 Payments
+              </button>
+              <button
+                class="settings-tab"
+                onclick="switchTab('notifications', this)"
+              >
+                🔔 Notifications
+              </button>
+              <button
+                class="settings-tab"
+                onclick="switchTab('moderation', this)"
+              >
+                🛡️ Moderation
+              </button>
+              <button class="settings-tab" onclick="switchTab('admins', this)">
+                👥 Admin Accounts
+              </button>
+            </div>
+          </div>
+
+          <!-- Panels -->
+          <div>
+            <!-- General -->
+            <div class="card settings-panel active" id="tab-general">
+              <div class="card-header"><h3>General Settings</h3></div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label">Platform Name</label
+                  ><input class="form-input" value="FarmVille Marketplace" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Municipality</label
+                  ><input class="form-input" value="La Union, Philippines" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Support Email</label
+                  ><input class="form-input" value="support@farmville.gov.ph" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Contact Number</label
+                  ><input class="form-input" value="+63 72 123 4567" />
+                </div>
+                <div class="form-group full">
+                  <label class="form-label">Platform Announcement</label
+                  ><input
+                    class="form-input"
+                    value="Welcome to FarmVille — your local agricultural marketplace!"
+                  />
+                </div>
+              </div>
+              <div class="save-bar">
+                <button class="btn" style="border: 1px solid var(--border)">
+                  Reset</button
+                ><button class="btn btn-primary">Save Changes</button>
+              </div>
+            </div>
+
+            <!-- Payments -->
+            <div class="card settings-panel" id="tab-payments">
+              <div class="card-header"><h3>Payment Settings</h3></div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label">Platform Commission (%)</label
+                  ><input class="form-input" type="number" value="3" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Payout Schedule</label>
+                  <select class="form-input">
+                    <option>Weekly (Every Friday)</option>
+                    <option>Bi-weekly</option>
+                    <option>Monthly</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Min. Payout Amount (₱)</label
+                  ><input class="form-input" type="number" value="500" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Refund Window (days)</label
+                  ><input class="form-input" type="number" value="7" />
+                </div>
+              </div>
+              <div style="margin-top: 16px">
+                <div class="toggle-row">
+                  <div class="toggle-label">
+                    <strong>GCash Payments</strong
+                    ><span>Allow buyers to pay via GCash</span>
+                  </div>
+                  <div
+                    class="toggle on"
+                    onclick="this.classList.toggle('on')"
+                  ></div>
+                </div>
+                <div class="toggle-row">
+                  <div class="toggle-label">
+                    <strong>Maya Payments</strong
+                    ><span>Allow buyers to pay via Maya</span>
+                  </div>
+                  <div
+                    class="toggle on"
+                    onclick="this.classList.toggle('on')"
+                  ></div>
+                </div>
+                <div class="toggle-row">
+                  <div class="toggle-label">
+                    <strong>Cash on Delivery</strong
+                    ><span>Allow COD for local orders</span>
+                  </div>
+                  <div
+                    class="toggle on"
+                    onclick="this.classList.toggle('on')"
+                  ></div>
+                </div>
+                <div class="toggle-row">
+                  <div class="toggle-label">
+                    <strong>Bank Transfer</strong
+                    ><span>Direct bank transfers for large orders</span>
+                  </div>
+                  <div
+                    class="toggle"
+                    onclick="this.classList.toggle('on')"
+                  ></div>
+                </div>
+              </div>
+              <div class="save-bar">
+                <button class="btn" style="border: 1px solid var(--border)">
+                  Reset</button
+                ><button class="btn btn-primary">Save Changes</button>
+              </div>
+            </div>
+
+            <!-- Notifications -->
+            <div class="card settings-panel" id="tab-notifications">
+              <div class="card-header"><h3>Notification Settings</h3></div>
+              <div class="toggle-row">
+                <div class="toggle-label">
+                  <strong>New Farmer Application</strong
+                  ><span>Alert when a new farmer applies</span>
+                </div>
+                <div
+                  class="toggle on"
+                  onclick="this.classList.toggle('on')"
+                ></div>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-label">
+                  <strong>New Dispute Filed</strong
+                  ><span>Alert when a dispute is opened</span>
+                </div>
+                <div
+                  class="toggle on"
+                  onclick="this.classList.toggle('on')"
+                ></div>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-label">
+                  <strong>Listing Flagged</strong
+                  ><span>Alert when a listing is auto-flagged</span>
+                </div>
+                <div
+                  class="toggle on"
+                  onclick="this.classList.toggle('on')"
+                ></div>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-label">
+                  <strong>Large Transaction</strong
+                  ><span>Alert for transactions above ₱10,000</span>
+                </div>
+                <div class="toggle" onclick="this.classList.toggle('on')"></div>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-label">
+                  <strong>Price Spike Alert</strong
+                  ><span>Alert when crop price changes &gt;10%</span>
+                </div>
+                <div
+                  class="toggle on"
+                  onclick="this.classList.toggle('on')"
+                ></div>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-label">
+                  <strong>Daily Summary Email</strong
+                  ><span>Send daily platform summary at 8 AM</span>
+                </div>
+                <div
+                  class="toggle on"
+                  onclick="this.classList.toggle('on')"
+                ></div>
+              </div>
+              <div class="save-bar">
+                <button class="btn btn-primary">Save Changes</button>
+              </div>
+            </div>
+
+            <!-- Moderation -->
+            <div class="card settings-panel" id="tab-moderation">
+              <div class="card-header"><h3>Moderation Settings</h3></div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label">Price Flag Threshold (%)</label
+                  ><input class="form-input" type="number" value="30" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Max Disputes per Seller</label
+                  ><input class="form-input" type="number" value="5" />
+                </div>
+              </div>
+              <div style="margin-top: 16px">
+                <div class="toggle-row">
+                  <div class="toggle-label">
+                    <strong>Auto-flag overpriced listings</strong
+                    ><span>Flag listings above threshold automatically</span>
+                  </div>
+                  <div
+                    class="toggle on"
+                    onclick="this.classList.toggle('on')"
+                  ></div>
+                </div>
+                <div class="toggle-row">
+                  <div class="toggle-label">
+                    <strong>Require doc verification</strong
+                    ><span>Farmers must submit valid IDs and land docs</span>
+                  </div>
+                  <div
+                    class="toggle on"
+                    onclick="this.classList.toggle('on')"
+                  ></div>
+                </div>
+                <div class="toggle-row">
+                  <div class="toggle-label">
+                    <strong>Auto-suspend on dispute limit</strong
+                    ><span>Suspend sellers exceeding max disputes</span>
+                  </div>
+                  <div
+                    class="toggle"
+                    onclick="this.classList.toggle('on')"
+                  ></div>
+                </div>
+              </div>
+              <div class="save-bar">
+                <button class="btn btn-primary">Save Changes</button>
+              </div>
+            </div>
+
+            <!-- Admin Accounts -->
+            <div class="card settings-panel" id="tab-admins">
+              <div class="card-header">
+                <h3>Admin Accounts</h3>
+                <button class="btn btn-primary btn-sm">+ Add Admin</button>
+              </div>
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Admin</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Last Login</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <span class="user-ava">🏛️</span
+                      ><strong>Antonio Cruz</strong>
+                      <span style="font-size: 0.72rem; color: var(--text-light)"
+                        >(You)</span
+                      >
+                    </td>
+                    <td>antonio@muniagri.gov.ph</td>
+                    <td><span class="badge purple">Super Admin</span></td>
+                    <td>Mar 16, 2026 · 8:00 AM</td>
+                    <td>
+                      <button
+                        class="btn btn-sm"
+                        style="border: 1px solid var(--border)"
+                      >
+                        Edit
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <span class="user-ava">👩‍💼</span
+                      ><strong>Carla Mendoza</strong>
+                    </td>
+                    <td>carla@muniagri.gov.ph</td>
+                    <td><span class="badge blue">Moderator</span></td>
+                    <td>Mar 15, 2026 · 4:22 PM</td>
+                    <td>
+                      <button
+                        class="btn btn-sm"
+                        style="border: 1px solid var(--border)"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        class="btn btn-danger btn-sm"
+                        style="margin-left: 4px"
+                      >
+                        Remove
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <span class="user-ava">👨‍💼</span
+                      ><strong>Rodel Santos</strong>
+                    </td>
+                    <td>rodel@muniagri.gov.ph</td>
+                    <td><span class="badge blue">Moderator</span></td>
+                    <td>Mar 14, 2026 · 11:05 AM</td>
+                    <td>
+                      <button
+                        class="btn btn-sm"
+                        style="border: 1px solid var(--border)"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        class="btn btn-danger btn-sm"
+                        style="margin-left: 4px"
+                      >
+                        Remove
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script src="shared.js"></script>
+    <script>
+      initAdmin("settings");
+      function switchTab(name, btn) {
+        document
+          .querySelectorAll(".settings-tab")
+          .forEach((t) => t.classList.remove("active"));
+        document
+          .querySelectorAll(".settings-panel")
+          .forEach((p) => p.classList.remove("active"));
+        btn.classList.add("active");
+        document.getElementById("tab-" + name).classList.add("active");
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FarmVille — Apply as a Farmer</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-dark:  #1a3a1a;
+    --green-mid:   #2d5a1b;
+    --green-light: #4a7c2f;
+    --amber:       #e8a020;
+    --cream:       #faf6ed;
+    --bg:          #edf2e8;
+    --white:       #ffffff;
+    --border:      #d4e0c4;
+    --text-dark:   #1a2a0a;
+    --text-mid:    #3a4a2a;
+    --text-light:  #6a7a5a;
+    --red:         #d94f4f;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    padding: 40px 20px;
+    color: var(--text-dark);
+  }
+
+  .container {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  /* ── Header ── */
+  .page-header {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+
+  .logo-row {
+    display: flex; align-items: center; justify-content: center;
+    gap: 12px; margin-bottom: 20px;
+  }
+
+  .logo-icon {
+    width: 48px; height: 48px; background: var(--amber);
+    border-radius: 12px; display: flex; align-items: center;
+    justify-content: center; font-size: 1.4rem;
+  }
+
+  .logo-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem; font-weight: 900; color: var(--green-dark);
+  }
+
+  .logo-text span { color: var(--amber); }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem; color: var(--green-dark); margin-bottom: 8px;
+  }
+
+  .subtitle {
+    font-size: 0.9rem; color: var(--text-light); max-width: 480px; margin: 0 auto;
+  }
+
+  /* ── Steps indicator ── */
+  .steps {
+    display: flex; align-items: center; justify-content: center;
+    gap: 0; margin-bottom: 32px;
+  }
+
+  .step {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    position: relative;
+  }
+
+  .step-dot {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--border); color: var(--text-light);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.8rem; font-weight: 700; transition: all 0.3s;
+    position: relative; z-index: 1;
+  }
+
+  .step.active .step-dot  { background: var(--green-mid); color: white; }
+  .step.done .step-dot    { background: var(--amber); color: var(--green-dark); }
+
+  .step-label {
+    font-size: 0.7rem; font-weight: 600; color: var(--text-light);
+    white-space: nowrap;
+  }
+
+  .step.active .step-label { color: var(--green-mid); }
+  .step.done .step-label   { color: var(--amber); }
+
+  .step-line {
+    width: 80px; height: 2px; background: var(--border);
+    margin-bottom: 20px; transition: background 0.3s;
+  }
+
+  .step-line.done { background: var(--amber); }
+
+  /* ── Card ── */
+  .card {
+    background: var(--white); border-radius: 20px;
+    border: 1px solid var(--border);
+    padding: 32px 36px; margin-bottom: 20px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+  }
+
+  .section-title {
+    font-size: 1rem; font-weight: 700; color: var(--green-dark);
+    margin-bottom: 4px; display: flex; align-items: center; gap: 8px;
+  }
+
+  .section-divider {
+    border: none; border-top: 1.5px solid var(--border); margin: 8px 0 22px;
+  }
+
+  /* ── Form ── */
+  .form-grid   { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 0.7fr; gap: 14px; }
+  .full        { grid-column: 1 / -1; }
+
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+
+  label {
+    font-size: 0.78rem; font-weight: 700; color: var(--text-mid);
+  }
+
+  .required { color: var(--red); }
+
+  input[type="text"],
+  input[type="number"],
+  textarea,
+  select {
+    padding: 10px 14px; border: 1.5px solid var(--border);
+    border-radius: 10px; font-family: 'DM Sans', sans-serif;
+    font-size: 0.875rem; color: var(--text-dark);
+    background: var(--cream); outline: none; transition: border-color 0.2s;
+    width: 100%;
+  }
+
+  input:focus, textarea:focus, select:focus {
+    border-color: var(--green-mid); background: white;
+  }
+
+  textarea { resize: vertical; min-height: 80px; }
+
+  /* ── Crop tags ── */
+  .crop-tags {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px;
+  }
+
+  .crop-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--bg); border: 1.5px solid var(--border);
+    border-radius: 20px; padding: 5px 12px;
+    font-size: 0.8rem; font-weight: 500; cursor: pointer;
+    transition: all 0.2s; color: var(--text-mid);
+  }
+
+  .crop-tag.selected {
+    background: var(--green-mid); border-color: var(--green-mid);
+    color: white;
+  }
+
+  .crop-input-row {
+    display: flex; gap: 8px; margin-top: 8px;
+  }
+
+  .crop-input-row input { flex: 1; margin: 0; }
+
+  .btn-add {
+    padding: 10px 16px; background: var(--green-mid); color: white;
+    border: none; border-radius: 10px; font-size: 0.84rem;
+    font-weight: 600; cursor: pointer; white-space: nowrap;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  /* ── File upload ── */
+  .file-upload {
+    border: 2px dashed var(--border); border-radius: 12px;
+    padding: 20px; text-align: center; cursor: pointer;
+    transition: all 0.2s; background: var(--cream);
+    position: relative;
+  }
+
+  .file-upload:hover { border-color: var(--green-mid); background: #f0f6ea; }
+  .file-upload.has-file { border-color: var(--green-mid); background: #f0f6ea; }
+  .file-upload.required-missing { border-color: var(--red); }
+
+  .file-upload input[type="file"] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer;
+    width: 100%; height: 100%; padding: 0; border: none; background: none;
+  }
+
+  .file-icon   { font-size: 1.6rem; margin-bottom: 6px; }
+  .file-label  { font-size: 0.8rem; font-weight: 600; color: var(--text-mid); }
+  .file-sub    { font-size: 0.7rem; color: var(--text-light); margin-top: 3px; }
+  .file-name   { font-size: 0.78rem; color: var(--green-mid); font-weight: 600; margin-top: 6px; }
+
+  .docs-grid   { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .photos-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+
+  /* ── Alerts ── */
+  .alert {
+    padding: 12px 16px; border-radius: 10px;
+    font-size: 0.84rem; margin-bottom: 20px; display: none;
+  }
+
+  .alert.error   { background: #fce4ec; border: 1px solid #f5c2c2; color: var(--red); }
+  .alert.success { background: #e8f5e9; border: 1px solid #a2e3b8; color: #1e7e4a; }
+  .alert.info    { background: #fff8e1; border: 1px solid #f5c842; color: #7a5a00; }
+
+  /* ── Navigation buttons ── */
+  .nav-btns {
+    display: flex; justify-content: space-between;
+    align-items: center; margin-top: 28px; gap: 12px;
+  }
+
+  .btn {
+    padding: 12px 28px; border-radius: 12px; font-size: 0.9rem;
+    font-weight: 700; border: none; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+  }
+
+  .btn-primary { background: var(--green-mid); color: white; }
+  .btn-primary:hover { background: var(--green-dark); }
+  .btn-primary:disabled { background: #b0c8a0; cursor: not-allowed; }
+  .btn-back { background: none; border: 1.5px solid var(--border); color: var(--text-mid); }
+  .btn-back:hover { border-color: var(--green-mid); color: var(--green-mid); }
+  .btn-amber { background: var(--amber); color: var(--green-dark); }
+  .btn-amber:hover { background: #f5c842; }
+
+  /* ── Panels ── */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* ── Success screen ── */
+  .success-screen {
+    text-align: center; padding: 48px 32px;
+  }
+
+  .success-icon { font-size: 4rem; margin-bottom: 16px; }
+  .success-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem; color: var(--green-dark); margin-bottom: 10px;
+  }
+  .success-sub { font-size: 0.9rem; color: var(--text-light); max-width: 400px; margin: 0 auto 28px; line-height: 1.7; }
+
+  @media (max-width: 600px) {
+    .card { padding: 24px 20px; }
+    .form-grid, .form-grid-3, .docs-grid { grid-template-columns: 1fr; }
+    .photos-grid { grid-template-columns: 1fr 1fr; }
+    .step-line { width: 40px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="logo-row">
+      <div class="logo-icon">🌾</div>
+      <div class="logo-text">FARM<span>VILLE</span></div>
+    </div>
+    <h1>Apply as a Farmer</h1>
+    <p class="subtitle">Join our community of verified farmers and start selling your harvest directly to buyers.</p>
+  </div>
+
+  <!-- Steps -->
+  <div class="steps">
+    <div class="step active" id="step-1">
+      <div class="step-dot">1</div>
+      <div class="step-label">Farm Details</div>
+    </div>
+    <div class="step-line" id="line-1"></div>
+    <div class="step" id="step-2">
+      <div class="step-dot">2</div>
+      <div class="step-label">Crops</div>
+    </div>
+    <div class="step-line" id="line-2"></div>
+    <div class="step" id="step-3">
+      <div class="step-dot">3</div>
+      <div class="step-label">Documents</div>
+    </div>
+    <div class="step-line" id="line-3"></div>
+    <div class="step" id="step-4">
+      <div class="step-dot">4</div>
+      <div class="step-label">Photos</div>
+    </div>
+  </div>
+
+  <!-- Alerts -->
+  <div class="alert error"   id="alert-error"></div>
+  <div class="alert success" id="alert-success"></div>
+  <div class="alert info"    id="alert-info">ℹ️ You can still browse and order as a buyer while your application is under review.</div>
+
+  <!-- ══ PANEL 1: Farm Details ══ -->
+  <div class="panel active" id="panel-1">
+    <div class="card">
+      <div class="section-title">🏡 Farm Information</div>
+      <hr class="section-divider">
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Farm Name <span class="required">*</span></label>
+          <input type="text" id="farm_name" placeholder="e.g. Dela Torre Farm">
+        </div>
+        <div class="form-group">
+          <label>Farm Size (hectares) <span class="required">*</span></label>
+          <input type="number" id="farm_size" placeholder="e.g. 2.5" step="0.1" min="0.1">
+        </div>
+        <div class="form-group full">
+          <label>Farm Address <span class="required">*</span></label>
+          <input type="text" id="farm_address" placeholder="Street / Purok / Sitio">
+        </div>
+        <div class="form-group">
+          <label>Barangay <span class="required">*</span></label>
+          <input type="text" id="farm_barangay" placeholder="Barangay">
+        </div>
+        <div class="form-group">
+          <label>City / Municipality <span class="required">*</span></label>
+          <input type="text" id="farm_city" placeholder="City">
+        </div>
+        <div class="form-group">
+          <label>Province <span class="required">*</span></label>
+          <input type="text" id="farm_province" placeholder="Province" value="La Union">
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <a href="dashboard.html"><button class="btn btn-back">← Back to Dashboard</button></a>
+      <button class="btn btn-primary" onclick="goToStep(2)">Next: Crops →</button>
+    </div>
+  </div>
+
+  <!-- ══ PANEL 2: Crops ══ -->
+  <div class="panel" id="panel-2">
+    <div class="card">
+      <div class="section-title">🌱 Crops You Grow</div>
+      <hr class="section-divider">
+      <p style="font-size:0.84rem;color:var(--text-light);margin-bottom:16px">Select common crops or add your own. Select at least one.</p>
+
+      <div class="crop-tags" id="crop-tags">
+        <div class="crop-tag" onclick="toggleCrop(this)" data-crop="Palay (Rice)">🌾 Palay (Rice)</div>
+        <div class="crop-tag" onclick="toggleCrop(this)" data-crop="Mais (Corn)">🌽 Mais (Corn)</div>
+        <div class="crop-tag" onclick="toggleCrop(this)" data-crop="Kamatis">🍅 Kamatis</div>
+        <div class="crop-tag" onclick="toggleCrop(this)" data-crop="Sibuyas">🧅 Sibuyas</div>
+        <div class="crop-tag" onclick="toggleCrop(this)" data-crop="Sitaw">🥦 Sitaw</div>
+        <div class="crop-tag" onclick="toggleCrop(this)" data-crop="Talong">🍆 Talong</div>
+        <div class="crop-tag" onclick="toggleCrop(this)" data-crop="Pechay">🥬 Pechay</div>
+        <div class="crop-tag" onclick="toggleCrop(this)" data-crop="Kalabasa">🎃 Kalabasa</div>
+        <div class="crop-tag" onclick="toggleCrop(this)" data-crop="Ampalaya">🌿 Ampalaya</div>
+        <div class="crop-tag" onclick="toggleCrop(this)" data-crop="Kangkong">🌱 Kangkong</div>
+        <div class="crop-tag" onclick="toggleCrop(this)" data-crop="Sayote">🥝 Sayote</div>
+        <div class="crop-tag" onclick="toggleCrop(this)" data-crop="Kamote">🍠 Kamote</div>
+      </div>
+
+      <div class="crop-input-row">
+        <input type="text" id="custom-crop" placeholder="Add another crop...">
+        <button class="btn-add" onclick="addCustomCrop()">+ Add</button>
+      </div>
+
+      <div style="margin-top:16px;font-size:0.82rem;color:var(--text-mid)">
+        Selected: <strong id="selected-crops-display" style="color:var(--green-mid)">None</strong>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn btn-back" onclick="goToStep(1)">← Back</button>
+      <button class="btn btn-primary" onclick="goToStep(3)">Next: Documents →</button>
+    </div>
+  </div>
+
+  <!-- ══ PANEL 3: Documents ══ -->
+  <div class="panel" id="panel-3">
+    <div class="card">
+      <div class="section-title">📄 Required Documents</div>
+      <hr class="section-divider">
+      <p style="font-size:0.84rem;color:var(--text-light);margin-bottom:20px">Upload clear photos or scanned copies. Accepted: JPG, PNG, PDF · Max 5MB each.</p>
+
+      <div class="docs-grid">
+        <div class="form-group">
+          <label>Valid Government ID <span class="required">*</span></label>
+          <div class="file-upload" id="upload-doc_government_id">
+            <input type="file" id="doc_government_id" accept=".jpg,.jpeg,.png,.pdf" onchange="handleFile(this,'doc_government_id')">
+            <div class="file-icon">🪪</div>
+            <div class="file-label">Government ID</div>
+            <div class="file-sub">Passport, PhilSys, Driver's License</div>
+            <div class="file-name" id="name-doc_government_id"></div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Land Title / Lease Agreement <span class="required">*</span></label>
+          <div class="file-upload" id="upload-doc_land_title">
+            <input type="file" id="doc_land_title" accept=".jpg,.jpeg,.png,.pdf" onchange="handleFile(this,'doc_land_title')">
+            <div class="file-icon">📜</div>
+            <div class="file-label">Land Title or Lease</div>
+            <div class="file-sub">Proof of farm ownership or lease</div>
+            <div class="file-name" id="name-doc_land_title"></div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Barangay Certification <span class="required">*</span></label>
+          <div class="file-upload" id="upload-doc_barangay_cert">
+            <input type="file" id="doc_barangay_cert" accept=".jpg,.jpeg,.png,.pdf" onchange="handleFile(this,'doc_barangay_cert')">
+            <div class="file-icon">🏛️</div>
+            <div class="file-label">Barangay Certification</div>
+            <div class="file-sub">Issued by your barangay office</div>
+            <div class="file-name" id="name-doc_barangay_cert"></div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>DAR Certificate / CLOA <span class="required">*</span></label>
+          <div class="file-upload" id="upload-doc_dar_cert">
+            <input type="file" id="doc_dar_cert" accept=".jpg,.jpeg,.png,.pdf" onchange="handleFile(this,'doc_dar_cert')">
+            <div class="file-icon">📋</div>
+            <div class="file-label">DAR Certificate / CLOA</div>
+            <div class="file-sub">Department of Agrarian Reform</div>
+            <div class="file-name" id="name-doc_dar_cert"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn btn-back" onclick="goToStep(2)">← Back</button>
+      <button class="btn btn-primary" onclick="goToStep(4)">Next: Farm Photos →</button>
+    </div>
+  </div>
+
+  <!-- ══ PANEL 4: Farm Photos ══ -->
+  <div class="panel" id="panel-4">
+    <div class="card">
+      <div class="section-title">📸 Farm Photos</div>
+      <hr class="section-divider">
+      <p style="font-size:0.84rem;color:var(--text-light);margin-bottom:20px">Upload up to 3 photos of your farm. At least 1 is required. JPG or PNG · Max 5MB each.</p>
+
+      <div class="photos-grid">
+        <div class="form-group">
+          <label>Photo 1 <span class="required">*</span></label>
+          <div class="file-upload" id="upload-photo_1">
+            <input type="file" id="photo_1" accept=".jpg,.jpeg,.png,.webp" onchange="handleFile(this,'photo_1')">
+            <div class="file-icon">📷</div>
+            <div class="file-label">Main Farm Photo</div>
+            <div class="file-sub">Overview of your farm</div>
+            <div class="file-name" id="name-photo_1"></div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Photo 2 <span style="font-size:0.7rem;color:var(--text-light)">(optional)</span></label>
+          <div class="file-upload" id="upload-photo_2">
+            <input type="file" id="photo_2" accept=".jpg,.jpeg,.png,.webp" onchange="handleFile(this,'photo_2')">
+            <div class="file-icon">🌿</div>
+            <div class="file-label">Crop Photo</div>
+            <div class="file-sub">Your crops growing</div>
+            <div class="file-name" id="name-photo_2"></div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Photo 3 <span style="font-size:0.7rem;color:var(--text-light)">(optional)</span></label>
+          <div class="file-upload" id="upload-photo_3">
+            <input type="file" id="photo_3" accept=".jpg,.jpeg,.png,.webp" onchange="handleFile(this,'photo_3')">
+            <div class="file-icon">🚜</div>
+            <div class="file-label">Additional Photo</div>
+            <div class="file-sub">Equipment, storage, etc.</div>
+            <div class="file-name" id="name-photo_3"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Review summary -->
+    <div class="card" id="review-summary" style="background:#f8fbf5;">
+      <div class="section-title">✅ Review Your Application</div>
+      <hr class="section-divider">
+      <div id="summary-content" style="font-size:0.85rem;color:var(--text-mid);line-height:2"></div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn btn-back" onclick="goToStep(3)">← Back</button>
+      <button class="btn btn-amber" id="submit-btn" onclick="submitApplication()">Submit Application 🌾</button>
+    </div>
+  </div>
+
+  <!-- ══ SUCCESS ══ -->
+  <div class="panel" id="panel-success">
+    <div class="card">
+      <div class="success-screen">
+        <div class="success-icon">🎉</div>
+        <div class="success-title">Application Submitted!</div>
+        <p class="success-sub">
+          Your farmer application is now under review. You'll be notified once it's approved.
+          In the meantime, you can continue browsing and ordering as a buyer.
+        </p>
+        <a href="dashboard.html">
+          <button class="btn btn-primary">Back to Dashboard</button>
+        </a>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end .container -->
+
+<script>
+  // ── Auth check ────────────────────────────────────────────────────────────
+  const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
+  if (!currentUser) window.location.href = 'login.html';
+
+  // Show info banner
+  document.getElementById('alert-info').style.display = 'block';
+
+  // ── Step navigation ────────────────────────────────────────────────────────
+  let currentStep   = 1;
+  const selectedCrops = new Set();
+
+  function goToStep(step) {
+    if (step > currentStep && !validateStep(currentStep)) return;
+
+    // Update panels
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('panel-' + step).classList.add('active');
+
+    // Update step indicators
+    for (let i = 1; i <= 4; i++) {
+      const el   = document.getElementById('step-' + i);
+      const line = document.getElementById('line-' + i);
+      el.classList.remove('active', 'done');
+      if (i < step)       { el.classList.add('done'); }
+      else if (i === step) { el.classList.add('active'); }
+      if (line && i < step) line.classList.add('done');
+      else if (line)        line.classList.remove('done');
+    }
+
+    currentStep = step;
+
+    if (step === 4) buildSummary();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    hideAlert();
+  }
+
+  // ── Validation ─────────────────────────────────────────────────────────────
+  function validateStep(step) {
+    hideAlert();
+
+    if (step === 1) {
+      const fields = ['farm_name','farm_size','farm_address','farm_barangay','farm_city','farm_province'];
+      for (const f of fields) {
+        if (!document.getElementById(f).value.trim()) {
+          showAlert('error', 'Please fill in all farm details before continuing.');
+          return false;
+        }
+      }
+    }
+
+    if (step === 2) {
+      if (selectedCrops.size === 0) {
+        showAlert('error', 'Please select at least one crop you grow.');
+        return false;
+      }
+    }
+
+    if (step === 3) {
+      const docs = ['doc_government_id','doc_land_title','doc_barangay_cert','doc_dar_cert'];
+      for (const d of docs) {
+        if (!document.getElementById(d).files[0]) {
+          document.getElementById('upload-' + d).classList.add('required-missing');
+          showAlert('error', 'All 4 documents are required. Please upload the missing ones.');
+          return false;
+        }
+      }
+    }
+
+    if (step === 4) {
+      if (!document.getElementById('photo_1').files[0]) {
+        showAlert('error', 'At least one farm photo is required.');
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  // ── Crop logic ─────────────────────────────────────────────────────────────
+  function toggleCrop(el) {
+    const crop = el.dataset.crop;
+    if (selectedCrops.has(crop)) {
+      selectedCrops.delete(crop);
+      el.classList.remove('selected');
+    } else {
+      selectedCrops.add(crop);
+      el.classList.add('selected');
+    }
+    updateCropDisplay();
+  }
+
+  function addCustomCrop() {
+    const input = document.getElementById('custom-crop');
+    const val   = input.value.trim();
+    if (!val) return;
+
+    if (!selectedCrops.has(val)) {
+      selectedCrops.add(val);
+      const tag = document.createElement('div');
+      tag.className = 'crop-tag selected';
+      tag.dataset.crop = val;
+      tag.textContent = val;
+      tag.onclick = () => toggleCrop(tag);
+      document.getElementById('crop-tags').appendChild(tag);
+    }
+
+    input.value = '';
+    updateCropDisplay();
+  }
+
+  function updateCropDisplay() {
+    const display = document.getElementById('selected-crops-display');
+    display.textContent = selectedCrops.size > 0 ? [...selectedCrops].join(', ') : 'None';
+  }
+
+  // ── File uploads ───────────────────────────────────────────────────────────
+  function handleFile(input, key) {
+    const file    = input.files[0];
+    const nameEl  = document.getElementById('name-' + key);
+    const wrapEl  = document.getElementById('upload-' + key);
+
+    if (file) {
+      nameEl.textContent = '✓ ' + file.name;
+      wrapEl.classList.add('has-file');
+      wrapEl.classList.remove('required-missing');
+    } else {
+      nameEl.textContent = '';
+      wrapEl.classList.remove('has-file');
+    }
+  }
+
+  // ── Summary ────────────────────────────────────────────────────────────────
+  function buildSummary() {
+    const lines = [
+      `🏡 <strong>Farm Name:</strong> ${document.getElementById('farm_name').value}`,
+      `📐 <strong>Farm Size:</strong> ${document.getElementById('farm_size').value} hectares`,
+      `📍 <strong>Location:</strong> ${document.getElementById('farm_barangay').value}, ${document.getElementById('farm_city').value}, ${document.getElementById('farm_province').value}`,
+      `🌱 <strong>Crops:</strong> ${[...selectedCrops].join(', ')}`,
+      `📄 <strong>Documents:</strong> All 4 uploaded`,
+      `📸 <strong>Photos:</strong> ${[1,2,3].filter(i => document.getElementById('photo_'+i).files[0]).length} uploaded`,
+    ];
+    document.getElementById('summary-content').innerHTML = lines.join('<br>');
+  }
+
+  // ── Alerts ─────────────────────────────────────────────────────────────────
+  function showAlert(type, msg) {
+    const el = document.getElementById('alert-' + type);
+    el.textContent = msg;
+    el.style.display = 'block';
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function hideAlert() {
+    ['error','success'].forEach(t => {
+      const el = document.getElementById('alert-' + t);
+      if (el) { el.style.display = 'none'; el.textContent = ''; }
+    });
+  }
+
+  // ── Submit ─────────────────────────────────────────────────────────────────
+  async function submitApplication() {
+    if (!validateStep(4)) return;
+
+    const btn = document.getElementById('submit-btn');
+    btn.disabled    = true;
+    btn.textContent = 'Submitting...';
+
+    const formData = new FormData();
+    formData.append('user_id',      currentUser.id);
+    formData.append('farm_name',    document.getElementById('farm_name').value.trim());
+    formData.append('farm_size',    document.getElementById('farm_size').value);
+    formData.append('farm_address', document.getElementById('farm_address').value.trim());
+    formData.append('barangay',     document.getElementById('farm_barangay').value.trim());
+    formData.append('city',         document.getElementById('farm_city').value.trim());
+    formData.append('province',     document.getElementById('farm_province').value.trim());
+    formData.append('crops',        [...selectedCrops].join(', '));
+
+    // Docs
+    ['doc_government_id','doc_land_title','doc_barangay_cert','doc_dar_cert'].forEach(key => {
+      const file = document.getElementById(key).files[0];
+      if (file) formData.append(key, file);
+    });
+
+    // Photos
+    ['photo_1','photo_2','photo_3'].forEach(key => {
+      const file = document.getElementById(key).files[0];
+      if (file) formData.append(key, file);
+    });
+
+    try {
+      const res  = await fetch('apply.php', { method: 'POST', body: formData });
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        document.getElementById('panel-success').classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        showAlert('error', data.error || 'Submission failed. Please try again.');
+        btn.disabled    = false;
+        btn.textContent = 'Submit Application 🌾';
+      }
+    } catch (e) {
+      showAlert('error', 'Cannot connect to server. Please try again.');
+      btn.disabled    = false;
+      btn.textContent = 'Submit Application 🌾';
+    }
+  }
+
+  // ── Enter key for custom crop ──────────────────────────────────────────────
+  document.getElementById('custom-crop').addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); addCustomCrop(); }
+  });
+</script>
+</body>
+</html>

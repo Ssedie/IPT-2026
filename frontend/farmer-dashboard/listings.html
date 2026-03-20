@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Listings</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--green-dark:#1a3a1a;--green-mid:#2d5a1b;--green-light:#4a7c2f;--green-pale:#e8f0e0;--amber:#e8a020;--amber-light:#f5c842;--cream:#faf6ed;--white:#fff;--text-dark:#1a2a0a;--text-mid:#3a4a2a;--text-light:#6a7a5a;--border:#d4e0c4;--red:#d94f4f;}
+  *{margin:0;padding:0;box-sizing:border-box;}html,body{height:100%;font-family:'DM Sans',sans-serif;background:#f0f4ea;color:var(--text-dark);}
+  body{display:flex;flex-direction:column;}
+  .topbar{flex-shrink:0;background:var(--white);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);box-shadow:0 1px 8px rgba(0,0,0,0.05);}
+  .topbar h2{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;}
+  .topbar p{font-size:0.8rem;color:var(--text-light);margin-top:2px;}
+  .topbar-right{display:flex;gap:10px;}
+  .btn-add{padding:9px 20px;background:var(--amber);color:var(--green-dark);border:none;border-radius:10px;font-weight:700;font-size:0.85rem;cursor:pointer;font-family:'DM Sans',sans-serif;}
+  .btn-add:hover{background:var(--amber-light);}
+  .content{flex:1;overflow-y:auto;padding:24px 32px;}
+  .filters{display:flex;gap:10px;margin-bottom:18px;align-items:center;}
+  .tab{padding:7px 18px;border-radius:10px;border:1.5px solid var(--border);background:var(--white);font-weight:600;font-size:0.82rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;}
+  .tab.active{background:var(--amber);border-color:var(--amber);color:var(--green-dark);}
+  .listings-table{width:100%;border-collapse:separate;border-spacing:0;}
+  .listings-table th{text-align:left;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-light);padding:10px 14px;background:var(--white);border-bottom:2px solid var(--border);}
+  .listings-table td{padding:14px;background:var(--white);border-bottom:1px solid var(--border);font-size:0.875rem;}
+  .listings-table tr:last-child td{border-bottom:none;}
+  .listings-table tr:hover td{background:var(--green-pale);}
+  .crop-cell{display:flex;align-items:center;gap:10px;}
+  .crop-emoji{width:36px;height:36px;background:var(--green-pale);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;}
+  .crop-name{font-weight:600;}
+  .crop-date{font-size:0.72rem;color:var(--text-light);}
+  .price-cell{font-weight:700;color:var(--green-light);}
+  .stock-cell .low{color:var(--amber);font-weight:600;}
+  .stock-cell .out{color:var(--red);font-weight:600;}
+  .actions-cell{display:flex;gap:6px;}
+  .btn-edit{padding:5px 12px;background:var(--cream);border:1px solid var(--border);border-radius:7px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;}
+  .btn-edit:hover{background:var(--green-pale);border-color:var(--green-light);}
+  .btn-del{padding:5px 12px;background:#fde8e8;border:1px solid #f5c0c0;border-radius:7px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--red);}
+  .btn-del:hover{background:#fcc;border-color:var(--red);}
+  .table-wrap{background:var(--white);border-radius:16px;border:1px solid var(--border);overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.04);}
+  .badge-active  {background:rgba(74,124,47,0.12);color:#2d6a10;padding:3px 9px;border-radius:6px;font-size:0.68rem;font-weight:700;}
+  .badge-removed {background:rgba(217,79,79,0.1); color:#c03030;padding:3px 9px;border-radius:6px;font-size:0.68rem;font-weight:700;}
+  .empty-state{padding:48px;text-align:center;color:var(--text-light);}
+  .skeleton{height:52px;background:linear-gradient(90deg,#e8f0e0 25%,#d4e0c4 50%,#e8f0e0 75%);background-size:200% 100%;animation:shimmer 1.2s infinite;}
+  @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+  /* Edit modal */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100;display:none;align-items:center;justify-content:center;}
+  .modal-overlay.open{display:flex;}
+  .modal{background:var(--white);border-radius:20px;padding:28px;width:90%;max-width:420px;}
+  .modal h3{font-family:'Playfair Display',serif;font-size:1.1rem;margin-bottom:18px;}
+  .form-group{margin-bottom:14px;}
+  .form-group label{display:block;font-size:0.78rem;font-weight:600;color:var(--text-mid);margin-bottom:5px;}
+  .form-group input,.form-group select{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.875rem;outline:none;}
+  .form-group input:focus,.form-group select:focus{border-color:var(--green-light);}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .modal-actions{display:flex;gap:10px;margin-top:18px;}
+  .btn-cancel{flex:1;padding:11px;border:1.5px solid var(--border);border-radius:10px;background:var(--cream);cursor:pointer;font-weight:600;font-family:'DM Sans',sans-serif;}
+  .btn-save{flex:1;padding:11px;border:none;border-radius:10px;background:var(--amber);color:var(--green-dark);cursor:pointer;font-weight:700;font-family:'DM Sans',sans-serif;}
+  .btn-save:disabled{opacity:0.5;cursor:not-allowed;}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div><h2>📋 My Listings</h2><p>Manage your crop listings</p></div>
+  <div class="topbar-right">
+    <button class="btn-add" onclick="navTo('new-listing.html')">➕ New Listing</button>
+  </div>
+</header>
+<div class="content">
+  <div class="filters">
+    <button class="tab active" onclick="switchTab('active',this)">Active</button>
+    <button class="tab" onclick="switchTab('all',this)">All Listings</button>
+  </div>
+  <div class="table-wrap">
+    <table class="listings-table">
+      <thead><tr><th>Product</th><th>Price</th><th>Stock</th><th>Orders</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody id="listings-body"><tr><td colspan="6"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal">
+    <h3 id="modal-title">Edit Listing</h3>
+    <input type="hidden" id="edit-id">
+    <div class="form-group"><label>Product Name *</label><input type="text" id="edit-name"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Price (₱) *</label><input type="number" id="edit-price" step="0.01" min="0.01"></div>
+      <div class="form-group"><label>Stock *</label><input type="number" id="edit-stock" step="0.1" min="0"></div>
+    </div>
+    <div class="form-group"><label>Unit</label>
+      <select id="edit-unit">
+        <option value="kg">kg</option><option value="piece">piece</option>
+        <option value="bundle">bundle</option><option value="sack">sack</option><option value="liter">liter</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" id="save-btn" onclick="saveListing()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+  let currentTab = 'active';
+  const emojis = {'rice':'🌾','corn':'🌽','eggplant':'🍆','tomato':'🍅','onion':'🧅','garlic':'🧄','carrot':'🥕','pechay':'🥬','camote':'🍠','default':'🌿'};
+  function ge(n){const l=n.toLowerCase();for(const[k,v] of Object.entries(emojis))if(l.includes(k))return v;return emojis.default;}
+
+  function switchTab(tab,el){ currentTab=tab; document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); el.classList.add('active'); loadListings(); }
+
+  async function loadListings(){
+    const tbody = document.getElementById('listings-body');
+    tbody.innerHTML = '<tr><td colspan="6"><div class="skeleton"></div><div class="skeleton"></div></td></tr>';
+    const data = await apiFetch(`farmer_listings.php?farmer_id=${farmerId()}&status=${currentTab}`);
+    const listings = data.listings||[];
+    if(!listings.length){ tbody.innerHTML='<tr><td colspan="6"><div class="empty-state">No listings found.</div></td></tr>'; return; }
+    tbody.innerHTML = listings.map(l=>{
+      const stockCls = l.stock<=0?'out':l.stock<10?'low':'';
+      const stockTxt = l.stock<=0?`<span class="out">${l.stock} ${l.unit} — Out</span>`:l.stock<10?`<span class="low">${l.stock} ${l.unit} — Low</span>`:`${l.stock} ${l.unit}`;
+      return `<tr>
+        <td><div class="crop-cell"><div class="crop-emoji">${ge(l.product_name)}</div><div><div class="crop-name">${l.product_name}</div><div class="crop-date">${formatDate(l.created_at)}</div></div></div></td>
+        <td class="price-cell">${formatMoney(l.price)}/${l.unit}</td>
+        <td class="stock-cell">${stockTxt}</td>
+        <td>${l.total_orders||0}</td>
+        <td><span class="badge-${l.status}">${l.status}</span></td>
+        <td><div class="actions-cell">
+          <button class="btn-edit" onclick='openEdit(${JSON.stringify(l)})'>✏️ Edit</button>
+          ${l.status==='active'?`<button class="btn-del" onclick="deleteListing(${l.id})">🗑 Remove</button>`:''}
+        </div></td>
+      </tr>`;
+    }).join('');
+  }
+
+  function openEdit(l){
+    document.getElementById('edit-id').value    = l.id;
+    document.getElementById('edit-name').value  = l.product_name;
+    document.getElementById('edit-price').value = l.price;
+    document.getElementById('edit-stock').value = l.stock;
+    document.getElementById('edit-unit').value  = l.unit;
+    document.getElementById('edit-modal').classList.add('open');
+  }
+  function closeModal(){ document.getElementById('edit-modal').classList.remove('open'); }
+
+  async function saveListing(){
+    const btn = document.getElementById('save-btn');
+    btn.disabled=true; btn.textContent='Saving...';
+    const res = await apiFetch(`farmer_listings.php?farmer_id=${farmerId()}`,{
+      method:'PUT',
+      body:JSON.stringify({
+        id: document.getElementById('edit-id').value,
+        product_name: document.getElementById('edit-name').value,
+        price: document.getElementById('edit-price').value,
+        stock: document.getElementById('edit-stock').value,
+        unit:  document.getElementById('edit-unit').value,
+      })
+    });
+    btn.disabled=false; btn.textContent='Save Changes';
+    if(res.error){showToast(res.error,'error');return;}
+    showToast('Listing updated!'); closeModal(); loadListings();
+  }
+
+  async function deleteListing(id){
+    if(!confirm('Remove this listing?')) return;
+    const res = await apiFetch(`farmer_listings.php?farmer_id=${farmerId()}`,{method:'DELETE',body:JSON.stringify({id})});
+    if(res.error){showToast(res.error,'error');return;}
+    showToast('Listing removed'); loadListings();
+  }
+
+  loadListings();
+</script>
+</body>
+</html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Browse Listings</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--green-dark:#1a3a1a;--green-mid:#2d5a1b;--green-light:#4a7c2f;--green-pale:#e8f0e0;--amber:#e8a020;--amber-light:#f5c842;--cream:#faf6ed;--white:#fff;--text-dark:#1a2a0a;--text-mid:#3a4a2a;--text-light:#6a7a5a;--border:#d4e0c4;--red:#d94f4f;--blue:#3a7bd5;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;font-family:'DM Sans',sans-serif;background:#f0f4ea;color:var(--text-dark);}
+  body{display:flex;flex-direction:column;}
+  .topbar{flex-shrink:0;background:var(--white);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);box-shadow:0 1px 8px rgba(0,0,0,0.05);}
+  .topbar h2{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;}
+  .topbar p{font-size:0.8rem;color:var(--text-light);margin-top:2px;}
+  .content{flex:1;overflow-y:auto;padding:24px 32px;}
+
+  .filters{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:20px;}
+  .search-box{display:flex;align-items:center;gap:8px;background:var(--white);border:1px solid var(--border);border-radius:10px;padding:9px 14px;flex:1;min-width:200px;}
+  .search-box input{border:none;background:transparent;font-family:'DM Sans',sans-serif;font-size:0.875rem;outline:none;width:100%;}
+  select{padding:9px 14px;border:1px solid var(--border);border-radius:10px;background:var(--white);font-family:'DM Sans',sans-serif;font-size:0.875rem;color:var(--text-dark);cursor:pointer;outline:none;}
+
+  .listings-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;}
+  .listing-card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:20px;transition:all 0.2s;cursor:pointer;}
+  .listing-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.1);border-color:var(--green-light);}
+  .listing-emoji{font-size:2.5rem;margin-bottom:12px;}
+  .listing-name{font-size:0.95rem;font-weight:700;color:var(--text-dark);}
+  .listing-farmer{font-size:0.75rem;color:var(--text-light);margin-top:4px;}
+  .listing-price{font-size:1.2rem;font-weight:700;color:var(--green-light);margin-top:10px;}
+  .listing-unit{font-size:0.72rem;color:var(--text-light);}
+  .listing-stock{font-size:0.72rem;margin-top:6px;padding:3px 8px;border-radius:6px;display:inline-block;}
+  .in-stock{background:rgba(74,124,47,0.1);color:#2d6a10;}
+  .low-stock{background:rgba(232,160,32,0.12);color:#b07010;}
+  .out-stock{background:rgba(217,79,79,0.1);color:#c03030;}
+  .listing-actions{display:flex;gap:8px;margin-top:14px;}
+  .btn-order{flex:1;background:var(--amber);color:var(--green-dark);border:none;padding:9px;border-radius:9px;font-weight:700;font-size:0.8rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background 0.2s;}
+  .btn-order:hover{background:var(--amber-light);}
+  .btn-save{width:38px;background:var(--green-pale);border:1px solid var(--border);border-radius:9px;cursor:pointer;font-size:1rem;transition:all 0.2s;}
+  .btn-save:hover{background:var(--amber);border-color:var(--amber);}
+  .btn-save.saved{background:var(--amber);border-color:var(--amber);}
+  .empty-state{text-align:center;padding:60px 16px;color:var(--text-light);}
+  .empty-state .ei{font-size:3rem;margin-bottom:12px;}
+  .skeleton{background:linear-gradient(90deg,#e8f0e0 25%,#d4e0c4 50%,#e8f0e0 75%);background-size:200% 100%;animation:shimmer 1.2s infinite;border-radius:12px;height:180px;}
+  @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+  /* ORDER MODAL */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100;display:none;align-items:center;justify-content:center;}
+  .modal-overlay.open{display:flex;}
+  .modal{background:var(--white);border-radius:20px;padding:28px;width:90%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,0.2);}
+  .modal h3{font-family:'Playfair Display',serif;font-size:1.2rem;margin-bottom:4px;}
+  .modal .sub{font-size:0.8rem;color:var(--text-light);margin-bottom:20px;}
+  .modal label{display:block;font-size:0.8rem;font-weight:600;color:var(--text-mid);margin-bottom:6px;}
+  .modal input{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.9rem;outline:none;transition:border-color 0.2s;}
+  .modal input:focus{border-color:var(--green-light);}
+  .modal .price-preview{background:var(--green-pale);border-radius:10px;padding:12px 16px;margin:14px 0;font-size:0.9rem;font-weight:600;}
+  .modal .price-preview span{float:right;color:var(--green-light);font-size:1.1rem;}
+  .modal-actions{display:flex;gap:10px;margin-top:18px;}
+  .btn-cancel-modal{flex:1;padding:11px;border:1.5px solid var(--border);border-radius:10px;background:var(--cream);cursor:pointer;font-weight:600;font-family:'DM Sans',sans-serif;}
+  .btn-confirm{flex:1;padding:11px;border:none;border-radius:10px;background:var(--amber);color:var(--green-dark);cursor:pointer;font-weight:700;font-family:'DM Sans',sans-serif;}
+  .btn-confirm:hover{background:var(--amber-light);}
+  .btn-confirm:disabled{opacity:0.5;cursor:not-allowed;}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div>
+    <h2>🔍 Browse Listings</h2>
+    <p>Fresh produce from verified local farmers</p>
+  </div>
+</header>
+
+<div class="content">
+  <div class="filters">
+    <div class="search-box">
+      <span>🔍</span>
+      <input type="text" id="search" placeholder="Search crops or farmers..." oninput="loadListings()">
+    </div>
+    <select id="sort" onchange="loadListings()">
+      <option value="newest">Newest First</option>
+      <option value="price_asc">Price: Low to High</option>
+      <option value="price_desc">Price: High to Low</option>
+    </select>
+  </div>
+  <div class="listings-grid" id="listings-grid">
+    <div class="skeleton"></div><div class="skeleton"></div>
+    <div class="skeleton"></div><div class="skeleton"></div>
+    <div class="skeleton"></div><div class="skeleton"></div>
+  </div>
+</div>
+
+<!-- ORDER MODAL -->
+<div class="modal-overlay" id="order-modal">
+  <div class="modal">
+    <h3 id="modal-title">Place Order</h3>
+    <p class="sub" id="modal-sub">Enter quantity to order</p>
+    <label>Quantity (<span id="modal-unit">kg</span>)</label>
+    <input type="number" id="modal-qty" min="0.1" step="0.1" value="1" oninput="updatePreview()">
+    <div class="price-preview">
+      Total: <span id="modal-total">₱0</span>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel-modal" onclick="closeModal()">Cancel</button>
+      <button class="btn-confirm" id="modal-confirm" onclick="confirmOrder()">Order Now</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+  let savedIds = new Set();
+  let currentListing = null;
+
+  async function loadListings() {
+    const search = document.getElementById('search').value;
+    const sort   = document.getElementById('sort').value;
+    const grid   = document.getElementById('listings-grid');
+    grid.innerHTML = '<div class="skeleton"></div>'.repeat(6);
+
+    const [listData, saveData] = await Promise.all([
+      apiFetch(`listings.php?search=${encodeURIComponent(search)}&sort=${sort}`),
+      apiFetch(`saved_listings.php?buyer_id=${buyerId()}`)
+    ]);
+
+    savedIds = new Set((saveData.saved || []).map(s => s.listing_id));
+    const listings = listData.listings || [];
+
+    if (!listings.length) {
+      grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="ei">🌾</div><p>No listings found. Try a different search.</p></div>`;
+      return;
+    }
+
+    const emojis = {'rice':'🌾','corn':'🌽','eggplant':'🍆','tomato':'🍅','onion':'🧅','garlic':'🧄','carrot':'🥕','pechay':'🥬','default':'🌿'};
+    function getEmoji(name) {
+      const n = name.toLowerCase();
+      for (const [k,v] of Object.entries(emojis)) if (n.includes(k)) return v;
+      return emojis.default;
+    }
+
+    grid.innerHTML = listings.map(l => {
+      const isSaved = savedIds.has(l.id);
+      const stockCls = l.stock <= 0 ? 'out-stock' : l.stock < 10 ? 'low-stock' : 'in-stock';
+      const stockTxt = l.stock <= 0 ? 'Out of stock' : l.stock < 10 ? `Low stock: ${l.stock} ${l.unit}` : `${l.stock} ${l.unit} available`;
+      return `
+        <div class="listing-card">
+          <div class="listing-emoji">${getEmoji(l.product_name)}</div>
+          <div class="listing-name">${l.product_name}</div>
+          <div class="listing-farmer">👨‍🌾 ${l.farmer_name} · ${l.farmer_city || ''}</div>
+          <div class="listing-price">₱${parseFloat(l.price).toLocaleString('en-PH',{minimumFractionDigits:2})}<span class="listing-unit"> / ${l.unit}</span></div>
+          <span class="listing-stock ${stockCls}">${stockTxt}</span>
+          <div class="listing-actions">
+            <button class="btn-order" onclick='openModal(${JSON.stringify(l)})' ${l.stock<=0?'disabled':''}>🛒 Order</button>
+            <button class="btn-save ${isSaved?'saved':''}" id="save-${l.id}" onclick="toggleSave(${l.id}, this)">${isSaved?'⭐':'☆'}</button>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  async function toggleSave(listingId, btn) {
+    const isSaved = savedIds.has(listingId);
+    if (isSaved) {
+      await apiFetch(`saved_listings.php?buyer_id=${buyerId()}`, { method:'DELETE', body: JSON.stringify({listing_id: listingId}) });
+      savedIds.delete(listingId);
+      btn.textContent = '☆'; btn.classList.remove('saved');
+      showToast('Removed from saved', 'info');
+    } else {
+      await apiFetch(`saved_listings.php?buyer_id=${buyerId()}`, { method:'POST', body: JSON.stringify({listing_id: listingId}) });
+      savedIds.add(listingId);
+      btn.textContent = '⭐'; btn.classList.add('saved');
+      showToast('Saved to watchlist!');
+    }
+  }
+
+  function openModal(listing) {
+    currentListing = listing;
+    document.getElementById('modal-title').textContent = listing.product_name;
+    document.getElementById('modal-sub').textContent   = `From ${listing.farmer_name} · ₱${parseFloat(listing.price).toFixed(2)} / ${listing.unit}`;
+    document.getElementById('modal-unit').textContent  = listing.unit;
+    document.getElementById('modal-qty').max           = listing.stock;
+    document.getElementById('modal-qty').value         = 1;
+    updatePreview();
+    document.getElementById('order-modal').classList.add('open');
+  }
+
+  function closeModal() {
+    document.getElementById('order-modal').classList.remove('open');
+    currentListing = null;
+  }
+
+  function updatePreview() {
+    if (!currentListing) return;
+    const qty   = parseFloat(document.getElementById('modal-qty').value) || 0;
+    const total = qty * parseFloat(currentListing.price);
+    document.getElementById('modal-total').textContent = '₱' + total.toLocaleString('en-PH',{minimumFractionDigits:2});
+  }
+
+  async function confirmOrder() {
+    const btn = document.getElementById('modal-confirm');
+    const qty = parseFloat(document.getElementById('modal-qty').value);
+    if (!qty || qty <= 0) { showToast('Enter a valid quantity', 'error'); return; }
+
+    btn.disabled = true; btn.textContent = 'Ordering...';
+    const res = await apiFetch('place_order.php', {
+      method: 'POST',
+      body: JSON.stringify({ buyer_id: buyerId(), listing_id: currentListing.id, quantity: qty })
+    });
+    btn.disabled = false; btn.textContent = 'Order Now';
+
+    if (res.error) { showToast(res.error, 'error'); return; }
+    showToast(`Order placed! Total: ₱${parseFloat(res.total).toFixed(2)}`);
+    closeModal();
+    loadListings();
+  }
+
+  // Close modal on overlay click
+  document.getElementById('order-modal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  loadListings();
+</script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Incoming Orders</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--green-dark:#1a3a1a;--green-mid:#2d5a1b;--green-light:#4a7c2f;--green-pale:#e8f0e0;--amber:#e8a020;--amber-light:#f5c842;--cream:#faf6ed;--white:#fff;--text-dark:#1a2a0a;--text-mid:#3a4a2a;--text-light:#6a7a5a;--border:#d4e0c4;--red:#d94f4f;--blue:#3a7bd5;}
+  *{margin:0;padding:0;box-sizing:border-box;}html,body{height:100%;font-family:'DM Sans',sans-serif;background:#f0f4ea;color:var(--text-dark);}
+  body{display:flex;flex-direction:column;}
+  .topbar{flex-shrink:0;background:var(--white);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);box-shadow:0 1px 8px rgba(0,0,0,0.05);}
+  .topbar h2{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;}
+  .topbar p{font-size:0.8rem;color:var(--text-light);margin-top:2px;}
+  .content{flex:1;overflow-y:auto;padding:24px 32px;}
+  .tabs{display:flex;gap:8px;margin-bottom:20px;}
+  .tab{padding:8px 20px;border-radius:10px;border:1.5px solid var(--border);background:var(--white);cursor:pointer;font-weight:600;font-size:0.85rem;font-family:'DM Sans',sans-serif;transition:all 0.2s;}
+  .tab.active{background:var(--amber);border-color:var(--amber);color:var(--green-dark);}
+  .order-card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:20px 24px;margin-bottom:14px;box-shadow:0 1px 5px rgba(0,0,0,0.04);}
+  .order-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+  .order-id{font-size:0.78rem;color:var(--text-light);}
+  .badge{display:inline-block;font-size:0.65rem;font-weight:700;padding:4px 10px;border-radius:8px;}
+  .badge-pending  {background:rgba(232,160,32,0.15);color:#b07010;}
+  .badge-packed   {background:rgba(58,123,213,0.12);color:#2a5da8;}
+  .badge-delivered{background:rgba(74,124,47,0.12); color:#2d6a10;}
+  .badge-cancelled{background:rgba(217,79,79,0.1);  color:#c03030;}
+  .badge-disputed {background:rgba(155,60,200,0.1); color:#7b2ca8;}
+  .order-main{display:flex;align-items:center;gap:14px;}
+  .buyer-avatar{width:44px;height:44px;border-radius:50%;background:var(--green-mid);display:flex;align-items:center;justify-content:center;color:white;font-size:0.9rem;font-weight:700;flex-shrink:0;}
+  .order-info h4{font-size:0.95rem;font-weight:700;}
+  .order-info p{font-size:0.78rem;color:var(--text-light);margin-top:3px;}
+  .order-amount{margin-left:auto;text-align:right;flex-shrink:0;}
+  .order-amount .total{font-size:1.1rem;font-weight:700;}
+  .order-actions{display:flex;gap:8px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);}
+  .btn-ship{flex:1;padding:9px;background:var(--blue);color:white;border:none;border-radius:9px;font-weight:700;font-size:0.8rem;cursor:pointer;font-family:'DM Sans',sans-serif;}
+  .btn-ship:hover{background:#2a6ac5;}
+  .btn-deliver{flex:1;padding:9px;background:var(--green-light);color:white;border:none;border-radius:9px;font-weight:700;font-size:0.8rem;cursor:pointer;font-family:'DM Sans',sans-serif;}
+  .btn-deliver:hover{background:var(--green-dark);}
+  .btn-msg{flex:1;padding:9px;background:var(--cream);border:1.5px solid var(--border);border-radius:9px;font-weight:600;font-size:0.8rem;cursor:pointer;font-family:'DM Sans',sans-serif;}
+  .btn-msg:hover{background:var(--green-pale);border-color:var(--green-light);}
+  .empty-state{text-align:center;padding:60px 20px;color:var(--text-light);}
+  .empty-state .ei{font-size:3.5rem;margin-bottom:14px;}
+  .empty-state h3{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--text-dark);margin-bottom:8px;}
+  .skeleton{background:linear-gradient(90deg,#e8f0e0 25%,#d4e0c4 50%,#e8f0e0 75%);background-size:200% 100%;animation:shimmer 1.2s infinite;border-radius:12px;height:120px;margin-bottom:12px;}
+  @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div><h2>📦 Incoming Orders</h2><p>Manage and fulfill buyer orders</p></div>
+</header>
+<div class="content">
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('incoming',this)">Incoming</button>
+    <button class="tab" onclick="switchTab('history',this)">History</button>
+  </div>
+  <div id="orders-list"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>
+</div>
+<script src="app.js"></script>
+<script>
+  let tab='incoming';
+  function switchTab(t,el){tab=t;document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));el.classList.add('active');loadOrders();}
+
+  async function loadOrders(){
+    const list=document.getElementById('orders-list');
+    list.innerHTML='<div class="skeleton"></div>'.repeat(3);
+    const data=await apiFetch(`farmer_orders.php?farmer_id=${farmerId()}&filter=${tab}`);
+    const orders=data.orders||[];
+    if(!orders.length){
+      list.innerHTML=`<div class="empty-state"><div class="ei">${tab==='incoming'?'📭':'🕐'}</div><h3>${tab==='incoming'?'No incoming orders':'No order history'}</h3><p>${tab==='incoming'?'Orders from buyers will appear here.':'Fulfilled orders will appear here.'}</p></div>`;
+      return;
+    }
+    list.innerHTML=orders.map(o=>`
+      <div class="order-card">
+        <div class="order-top"><span class="order-id">Order #${o.id} · ${formatDate(o.created_at)}</span>${statusBadge(o.status)}</div>
+        <div class="order-main">
+          <div class="buyer-avatar">${getInitials(o.buyer_name)}</div>
+          <div class="order-info"><h4>${o.buyer_name}</h4><p>${o.product_name} · ${o.buyer_city||''}</p></div>
+          <div class="order-amount"><div class="total">${formatMoney(o.total_amount)}</div></div>
+        </div>
+        ${tab==='incoming'?buildActions(o):''}
+      </div>`).join('');
+  }
+
+  function buildActions(o){
+    if(o.status==='pending') return `<div class="order-actions">
+      <button class="btn-ship" onclick="doAction(${o.id},'ship')">🚚 Mark as Shipped</button>
+      <button class="btn-msg" onclick="navTo('messages.html')">💬 Message Buyer</button>
+    </div>`;
+    if(o.status==='shipped') return `<div class="order-actions">
+      <button class="btn-deliver" onclick="doAction(${o.id},'deliver')">✓ Mark Delivered</button>
+      <button class="btn-msg" onclick="navTo('messages.html')">💬 Message Buyer</button>
+    </div>`;
+    return '';
+  }
+
+  async function doAction(orderId,action){
+    const labels={ship:'Mark this order as shipped?',deliver:'Mark this order as delivered?'};
+    if(!confirm(labels[action])) return;
+    const res=await apiFetch('farmer_orders.php?farmer_id='+farmerId(),{method:'POST',body:JSON.stringify({order_id:orderId,action})});
+    if(res.error){showToast(res.error,'error');return;}
+    showToast(res.message); loadOrders();
+  }
+
+  loadOrders();
+</script>
+</body>
+</html>

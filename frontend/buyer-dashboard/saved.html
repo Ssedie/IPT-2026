@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saved Listings</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--green-dark:#1a3a1a;--green-mid:#2d5a1b;--green-light:#4a7c2f;--green-pale:#e8f0e0;--amber:#e8a020;--amber-light:#f5c842;--cream:#faf6ed;--white:#fff;--text-dark:#1a2a0a;--text-mid:#3a4a2a;--text-light:#6a7a5a;--border:#d4e0c4;--red:#d94f4f;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;font-family:'DM Sans',sans-serif;background:#f0f4ea;color:var(--text-dark);}
+  body{display:flex;flex-direction:column;}
+  .topbar{flex-shrink:0;background:var(--white);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);box-shadow:0 1px 8px rgba(0,0,0,0.05);}
+  .topbar h2{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;}
+  .topbar p{font-size:0.8rem;color:var(--text-light);margin-top:2px;}
+  .content{flex:1;overflow-y:auto;padding:24px 32px;}
+  .saved-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;}
+  .saved-card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:20px;box-shadow:0 1px 6px rgba(0,0,0,0.04);transition:all 0.2s;}
+  .saved-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.09);}
+  .saved-name{font-size:0.95rem;font-weight:700;margin-bottom:4px;}
+  .saved-farmer{font-size:0.75rem;color:var(--text-light);margin-bottom:10px;}
+  .saved-price{font-size:1.15rem;font-weight:700;color:var(--green-light);}
+  .saved-unit{font-size:0.72rem;color:var(--text-light);}
+  .saved-stock{font-size:0.72rem;margin-top:6px;padding:3px 8px;border-radius:6px;display:inline-block;}
+  .in-stock{background:rgba(74,124,47,0.1);color:#2d6a10;}
+  .low-stock{background:rgba(232,160,32,0.12);color:#b07010;}
+  .saved-actions{display:flex;gap:8px;margin-top:14px;}
+  .btn-order-now{flex:1;background:var(--amber);color:var(--green-dark);border:none;padding:9px;border-radius:9px;font-weight:700;font-size:0.8rem;cursor:pointer;font-family:'DM Sans',sans-serif;}
+  .btn-order-now:hover{background:var(--amber-light);}
+  .btn-remove{padding:9px 14px;background:var(--cream);border:1.5px solid var(--border);border-radius:9px;cursor:pointer;font-size:0.8rem;font-family:'DM Sans',sans-serif;transition:all 0.2s;}
+  .btn-remove:hover{background:#fde8e8;border-color:var(--red);color:var(--red);}
+  .saved-date{font-size:0.68rem;color:var(--text-light);margin-top:8px;}
+  .empty-state{text-align:center;padding:60px 20px;color:var(--text-light);}
+  .empty-state .ei{font-size:3.5rem;margin-bottom:14px;}
+  .empty-state h3{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--text-dark);margin-bottom:8px;}
+  .btn-browse{padding:11px 28px;background:var(--amber);color:var(--green-dark);border:none;border-radius:10px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:14px;}
+  .skeleton{background:linear-gradient(90deg,#e8f0e0 25%,#d4e0c4 50%,#e8f0e0 75%);background-size:200% 100%;animation:shimmer 1.2s infinite;border-radius:14px;height:180px;}
+  @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+  /* Order modal */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100;display:none;align-items:center;justify-content:center;}
+  .modal-overlay.open{display:flex;}
+  .modal{background:var(--white);border-radius:20px;padding:28px;width:90%;max-width:380px;}
+  .modal h3{font-family:'Playfair Display',serif;font-size:1.1rem;margin-bottom:4px;}
+  .modal .sub{font-size:0.8rem;color:var(--text-light);margin-bottom:18px;}
+  .modal label{display:block;font-size:0.8rem;font-weight:600;color:var(--text-mid);margin-bottom:6px;}
+  .modal input{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.9rem;outline:none;}
+  .modal input:focus{border-color:var(--green-light);}
+  .price-preview{background:var(--green-pale);border-radius:10px;padding:12px 16px;margin:12px 0;font-size:0.9rem;font-weight:600;display:flex;justify-content:space-between;}
+  .price-preview span{color:var(--green-light);font-size:1rem;}
+  .modal-actions{display:flex;gap:10px;margin-top:14px;}
+  .btn-c{flex:1;padding:11px;border:1.5px solid var(--border);border-radius:10px;background:var(--cream);cursor:pointer;font-weight:600;font-family:'DM Sans',sans-serif;}
+  .btn-s{flex:1;padding:11px;border:none;border-radius:10px;background:var(--amber);color:var(--green-dark);cursor:pointer;font-weight:700;font-family:'DM Sans',sans-serif;}
+  .btn-s:disabled{opacity:0.5;cursor:not-allowed;}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div><h2>⭐ Saved Listings</h2><p>Your watchlist of favourite produce</p></div>
+</header>
+<div class="content">
+  <div class="saved-grid" id="saved-grid">
+    <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="order-modal">
+  <div class="modal">
+    <h3 id="m-title">Order</h3>
+    <p class="sub" id="m-sub"></p>
+    <label>Quantity (<span id="m-unit">kg</span>)</label>
+    <input type="number" id="m-qty" min="0.1" step="0.1" value="1" oninput="updatePrev()">
+    <div class="price-preview">Total: <span id="m-total">₱0</span></div>
+    <div class="modal-actions">
+      <button class="btn-c" onclick="closeMod()">Cancel</button>
+      <button class="btn-s" id="m-confirm" onclick="placeOrder()">Order Now</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+  let activeListing = null;
+
+  async function loadSaved() {
+    const grid = document.getElementById('saved-grid');
+    const data = await apiFetch(`saved_listings.php?buyer_id=${buyerId()}`);
+    const saved = data.saved || [];
+    if (!saved.length) {
+      grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="ei">⭐</div><h3>No saved listings yet</h3><p>Star listings while browsing to save them here.</p><button class="btn-browse" onclick="navTo('browse.html')">Browse Listings</button></div>`;
+      return;
+    }
+    grid.innerHTML = saved.map(s => {
+      const stockCls = s.stock < 10 ? 'low-stock' : 'in-stock';
+      const stockTxt = s.stock < 10 ? `Low stock: ${s.stock} ${s.unit}` : `${s.stock} ${s.unit} available`;
+      return `
+        <div class="saved-card">
+          <div class="saved-name">${s.product_name}</div>
+          <div class="saved-farmer">👨‍🌾 ${s.farmer_name} · ${s.city || ''}</div>
+          <div class="saved-price">₱${parseFloat(s.price).toFixed(2)}<span class="saved-unit"> / ${s.unit}</span></div>
+          <span class="saved-stock ${stockCls}">${stockTxt}</span>
+          <div class="saved-date">Saved ${formatDate(s.created_at)}</div>
+          <div class="saved-actions">
+            <button class="btn-order-now" onclick='openMod(${JSON.stringify(s)})'>🛒 Order</button>
+            <button class="btn-remove" onclick="removeSaved(${s.listing_id}, this)">✕ Remove</button>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  async function removeSaved(listingId, btn) {
+    btn.disabled = true;
+    const res = await apiFetch(`saved_listings.php?buyer_id=${buyerId()}`, { method:'DELETE', body: JSON.stringify({listing_id: listingId}) });
+    if (res.error) { showToast(res.error, 'error'); btn.disabled=false; return; }
+    showToast('Removed from saved');
+    loadSaved();
+  }
+
+  function openMod(listing) {
+    activeListing = listing;
+    document.getElementById('m-title').textContent = listing.product_name;
+    document.getElementById('m-sub').textContent   = `₱${parseFloat(listing.price).toFixed(2)} / ${listing.unit}`;
+    document.getElementById('m-unit').textContent  = listing.unit;
+    document.getElementById('m-qty').max           = listing.stock;
+    document.getElementById('m-qty').value         = 1;
+    updatePrev();
+    document.getElementById('order-modal').classList.add('open');
+  }
+
+  function closeMod() { document.getElementById('order-modal').classList.remove('open'); activeListing=null; }
+
+  function updatePrev() {
+    if (!activeListing) return;
+    const qty   = parseFloat(document.getElementById('m-qty').value)||0;
+    const total = qty * parseFloat(activeListing.price);
+    document.getElementById('m-total').textContent = '₱'+total.toLocaleString('en-PH',{minimumFractionDigits:2});
+  }
+
+  async function placeOrder() {
+    const btn = document.getElementById('m-confirm');
+    const qty = parseFloat(document.getElementById('m-qty').value);
+    if (!qty||qty<=0){showToast('Enter a valid quantity','error');return;}
+    btn.disabled=true;btn.textContent='Ordering...';
+    const res = await apiFetch('place_order.php',{method:'POST',body:JSON.stringify({buyer_id:buyerId(),listing_id:activeListing.listing_id,quantity:qty})});
+    btn.disabled=false;btn.textContent='Order Now';
+    if(res.error){showToast(res.error,'error');return;}
+    showToast(`Order placed! Total: ₱${parseFloat(res.total).toFixed(2)}`);
+    closeMod(); loadSaved();
+  }
+
+  document.getElementById('order-modal').addEventListener('click',function(e){if(e.target===this)closeMod();});
+  loadSaved();
+</script>
+</body>
+</html>

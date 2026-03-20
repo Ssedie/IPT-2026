@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>New Listing</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--green-dark:#1a3a1a;--green-mid:#2d5a1b;--green-light:#4a7c2f;--green-pale:#e8f0e0;--amber:#e8a020;--amber-light:#f5c842;--cream:#faf6ed;--white:#fff;--text-dark:#1a2a0a;--text-mid:#3a4a2a;--text-light:#6a7a5a;--border:#d4e0c4;--red:#d94f4f;}
+  *{margin:0;padding:0;box-sizing:border-box;}html,body{height:100%;font-family:'DM Sans',sans-serif;background:#f0f4ea;color:var(--text-dark);}
+  body{display:flex;flex-direction:column;}
+  .topbar{flex-shrink:0;background:var(--white);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);box-shadow:0 1px 8px rgba(0,0,0,0.05);}
+  .topbar h2{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;}
+  .topbar p{font-size:0.8rem;color:var(--text-light);margin-top:2px;}
+  .content{flex:1;overflow-y:auto;padding:32px;}
+  .form-card{background:var(--white);border:1px solid var(--border);border-radius:18px;padding:32px;max-width:560px;margin:0 auto;box-shadow:0 1px 8px rgba(0,0,0,0.05);}
+  .form-card h3{font-family:'Playfair Display',serif;font-size:1.1rem;margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid var(--border);}
+  .form-group{margin-bottom:18px;}
+  .form-group label{display:block;font-size:0.8rem;font-weight:600;color:var(--text-mid);margin-bottom:6px;}
+  .form-group input,.form-group select,.form-group textarea{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.9rem;outline:none;transition:border-color 0.2s;background:var(--cream);}
+  .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--green-light);background:var(--white);}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .preview-box{background:var(--green-pale);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;gap:14px;}
+  .preview-emoji{font-size:2rem;}
+  .preview-info .pname{font-size:0.95rem;font-weight:700;}
+  .preview-info .pprice{font-size:0.85rem;color:var(--green-light);font-weight:600;margin-top:3px;}
+  .btn-submit{width:100%;padding:13px;background:var(--amber);color:var(--green-dark);border:none;border-radius:12px;font-weight:700;font-size:0.9rem;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:4px;transition:background 0.2s;}
+  .btn-submit:hover{background:var(--amber-light);}
+  .btn-submit:disabled{opacity:0.5;cursor:not-allowed;}
+  .btn-back{width:100%;padding:11px;background:var(--cream);border:1.5px solid var(--border);border-radius:12px;font-weight:600;font-size:0.875rem;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:10px;}
+  .required{color:var(--red);}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div><h2>➕ New Listing</h2><p>Add a new crop to the marketplace</p></div>
+</header>
+<div class="content">
+  <div class="form-card">
+    <h3>🌾 Crop Details</h3>
+    <div id="preview-box" class="preview-box" style="display:none">
+      <div class="preview-emoji" id="prev-emoji">🌿</div>
+      <div class="preview-info">
+        <div class="pname"  id="prev-name">—</div>
+        <div class="pprice" id="prev-price">—</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Product Name <span class="required">*</span></label>
+      <input type="text" id="f-name" placeholder="e.g. Organic White Rice" oninput="updatePreview()">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Price (₱) <span class="required">*</span></label>
+        <input type="number" id="f-price" placeholder="0.00" step="0.01" min="0.01" oninput="updatePreview()">
+      </div>
+      <div class="form-group">
+        <label>Unit <span class="required">*</span></label>
+        <select id="f-unit" onchange="updatePreview()">
+          <option value="kg">kg</option>
+          <option value="piece">piece</option>
+          <option value="bundle">bundle</option>
+          <option value="sack">sack</option>
+          <option value="liter">liter</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Stock Available <span class="required">*</span></label>
+      <input type="number" id="f-stock" placeholder="e.g. 50" step="0.1" min="0.1">
+    </div>
+    <button class="btn-submit" id="submit-btn" onclick="createListing()">🌾 Post Listing</button>
+    <button class="btn-back" onclick="navTo('listings.html')">← Back to Listings</button>
+  </div>
+</div>
+<script src="app.js"></script>
+<script>
+  const emojis={'rice':'🌾','corn':'🌽','eggplant':'🍆','tomato':'🍅','onion':'🧅','garlic':'🧄','carrot':'🥕','pechay':'🥬','camote':'🍠','sitaw':'🌿','ampalaya':'🥒','default':'🌿'};
+  function ge(n){const l=(n||'').toLowerCase();for(const[k,v] of Object.entries(emojis))if(l.includes(k))return v;return emojis.default;}
+
+  function updatePreview(){
+    const name  = document.getElementById('f-name').value.trim();
+    const price = document.getElementById('f-price').value;
+    const unit  = document.getElementById('f-unit').value;
+    const box   = document.getElementById('preview-box');
+    if(name){ box.style.display='flex'; document.getElementById('prev-emoji').textContent=ge(name); document.getElementById('prev-name').textContent=name; document.getElementById('prev-price').textContent=price?`₱${parseFloat(price).toFixed(2)} / ${unit}`:'Set a price'; }
+    else { box.style.display='none'; }
+  }
+
+  async function createListing(){
+    const btn   = document.getElementById('submit-btn');
+    const name  = document.getElementById('f-name').value.trim();
+    const price = parseFloat(document.getElementById('f-price').value);
+    const stock = parseFloat(document.getElementById('f-stock').value);
+    const unit  = document.getElementById('f-unit').value;
+    if(!name){showToast('Product name is required','error');return;}
+    if(!price||price<=0){showToast('Enter a valid price','error');return;}
+    if(!stock||stock<=0){showToast('Enter available stock','error');return;}
+    btn.disabled=true; btn.textContent='Posting...';
+    const res = await apiFetch(`farmer_listings.php?farmer_id=${farmerId()}`,{method:'POST',body:JSON.stringify({product_name:name,price,stock,unit})});
+    btn.disabled=false; btn.textContent='🌾 Post Listing';
+    if(res.error){showToast(res.error,'error');return;}
+    showToast('Listing posted successfully!');
+    document.getElementById('f-name').value=''; document.getElementById('f-price').value=''; document.getElementById('f-stock').value='';
+    document.getElementById('preview-box').style.display='none';
+    setTimeout(()=>navTo('listings.html'),1200);
+  }
+</script>
+</body>
+</html>

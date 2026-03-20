@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Profile</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--green-dark:#1a3a1a;--green-mid:#2d5a1b;--green-light:#4a7c2f;--green-pale:#e8f0e0;--amber:#e8a020;--amber-light:#f5c842;--cream:#faf6ed;--white:#fff;--text-dark:#1a2a0a;--text-mid:#3a4a2a;--text-light:#6a7a5a;--border:#d4e0c4;--red:#d94f4f;}
+  *{margin:0;padding:0;box-sizing:border-box;}html,body{height:100%;font-family:'DM Sans',sans-serif;background:#f0f4ea;color:var(--text-dark);}
+  body{display:flex;flex-direction:column;}
+  .topbar{flex-shrink:0;background:var(--white);padding:16px 32px;border-bottom:1px solid var(--border);box-shadow:0 1px 8px rgba(0,0,0,0.05);}
+  .topbar h2{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;}
+  .topbar p{font-size:0.8rem;color:var(--text-light);margin-top:2px;}
+  .content{flex:1;overflow-y:auto;padding:28px 32px;}
+  .layout{display:grid;grid-template-columns:280px 1fr;gap:24px;max-width:900px;}
+  .profile-card{background:var(--white);border:1px solid var(--border);border-radius:18px;padding:28px 24px;text-align:center;box-shadow:0 1px 6px rgba(0,0,0,0.04);}
+  .profile-avatar{width:88px;height:88px;background:var(--green-mid);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 14px;border:3px solid var(--amber);}
+  .profile-name{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;margin-bottom:4px;}
+  .profile-email{font-size:0.78rem;color:var(--text-light);}
+  .verified-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(74,124,47,0.2);color:#2d6a10;font-size:0.65rem;font-weight:700;padding:3px 10px;border-radius:10px;margin:10px 0;border:1px solid rgba(74,124,47,0.25);}
+  .profile-joined{font-size:0.74rem;color:var(--text-light);margin-top:6px;}
+  .profile-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px;}
+  .ps-item{background:var(--green-pale);border-radius:12px;padding:12px 10px;text-align:center;}
+  .ps-val{font-size:1.2rem;font-weight:700;}.ps-lbl{font-size:0.68rem;color:var(--text-light);margin-top:2px;}
+  .form-sections{display:flex;flex-direction:column;gap:20px;}
+  .form-card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:24px;box-shadow:0 1px 6px rgba(0,0,0,0.04);}
+  .form-card h3{font-size:0.95rem;font-weight:700;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .form-group{display:flex;flex-direction:column;gap:5px;}
+  .form-group.full{grid-column:1/-1;}
+  .form-group label{font-size:0.78rem;font-weight:600;color:var(--text-mid);}
+  .form-group input{padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.875rem;outline:none;transition:border-color 0.2s;background:var(--cream);}
+  .form-group input:focus{border-color:var(--green-light);background:var(--white);}
+  .form-group input:disabled{opacity:0.6;}
+  .form-actions{display:flex;gap:10px;margin-top:18px;justify-content:flex-end;}
+  .btn-save{padding:11px 28px;background:var(--amber);color:var(--green-dark);border:none;border-radius:10px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;}
+  .btn-save:hover{background:var(--amber-light);}
+  .btn-save:disabled{opacity:0.5;cursor:not-allowed;}
+  .btn-reset{padding:11px 20px;background:var(--cream);border:1.5px solid var(--border);border-radius:10px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;}
+  .pw-toggle{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+  .pw-toggle input[type=checkbox]{accent-color:var(--green-light);width:16px;height:16px;cursor:pointer;}
+  .pw-toggle label{font-size:0.82rem;font-weight:600;color:var(--text-mid);cursor:pointer;}
+  .pw-fields{display:none;}
+  .pw-fields.show{display:grid;}
+</style>
+</head>
+<body>
+<header class="topbar"><h2>👤 My Profile</h2><p>Manage your farmer account</p></header>
+<div class="content">
+  <div class="layout">
+    <div>
+      <div class="profile-card">
+        <div class="profile-avatar" id="p-avatar">🧑‍🌾</div>
+        <div class="profile-name"  id="p-name">Loading...</div>
+        <div class="profile-email" id="p-email">...</div>
+        <div class="verified-badge">✓ Verified Farmer</div>
+        <div class="profile-joined" id="p-joined"></div>
+        <div class="profile-stats">
+          <div class="ps-item"><div class="ps-val" id="ps-listings">—</div><div class="ps-lbl">Listings</div></div>
+          <div class="ps-item"><div class="ps-val" id="ps-orders">—</div><div class="ps-lbl">Fulfilled</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="form-sections">
+      <div class="form-card">
+        <h3>📋 Personal Information</h3>
+        <div class="form-grid">
+          <div class="form-group full"><label>Full Name *</label><input type="text" id="f-fullname"></div>
+          <div class="form-group full"><label>Email</label><input type="email" id="f-email" disabled></div>
+        </div>
+        <div class="form-actions"><button class="btn-reset" onclick="loadProfile()">Reset</button><button class="btn-save" onclick="saveInfo(event)">Save Changes</button></div>
+      </div>
+      <div class="form-card">
+        <h3>📍 Address</h3>
+        <div class="form-grid">
+          <div class="form-group full"><label>Street</label><input type="text" id="f-street"></div>
+          <div class="form-group"><label>Barangay</label><input type="text" id="f-barangay"></div>
+          <div class="form-group"><label>City</label><input type="text" id="f-city"></div>
+          <div class="form-group"><label>Province</label><input type="text" id="f-province"></div>
+          <div class="form-group"><label>ZIP</label><input type="text" id="f-zip"></div>
+        </div>
+        <div class="form-actions"><button class="btn-reset" onclick="loadProfile()">Reset</button><button class="btn-save" onclick="saveInfo(event)">Save Address</button></div>
+      </div>
+      <div class="form-card">
+        <h3>🔒 Change Password</h3>
+        <div class="pw-toggle"><input type="checkbox" id="pw-chk" onchange="togglePw(this)"><label for="pw-chk">Change my password</label></div>
+        <div class="pw-fields form-grid" id="pw-fields">
+          <div class="form-group full"><label>Current Password</label><input type="password" id="f-old-pw"></div>
+          <div class="form-group"><label>New Password</label><input type="password" id="f-new-pw"></div>
+          <div class="form-group"><label>Confirm Password</label><input type="password" id="f-confirm-pw"></div>
+        </div>
+        <div class="form-actions"><button class="btn-save" id="pw-btn" onclick="savePw()" disabled>Update Password</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="app.js"></script>
+<script>
+  function togglePw(chk){document.getElementById('pw-fields').classList.toggle('show',chk.checked);document.getElementById('pw-btn').disabled=!chk.checked;}
+
+  async function loadProfile(){
+    const data=await apiFetch(`farmer_profile.php?farmer_id=${farmerId()}`);
+    const u=data.user;if(!u)return;
+    const initials=u.full_name?.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()||'🧑‍🌾';
+    document.getElementById('p-avatar').textContent =initials;
+    document.getElementById('p-name').textContent   =u.full_name||'—';
+    document.getElementById('p-email').textContent  =u.email||'—';
+    document.getElementById('p-joined').textContent =u.created_at?'Member since '+formatDate(u.created_at):'';
+    document.getElementById('f-fullname').value=u.full_name||'';
+    document.getElementById('f-email').value   =u.email||'';
+    document.getElementById('f-street').value  =u.street||'';
+    document.getElementById('f-barangay').value=u.barangay||'';
+    document.getElementById('f-city').value    =u.city||'';
+    document.getElementById('f-province').value=u.province||'';
+    document.getElementById('f-zip').value     =u.zip_code||'';
+    document.getElementById('ps-listings').textContent=data.active_listings||0;
+    document.getElementById('ps-orders').textContent  =data.fulfilled_orders||0;
+  }
+
+  async function saveInfo(e){
+    const btn=e.target;btn.disabled=true;btn.textContent='Saving...';
+    const res=await apiFetch(`farmer_profile.php?farmer_id=${farmerId()}`,{method:'POST',body:JSON.stringify({
+      full_name:document.getElementById('f-fullname').value,
+      street:   document.getElementById('f-street').value,
+      barangay: document.getElementById('f-barangay').value,
+      city:     document.getElementById('f-city').value,
+      province: document.getElementById('f-province').value,
+      zip_code: document.getElementById('f-zip').value,
+    })});
+    btn.disabled=false;btn.textContent='Save Changes';
+    if(res.error){showToast(res.error,'error');return;}
+    showToast('Profile updated!');
+    const user=getUser();if(user){user.full_name=document.getElementById('f-fullname').value;localStorage.setItem('user',JSON.stringify(user));}
+    loadProfile();
+  }
+
+  async function savePw(){
+    const btn=document.getElementById('pw-btn');
+    const oldPw=document.getElementById('f-old-pw').value;
+    const newPw=document.getElementById('f-new-pw').value;
+    const conPw=document.getElementById('f-confirm-pw').value;
+    if(!oldPw||!newPw||!conPw){showToast('Fill in all password fields','error');return;}
+    if(newPw!==conPw){showToast('Passwords do not match','error');return;}
+    if(newPw.length<6){showToast('Password must be at least 6 characters','error');return;}
+    btn.disabled=true;btn.textContent='Updating...';
+    const res=await apiFetch(`farmer_profile.php?farmer_id=${farmerId()}`,{method:'POST',body:JSON.stringify({
+      full_name:document.getElementById('f-fullname').value,
+      old_password:oldPw,new_password:newPw
+    })});
+    btn.disabled=false;btn.textContent='Update Password';
+    if(res.error){showToast(res.error,'error');return;}
+    showToast('Password updated!');
+    ['f-old-pw','f-new-pw','f-confirm-pw'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('pw-chk').checked=false;togglePw({checked:false});
+  }
+
+  function formatDate(dt){if(!dt)return'';return new Date(dt).toLocaleDateString('en-PH',{year:'numeric',month:'long',day:'numeric'});}
+  loadProfile();
+</script>
+</body>
+</html>

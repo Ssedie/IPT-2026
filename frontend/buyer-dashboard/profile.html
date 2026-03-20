@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Profile</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--green-dark:#1a3a1a;--green-mid:#2d5a1b;--green-light:#4a7c2f;--green-pale:#e8f0e0;--amber:#e8a020;--amber-light:#f5c842;--cream:#faf6ed;--white:#fff;--text-dark:#1a2a0a;--text-mid:#3a4a2a;--text-light:#6a7a5a;--border:#d4e0c4;--red:#d94f4f;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;font-family:'DM Sans',sans-serif;background:#f0f4ea;color:var(--text-dark);}
+  body{display:flex;flex-direction:column;}
+  .topbar{flex-shrink:0;background:var(--white);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);box-shadow:0 1px 8px rgba(0,0,0,0.05);}
+  .topbar h2{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;}
+  .topbar p{font-size:0.8rem;color:var(--text-light);margin-top:2px;}
+  .content{flex:1;overflow-y:auto;padding:28px 32px;}
+  .profile-layout{display:grid;grid-template-columns:280px 1fr;gap:24px;max-width:900px;}
+
+  /* LEFT PANEL */
+  .profile-card{background:var(--white);border:1px solid var(--border);border-radius:18px;padding:28px 24px;text-align:center;box-shadow:0 1px 6px rgba(0,0,0,0.04);}
+  .profile-avatar{width:88px;height:88px;background:var(--green-mid);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2.2rem;margin:0 auto 14px;border:3px solid var(--amber);}
+  .profile-name{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;margin-bottom:4px;}
+  .profile-email{font-size:0.78rem;color:var(--text-light);}
+  .profile-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(58,123,213,0.12);color:#2a5da8;font-size:0.65rem;font-weight:700;padding:3px 10px;border-radius:10px;margin:10px 0;border:1px solid rgba(58,123,213,0.25);}
+  .profile-joined{font-size:0.74rem;color:var(--text-light);margin-top:6px;}
+  .profile-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px;}
+  .ps-item{background:var(--green-pale);border-radius:12px;padding:12px 10px;text-align:center;}
+  .ps-val{font-size:1.2rem;font-weight:700;color:var(--text-dark);}
+  .ps-lbl{font-size:0.68rem;color:var(--text-light);margin-top:2px;}
+
+  /* RIGHT PANEL */
+  .form-sections{display:flex;flex-direction:column;gap:20px;}
+  .form-card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:24px;box-shadow:0 1px 6px rgba(0,0,0,0.04);}
+  .form-card h3{font-size:0.95rem;font-weight:700;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .form-group{display:flex;flex-direction:column;gap:5px;}
+  .form-group.full{grid-column:1/-1;}
+  .form-group label{font-size:0.78rem;font-weight:600;color:var(--text-mid);}
+  .form-group input{padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.875rem;outline:none;transition:border-color 0.2s;background:var(--cream);}
+  .form-group input:focus{border-color:var(--green-light);background:var(--white);}
+  .form-group input:disabled{opacity:0.6;cursor:not-allowed;}
+  .form-actions{display:flex;gap:10px;margin-top:18px;justify-content:flex-end;}
+  .btn-save{padding:11px 28px;background:var(--amber);color:var(--green-dark);border:none;border-radius:10px;font-weight:700;font-size:0.875rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background 0.2s;}
+  .btn-save:hover{background:var(--amber-light);}
+  .btn-save:disabled{opacity:0.5;cursor:not-allowed;}
+  .btn-reset{padding:11px 20px;background:var(--cream);border:1.5px solid var(--border);border-radius:10px;font-weight:600;font-size:0.875rem;cursor:pointer;font-family:'DM Sans',sans-serif;}
+  .pw-toggle{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+  .pw-toggle input[type=checkbox]{accent-color:var(--green-light);width:16px;height:16px;cursor:pointer;}
+  .pw-toggle label{font-size:0.82rem;font-weight:600;color:var(--text-mid);cursor:pointer;}
+  .pw-fields{display:none;}
+  .pw-fields.show{display:grid;}
+  .skeleton{background:linear-gradient(90deg,#e8f0e0 25%,#d4e0c4 50%,#e8f0e0 75%);background-size:200% 100%;animation:shimmer 1.2s infinite;border-radius:12px;}
+  @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div><h2>👤 My Profile</h2><p>Manage your account information</p></div>
+</header>
+<div class="content">
+  <div class="profile-layout">
+
+    <!-- LEFT: Profile card -->
+    <div>
+      <div class="profile-card">
+        <div class="profile-avatar" id="p-avatar">🛍️</div>
+        <div class="profile-name" id="p-name">Loading...</div>
+        <div class="profile-email" id="p-email">...</div>
+        <div class="profile-badge">🛍️ Buyer Account</div>
+        <div class="profile-joined" id="p-joined"></div>
+        <div class="profile-stats">
+          <div class="ps-item"><div class="ps-val" id="ps-orders">—</div><div class="ps-lbl">Orders</div></div>
+          <div class="ps-item"><div class="ps-val" id="ps-saved">—</div><div class="ps-lbl">Saved</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Forms -->
+    <div class="form-sections">
+
+      <!-- Personal Info -->
+      <div class="form-card">
+        <h3>📋 Personal Information</h3>
+        <div class="form-grid">
+          <div class="form-group full">
+            <label>Full Name *</label>
+            <input type="text" id="f-fullname" placeholder="Your full name">
+          </div>
+          <div class="form-group full">
+            <label>Email Address</label>
+            <input type="email" id="f-email" disabled>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn-reset" onclick="loadProfile()">Reset</button>
+          <button class="btn-save" id="btn-save-info" onclick="saveInfo()">Save Changes</button>
+        </div>
+      </div>
+
+      <!-- Address -->
+      <div class="form-card">
+        <h3>📍 Address</h3>
+        <div class="form-grid">
+          <div class="form-group full">
+            <label>Street Address</label>
+            <input type="text" id="f-street" placeholder="House no., Street name">
+          </div>
+          <div class="form-group">
+            <label>Barangay</label>
+            <input type="text" id="f-barangay" placeholder="Barangay">
+          </div>
+          <div class="form-group">
+            <label>City / Municipality</label>
+            <input type="text" id="f-city" placeholder="City">
+          </div>
+          <div class="form-group">
+            <label>Province</label>
+            <input type="text" id="f-province" placeholder="Province">
+          </div>
+          <div class="form-group">
+            <label>ZIP Code</label>
+            <input type="text" id="f-zip" placeholder="ZIP">
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn-reset" onclick="loadProfile()">Reset</button>
+          <button class="btn-save" id="btn-save-addr" onclick="saveInfo()">Save Address</button>
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="form-card">
+        <h3>🔒 Change Password</h3>
+        <div class="pw-toggle">
+          <input type="checkbox" id="pw-toggle-chk" onchange="togglePwFields(this)">
+          <label for="pw-toggle-chk">I want to change my password</label>
+        </div>
+        <div class="pw-fields form-grid" id="pw-fields">
+          <div class="form-group full">
+            <label>Current Password</label>
+            <input type="password" id="f-old-pw" placeholder="Current password">
+          </div>
+          <div class="form-group">
+            <label>New Password</label>
+            <input type="password" id="f-new-pw" placeholder="New password">
+          </div>
+          <div class="form-group">
+            <label>Confirm New Password</label>
+            <input type="password" id="f-confirm-pw" placeholder="Confirm password">
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn-save" id="btn-save-pw" onclick="savePw()" disabled>Update Password</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+  function togglePwFields(chk) {
+    const fields = document.getElementById('pw-fields');
+    const btn    = document.getElementById('btn-save-pw');
+    fields.classList.toggle('show', chk.checked);
+    btn.disabled = !chk.checked;
+  }
+
+  async function loadProfile() {
+    const data = await apiFetch(`buyer_profile.php?user_id=${buyerId()}`);
+    const u    = data.user;
+    if (!u) return;
+
+    // Left card
+    const initials = u.full_name?.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase() || '🛍️';
+    document.getElementById('p-avatar').textContent  = initials;
+    document.getElementById('p-name').textContent    = u.full_name || '—';
+    document.getElementById('p-email').textContent   = u.email || '—';
+    document.getElementById('p-joined').textContent  = u.created_at ? 'Member since ' + formatDate(u.created_at) : '';
+
+    // Form fields
+    document.getElementById('f-fullname').value = u.full_name  || '';
+    document.getElementById('f-email').value    = u.email      || '';
+    document.getElementById('f-street').value   = u.street     || '';
+    document.getElementById('f-barangay').value = u.barangay   || '';
+    document.getElementById('f-city').value     = u.city       || '';
+    document.getElementById('f-province').value = u.province   || '';
+    document.getElementById('f-zip').value      = u.zip_code   || '';
+
+    // Stats
+    const stats = await apiFetch(`buyer_stats.php?buyer_id=${buyerId()}`);
+    document.getElementById('ps-orders').textContent = (parseInt(stats.active_orders)||0) + (parseInt(stats.completed_orders)||0);
+    document.getElementById('ps-saved').textContent  = stats.saved_listings || 0;
+  }
+
+  async function saveInfo() {
+    const btn = event.target;
+    btn.disabled = true; btn.textContent = 'Saving...';
+
+    const res = await apiFetch(`buyer_profile.php?user_id=${buyerId()}`, {
+      method: 'POST',
+      body: JSON.stringify({
+        full_name: document.getElementById('f-fullname').value,
+        street:    document.getElementById('f-street').value,
+        barangay:  document.getElementById('f-barangay').value,
+        city:      document.getElementById('f-city').value,
+        province:  document.getElementById('f-province').value,
+        zip_code:  document.getElementById('f-zip').value,
+      })
+    });
+
+    btn.disabled = false; btn.textContent = 'Save Changes';
+
+    if (res.error) { showToast(res.error, 'error'); return; }
+    showToast('Profile updated successfully!');
+
+    // Update localStorage
+    const user = getUser();
+    if (user) {
+      user.full_name = document.getElementById('f-fullname').value;
+      localStorage.setItem('user', JSON.stringify(user));
+    }
+    loadProfile();
+  }
+
+  async function savePw() {
+    const btn      = document.getElementById('btn-save-pw');
+    const oldPw    = document.getElementById('f-old-pw').value;
+    const newPw    = document.getElementById('f-new-pw').value;
+    const confirmPw= document.getElementById('f-confirm-pw').value;
+
+    if (!oldPw || !newPw || !confirmPw) { showToast('Fill in all password fields', 'error'); return; }
+    if (newPw !== confirmPw) { showToast('New passwords do not match', 'error'); return; }
+    if (newPw.length < 6)   { showToast('Password must be at least 6 characters', 'error'); return; }
+
+    btn.disabled = true; btn.textContent = 'Updating...';
+    const res = await apiFetch(`buyer_profile.php?user_id=${buyerId()}`, {
+      method: 'POST',
+      body: JSON.stringify({
+        full_name:    document.getElementById('f-fullname').value,
+        old_password: oldPw,
+        new_password: newPw,
+      })
+    });
+    btn.disabled = false; btn.textContent = 'Update Password';
+
+    if (res.error) { showToast(res.error, 'error'); return; }
+    showToast('Password updated successfully!');
+    document.getElementById('f-old-pw').value = '';
+    document.getElementById('f-new-pw').value = '';
+    document.getElementById('f-confirm-pw').value = '';
+    document.getElementById('pw-toggle-chk').checked = false;
+    togglePwFields({ checked: false });
+  }
+
+  function formatDate(dt) {
+    if (!dt) return '';
+    return new Date(dt).toLocaleDateString('en-PH', { year:'numeric', month:'long', day:'numeric' });
+  }
+
+  loadProfile();
+</script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Order History</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--green-dark:#1a3a1a;--green-mid:#2d5a1b;--green-light:#4a7c2f;--green-pale:#e8f0e0;--amber:#e8a020;--cream:#faf6ed;--white:#fff;--text-dark:#1a2a0a;--text-mid:#3a4a2a;--text-light:#6a7a5a;--border:#d4e0c4;--red:#d94f4f;}
+  *{margin:0;padding:0;box-sizing:border-box;}html,body{height:100%;font-family:'DM Sans',sans-serif;background:#f0f4ea;color:var(--text-dark);}
+  body{display:flex;flex-direction:column;}
+  .topbar{flex-shrink:0;background:var(--white);padding:16px 32px;border-bottom:1px solid var(--border);box-shadow:0 1px 8px rgba(0,0,0,0.05);}
+  .topbar h2{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;}
+  .topbar p{font-size:0.8rem;color:var(--text-light);margin-top:2px;}
+  .content{flex:1;overflow-y:auto;padding:24px 32px;}
+  .sum-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:22px;}
+  .sum-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:16px 20px;}
+  .sum-card .val{font-size:1.4rem;font-weight:700;}.sum-card .lbl{font-size:0.75rem;color:var(--text-light);margin-top:3px;}
+  .order-row{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:10px;display:flex;align-items:center;gap:14px;}
+  .av{width:40px;height:40px;border-radius:50%;background:var(--green-mid);display:flex;align-items:center;justify-content:center;color:white;font-size:0.85rem;font-weight:700;flex-shrink:0;}
+  .oi{flex:1;}.oi h4{font-size:0.88rem;font-weight:700;}.oi p{font-size:0.74rem;color:var(--text-light);margin-top:2px;}
+  .or{text-align:right;flex-shrink:0;}.or .amt{font-size:0.95rem;font-weight:700;}
+  .badge{display:inline-block;font-size:0.62rem;font-weight:700;padding:2px 8px;border-radius:7px;margin-top:4px;}
+  .badge-delivered{background:rgba(74,124,47,0.12);color:#2d6a10;}.badge-cancelled{background:rgba(217,79,79,0.1);color:#c03030;}.badge-disputed{background:rgba(155,60,200,0.1);color:#7b2ca8;}
+  .skeleton{background:linear-gradient(90deg,#e8f0e0 25%,#d4e0c4 50%,#e8f0e0 75%);background-size:200% 100%;animation:shimmer 1.2s infinite;border-radius:12px;height:78px;margin-bottom:10px;}
+  @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+  .empty-state{text-align:center;padding:48px;color:var(--text-light);}
+  select{padding:8px 14px;border:1px solid var(--border);border-radius:10px;background:var(--white);font-family:'DM Sans',sans-serif;font-size:0.85rem;outline:none;margin-bottom:16px;}
+</style>
+</head>
+<body>
+<header class="topbar"><h2>🕐 Order History</h2><p>All past fulfilled and cancelled orders</p></header>
+<div class="content">
+  <div class="sum-grid">
+    <div class="sum-card"><div class="val" id="h-total">—</div><div class="lbl">Total Orders</div></div>
+    <div class="sum-card"><div class="val" id="h-revenue">—</div><div class="lbl">Total Revenue</div></div>
+    <div class="sum-card"><div class="val" id="h-delivered">—</div><div class="lbl">Delivered</div></div>
+  </div>
+  <select id="sf" onchange="loadHistory()"><option value="">All</option><option value="delivered">Delivered</option><option value="cancelled">Cancelled</option><option value="disputed">Disputed</option></select>
+  <div id="list"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>
+</div>
+<script src="app.js"></script>
+<script>
+  async function loadHistory(){
+    const list=document.getElementById('list');
+    list.innerHTML='<div class="skeleton"></div>'.repeat(3);
+    const data=await apiFetch(`farmer_orders.php?farmer_id=${farmerId()}&filter=history`);
+    let orders=data.orders||[];
+    document.getElementById('h-total').textContent=orders.length;
+    document.getElementById('h-revenue').textContent=formatMoney(orders.filter(o=>o.status==='delivered').reduce((s,o)=>s+parseFloat(o.total_amount),0));
+    document.getElementById('h-delivered').textContent=orders.filter(o=>o.status==='delivered').length;
+    const f=document.getElementById('sf').value;
+    if(f) orders=orders.filter(o=>o.status===f);
+    if(!orders.length){list.innerHTML='<div class="empty-state">No orders found.</div>';return;}
+    list.innerHTML=orders.map(o=>`
+      <div class="order-row">
+        <div class="av">${getInitials(o.buyer_name)}</div>
+        <div class="oi"><h4>${o.buyer_name}</h4><p>${o.product_name} · Order #${o.id} · ${formatDate(o.created_at)}</p></div>
+        <div class="or"><div class="amt">${formatMoney(o.total_amount)}</div>${statusBadge(o.status)}</div>
+      </div>`).join('');
+  }
+  loadHistory();
+</script>
+</body>
+</html>

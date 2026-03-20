@@ -139,7 +139,7 @@
       <div class="stat-box"><div class="label">Rejected</div><div class="value" style="color:#d94f4f" id="stat-rejected">—</div><div class="sub">All time</div></div>
       <div class="stat-box"><div class="label">Total Applications</div><div class="value" id="stat-total">—</div><div class="sub">Submitted</div></div>
     </div>
-
+    
     <div class="filters-row">
       <button class="filter-btn active" onclick="filterApps('all',this)">All</button>
       <button class="filter-btn amber"  onclick="filterApps('pending',this)">⏳ Pending</button>
@@ -174,33 +174,26 @@
 
     <div class="modal-body">
 
-      <!-- Applicant info -->
       <div class="modal-section-title">👤 Applicant</div>
       <div class="detail-grid" id="modal-applicant"></div>
 
-      <!-- Farm info -->
       <div class="modal-section-title">🏡 Farm Details</div>
       <div class="detail-grid" id="modal-farm"></div>
 
-      <!-- Crops -->
       <div class="modal-section-title">🌱 Crops</div>
       <p id="modal-crops" style="font-size:0.88rem;color:var(--text-dark);margin-bottom:20px"></p>
 
-      <!-- Documents -->
       <div class="modal-section-title">📄 Uploaded Documents</div>
       <div class="docs-grid-modal" id="modal-docs"></div>
 
-      <!-- Photos -->
       <div class="modal-section-title">📸 Farm Photos</div>
       <div class="photos-row" id="modal-photos"></div>
 
-      <!-- Rejection reason (if any) -->
       <div id="modal-rejection-section" style="display:none">
         <div class="modal-section-title" style="color:var(--red)">❌ Rejection Reason</div>
         <div style="background:#fce4ec;border-radius:10px;padding:12px 16px;font-size:0.85rem;color:var(--red);margin-bottom:16px" id="modal-rejection-reason"></div>
       </div>
 
-      <!-- Reject reason input (shown when admin clicks Reject) -->
       <div class="reject-reason-wrap" id="reject-reason-wrap">
         <label>Reason for rejection <span style="color:var(--red)">*</span></label>
         <textarea id="reject-reason-input" placeholder="Explain why this application is being rejected..."></textarea>

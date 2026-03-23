@@ -98,7 +98,6 @@
             ><input
               type="text"
               placeholder="Search TXN ID or user..."
-              oninput="searchTxn(this.value)"
             />
           </div>
           <div class="icon-btn">
@@ -170,7 +169,7 @@
                 </tr>
               </thead>
               <tbody id="txn-tbody">
-                <tr data-status="payment">
+                <tr data-id="88421" data-status="payment">
                   <td><strong>TXN-88421</strong></td>
                   <td>Maria Santos</td>
                   <td><span class="badge blue">Payment</span></td>
@@ -180,7 +179,7 @@
                   <td>Mar 16, 2026 · 10:42 AM</td>
                   <td><span class="badge green">Completed</span></td>
                 </tr>
-                <tr data-status="payment">
+                <tr data-id="88420" data-status="payment">
                   <td><strong>TXN-88420</strong></td>
                   <td>Juan dela Cruz</td>
                   <td><span class="badge blue">Payment</span></td>
@@ -190,7 +189,7 @@
                   <td>Mar 15, 2026 · 3:18 PM</td>
                   <td><span class="badge green">Completed</span></td>
                 </tr>
-                <tr data-status="refund">
+                <tr data-id="88419" data-status="refund">
                   <td><strong>TXN-88419</strong></td>
                   <td>Ana Gomez</td>
                   <td><span class="badge red">Refund</span></td>
@@ -200,7 +199,7 @@
                   <td>Mar 15, 2026 · 1:05 PM</td>
                   <td><span class="badge yellow">Pending</span></td>
                 </tr>
-                <tr data-status="payout">
+                <tr data-id="88418" data-status="payout">
                   <td><strong>TXN-88418</strong></td>
                   <td>Mang Teban Farm</td>
                   <td><span class="badge purple">Payout</span></td>
@@ -210,7 +209,7 @@
                   <td>Mar 15, 2026 · 9:00 AM</td>
                   <td><span class="badge green">Completed</span></td>
                 </tr>
-                <tr data-status="fee">
+                <tr data-id="88417" data-status="fee">
                   <td><strong>TXN-88417</strong></td>
                   <td>System</td>
                   <td><span class="badge gray">Fee</span></td>
@@ -220,7 +219,7 @@
                   <td>Mar 15, 2026 · 9:00 AM</td>
                   <td><span class="badge green">Completed</span></td>
                 </tr>
-                <tr data-status="payment">
+                <tr data-id="88416" data-status="payment">
                   <td><strong>TXN-88416</strong></td>
                   <td>Liza Reyes</td>
                   <td><span class="badge blue">Payment</span></td>
@@ -230,7 +229,7 @@
                   <td>Mar 15, 2026 · 8:22 AM</td>
                   <td><span class="badge green">Completed</span></td>
                 </tr>
-                <tr data-status="payment">
+                <tr data-id="88415" data-status="payment">
                   <td><strong>TXN-88415</strong></td>
                   <td>Carlo Bautista</td>
                   <td><span class="badge blue">Payment</span></td>
@@ -240,7 +239,7 @@
                   <td>Mar 14, 2026 · 4:47 PM</td>
                   <td><span class="badge green">Completed</span></td>
                 </tr>
-                <tr data-status="payout">
+                <tr data-id="88414" data-status="payout">
                   <td><strong>TXN-88414</strong></td>
                   <td>SunFarm Co.</td>
                   <td><span class="badge purple">Payout</span></td>
@@ -269,15 +268,7 @@
             status === "all" || row.dataset.status === status ? "" : "none";
         });
       }
-      function searchTxn(q) {
-        document.querySelectorAll("#txn-tbody tr").forEach((row) => {
-          row.style.display = row.textContent
-            .toLowerCase()
-            .includes(q.toLowerCase())
-            ? ""
-            : "none";
-        });
-      }
+      applySearchHiglight("txn-body");
     </script>
   </body>
 </html>

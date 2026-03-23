@@ -98,8 +98,7 @@
             <span>🔍</span
             ><input
               type="text"
-              placeholder="Search buyer or order ID..."
-              oninput="handleSearch(this.value)"
+              placeholder="Search orders, users, listings..."
             />
           </div>
           <div class="icon-btn">
@@ -229,7 +228,7 @@
         tbody.innerHTML = orders
           .map(
             (o) => `
-      <tr>
+      <tr data-id="${o.id}">
         <td><strong>#ORD-${o.id}</strong></td>
         <td>${o.buyer_name}</td>
         <td>${o.seller_name}</td>
@@ -241,6 +240,7 @@
     `,
           )
           .join("");
+        applySearchHighlight('orders-tbody', 'table');
       }
 
       function updateStats(orders) {
@@ -254,15 +254,6 @@
         document.getElementById("stat-disputed").textContent = orders.filter(
           (o) => o.status === "disputed",
         ).length;
-      }
-
-      function handleSearch(q) {
-        const filtered = allOrders.filter(
-          (o) =>
-            String(o.id).includes(q) ||
-            o.buyer_name.toLowerCase().includes(q.toLowerCase()),
-        );
-        renderOrders(filtered);
       }
 
       loadOrders();

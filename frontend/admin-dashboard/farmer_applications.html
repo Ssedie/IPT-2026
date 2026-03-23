@@ -126,7 +126,7 @@
   <header class="topbar">
     <div class="topbar-left"><h2>Farmer Applications ✅</h2><p>Review and approve farmer registration requests</p></div>
     <div class="topbar-right">
-      <div class="search-box"><span>🔍</span><input type="text" placeholder="Search name, farm, location..." oninput="handleSearch(this.value)"></div>
+      <div class="search-box"><span>🔍</span><input type="text" placeholder="Search name, farm, location..."></div>
       <div class="icon-btn">🔔<div class="notif-dot"></div></div>
     </div>
   </header>
@@ -141,10 +141,10 @@
     </div>
     
     <div class="filters-row">
-      <button class="filter-btn active" onclick="filterApps('all',this)">All</button>
-      <button class="filter-btn amber"  onclick="filterApps('pending',this)">⏳ Pending</button>
-      <button class="filter-btn"        onclick="filterApps('approved',this)">✅ Approved</button>
-      <button class="filter-btn"        onclick="filterApps('rejected',this)">❌ Rejected</button>
+      <button class="filter-btn active" onclick="loadApps('all',this)">All</button>
+      <button class="filter-btn amber"  onclick="loadApps('pending',this)">⏳ Pending</button>
+      <button class="filter-btn"        onclick="loadApps('approved',this)">✅ Approved</button>
+      <button class="filter-btn"        onclick="loadApps('rejected',this)">❌ Rejected</button>
     </div>
 
     <div class="card">
@@ -241,7 +241,7 @@
     }
 
     tbody.innerHTML = apps.map(a => `
-      <tr>
+      <tr data-id="${a.id}">
         <td><span class="user-ava">👨‍🌾</span><strong>${a.full_name}</strong><br><span style="font-size:0.72rem;color:var(--text-light)">${a.email}</span></td>
         <td><strong>${a.farm_name}</strong></td>
         <td>${[a.barangay, a.city].filter(Boolean).join(', ')}</td>
@@ -266,16 +266,6 @@
     document.getElementById('stat-approved').textContent = apps.filter(a => a.status === 'approved').length;
     document.getElementById('stat-rejected').textContent = apps.filter(a => a.status === 'rejected').length;
     document.getElementById('badge-pending').textContent = apps.filter(a => a.status === 'pending').length;
-  }
-
-  function handleSearch(q) {
-    const filtered = allApps.filter(a =>
-      a.full_name.toLowerCase().includes(q.toLowerCase()) ||
-      (a.farm_name || '').toLowerCase().includes(q.toLowerCase()) ||
-      (a.city || '').toLowerCase().includes(q.toLowerCase()) ||
-      (a.barangay || '').toLowerCase().includes(q.toLowerCase())
-    );
-    renderApps(filtered);
   }
 
   // ── Modal ───────────────────────────────────────────────────────────────

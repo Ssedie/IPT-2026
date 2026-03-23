@@ -152,7 +152,7 @@
           >
             ❌ Removed
           </button>
-        </div>      
+        </div>
         <div class="card">
           <div class="data-table-wrap">
             <table class="data-table">
@@ -170,120 +170,16 @@
                 </tr>
               </thead>
               <tbody id="listings-tbody">
-                <tr data-status="flagged">
-                  <td><strong>#LST-4412</strong></td>
-                  <td>🌾 Palay Premium Grade A</td>
-                  <td>Ramon dela Torre</td>
-                  <td>₱35.00/kg</td>
-                  <td>500 kg</td>
-                  <td>Mar 15, 2026</td>
-                  <td>
-                    <span style="font-size: 0.78rem; color: #d94f4f"
-                      >Price 55% above market</span
-                    >
-                  </td>
-                  <td><span class="badge red">Flagged</span></td>
-                  <td>
-                    <button
-                      class="btn btn-primary btn-sm"
-                      onclick="approveListing(this)"
-                    >
-                      Approve
-                    </button>
-                    <button
-                      class="btn btn-danger btn-sm"
-                      onclick="removeListing(this)"
-                      style="margin-left: 4px"
-                    >
-                      Remove
-                    </button>
-                  </td>
-                </tr>
-                <tr data-status="flagged">
-                  <td><strong>#LST-4408</strong></td>
-                  <td>🍅 Organic Kamatis</td>
-                  <td>Nora Castillo</td>
-                  <td>₱95.00/kg</td>
-                  <td>80 kg</td>
-                  <td>Mar 14, 2026</td>
-                  <td>
-                    <span style="font-size: 0.78rem; color: #d94f4f"
-                      >No organic cert on file</span
-                    >
-                  </td>
-                  <td><span class="badge red">Flagged</span></td>
-                  <td>
-                    <button
-                      class="btn btn-primary btn-sm"
-                      onclick="approveListing(this)"
-                    >
-                      Approve
-                    </button>
-                    <button
-                      class="btn btn-danger btn-sm"
-                      onclick="removeListing(this)"
-                      style="margin-left: 4px"
-                    >
-                      Remove
-                    </button>
-                  </td>
-                </tr>
-                <tr data-status="active">
-                  <td><strong>#LST-4400</strong></td>
-                  <td>🌽 Mais Dilaw</td>
-                  <td>Jorge Villanueva</td>
-                  <td>₱18.00/kg</td>
-                  <td>1,200 kg</td>
-                  <td>Mar 11, 2026</td>
-                  <td>—</td>
-                  <td><span class="badge green">Active</span></td>
-                  <td>
-                    <button
-                      class="btn btn-sm"
-                      style="border: 1px solid var(--border)"
-                    >
-                      View
-                    </button>
-                  </td>
-                </tr>
-                <tr data-status="active">
-                  <td><strong>#LST-4395</strong></td>
-                  <td>🧅 Sibuyas Tagalog</td>
-                  <td>Tessie Ramos</td>
-                  <td>₱110.00/kg</td>
-                  <td>300 kg</td>
-                  <td>Mar 9, 2026</td>
-                  <td>—</td>
-                  <td><span class="badge green">Active</span></td>
-                  <td>
-                    <button
-                      class="btn btn-sm"
-                      style="border: 1px solid var(--border)"
-                    >
-                      View
-                    </button>
-                  </td>
-                </tr>
-                <tr data-status="removed">
-                  <td><strong>#LST-4380</strong></td>
-                  <td>🌾 Bigas Malagkit</td>
-                  <td>Pedro Lacson</td>
-                  <td>₱55.00/kg</td>
-                  <td>—</td>
-                  <td>Mar 5, 2026</td>
-                  <td>
-                    <span style="font-size: 0.78rem; color: #6a7a5a"
-                      >Misleading description</span
-                    >
-                  </td>
-                  <td><span class="badge gray">Removed</span></td>
-                  <td>
-                    <button
-                      class="btn btn-sm"
-                      style="border: 1px solid var(--border)"
-                    >
-                      View
-                    </button>
+                <tr>
+                  <td
+                    colspan="9"
+                    style="
+                      text-align: center;
+                      padding: 32px;
+                      color: var(--text-light);
+                    "
+                  >
+                    Loading...
                   </td>
                 </tr>
               </tbody>
@@ -295,33 +191,98 @@
     <script src="shared.js"></script>
     <script>
       initAdmin("listings");
-      function filterRows(status, btn, tbodyId) {
-        document
-          .querySelectorAll(".filters-row .filter-btn")
-          .forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
-        document.querySelectorAll("#" + tbodyId + " tr").forEach((row) => {
-          row.style.display =
-            status === "all" || row.dataset.status === status ? "" : "none";
-        });
+
+      let allListings = [];
+      let currentFilter = "all";
+
+      async function loadListings() {
+        showTableLoading("listings-tbody", 9);
+        try {
+          allListings = await apiFetch("admin-dashboard/api/listings.php");
+          filterRows("all");
+        } catch (e) {
+          showTableError("listings-tbody", 9, "❌ Failed to load listings.");
+        }
       }
-      function approveListing(btn) {
-        const row = btn.closest("tr");
-        row.dataset.status = "active";
-        row.querySelector(".badge").className = "badge green";
-        row.querySelector(".badge").textContent = "Active";
-        row.querySelectorAll("td")[6].textContent = "—";
-        row.querySelector("td:last-child").innerHTML =
-          '<button class="btn btn-sm" style="border:1px solid var(--border)">View</button>';
+
+      function filterRows(status, btn = null, tbodyId = "listings-tbody") {
+        if (btn) {
+          document
+            .querySelectorAll(".filters-row .filter-btn")
+            .forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+        }
+        currentFilter = status;
+        const filtered =
+          status === "all"
+            ? allListings
+            : allListings.filter((l) => l.status === status);
+        renderListings(filtered);
       }
-      function removeListing(btn) {
-        const row = btn.closest("tr");
-        row.dataset.status = "removed";
-        row.querySelector(".badge").className = "badge gray";
-        row.querySelector(".badge").textContent = "Removed";
-        row.querySelector("td:last-child").innerHTML =
-          '<button class="btn btn-sm" style="border:1px solid var(--border)">View</button>';
+
+      function renderListings(listings) {
+        const tbody = document.getElementById("listings-tbody");
+        if (!listings.length) {
+          tbody.innerHTML =
+            '<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--text-light)">No listings found</td></tr>';
+          return;
+        }
+        tbody.innerHTML = listings
+          .map(
+            (l) => `
+      <tr data-id="${l.id}" data-status="${l.status}">
+        <td><strong>#LST-${l.id}</strong></td>
+        <td>${l.product_name}</td>
+        <td>${l.farmer_name}</td>
+        <td>${formatCurrency(l.price)}/kg</td>
+        <td>${l.stock_kg ? l.stock_kg.toLocaleString() + " kg" : "—"}</td>
+        <td>${formatDate(l.created_at)}</td>
+        <td><span style="font-size:.78rem;color:#d94f4f">${l.flag_reason || "—"}</span></td>
+        <td>${statusBadge(l.status)}</td>
+        <td>
+          ${
+            l.status === "flagged"
+              ? `<button class="btn btn-primary btn-sm" onclick="approveListing(${l.id}, this)">Approve</button>
+               <button class="btn btn-danger btn-sm" onclick="removeListing(${l.id}, this)" style="margin-left:4px">Remove</button>`
+              : `<button class="btn btn-sm" style="border:1px solid var(--border)">View</button>`
+          }
+        </td>
+      </tr>
+    `,
+          )
+          .join("");
+        applySearchHighlight("listings-tbody");
       }
+
+      async function approveListing(id, btn) {
+        btn.disabled = true;
+        try {
+          await apiFetch("admin-dashboard/api/listings.php", "POST", {
+            action: "approve",
+            listing_id: id,
+          });
+          loadListings();
+        } catch (e) {
+          alert("Failed: " + e.message);
+          btn.disabled = false;
+        }
+      }
+
+      async function removeListing(id, btn) {
+        btn.disabled = true;
+        try {
+          await apiFetch("admin-dashboard/api/listings.php", "POST", {
+            action: "remove",
+            listing_id: id,
+          });
+          loadListings();
+        } catch (e) {
+          alert("Failed: " + e.message);
+          btn.disabled = false;
+        }
+      }
+
+      loadListings();
     </script>
   </body>
 </html>

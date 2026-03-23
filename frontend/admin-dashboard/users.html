@@ -98,8 +98,7 @@
             <span>🔍</span
             ><input
               type="text"
-              placeholder="Search users..."
-              oninput="handleSearch(this.value)"
+              placeholder="Search users, orders, listings..."
             />
           </div>
           <div class="icon-btn">
@@ -240,7 +239,7 @@
         tbody.innerHTML = users
           .map(
             (u) => `
-      <tr>
+      <tr data-id="${u.id}">
         <td><span class="user-ava">${roleIcon[u.role] || "👤"}</span><strong>${u.full_name}</strong></td>
         <td>${u.email}</td>
         <td>${statusBadge(u.role)}</td>
@@ -259,7 +258,10 @@
     `,
           )
           .join("");
+        applySearchHighlight("users-tbody");
       }
+
+      
 
       function updateStats(users) {
         document.getElementById("stat-total").textContent = users.length;

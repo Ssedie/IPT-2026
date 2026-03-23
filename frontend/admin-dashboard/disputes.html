@@ -177,7 +177,7 @@
                 </tr>
               </thead>
               <tbody id="disputes-tbody">
-                <tr data-status="urgent">
+                <tr data-id="41" data-status="urgent">
                   <td><strong>#DSP-041</strong></td>
                   <td>Ana Gomez</td>
                   <td>Mang Teban Farm</td>
@@ -195,7 +195,7 @@
                     </button>
                   </td>
                 </tr>
-                <tr data-status="open">
+                <tr data-id="40" data-status="open">
                   <td><strong>#DSP-040</strong></td>
                   <td>Jojo Ramirez</td>
                   <td>SunFarm Co.</td>
@@ -213,7 +213,7 @@
                     </button>
                   </td>
                 </tr>
-                <tr data-status="open">
+                <tr data-id="39" data-status="open">
                   <td><strong>#DSP-039</strong></td>
                   <td>Linda Tan</td>
                   <td>GreenHarvest</td>
@@ -231,7 +231,7 @@
                     </button>
                   </td>
                 </tr>
-                <tr data-status="review">
+                <tr data-id="38" data-status="review">
                   <td><strong>#DSP-038</strong></td>
                   <td>Carlo Bautista</td>
                   <td>Agri Plus</td>
@@ -249,7 +249,7 @@
                     </button>
                   </td>
                 </tr>
-                <tr data-status="review">
+                <tr data-id="37" data-status="review">
                   <td><strong>#DSP-037</strong></td>
                   <td>Maria Santos</td>
                   <td>Mang Pedro Farm</td>
@@ -267,7 +267,7 @@
                     </button>
                   </td>
                 </tr>
-                <tr data-status="resolved">
+                <tr data-id="36" data-status="resolved">
                   <td><strong>#DSP-036</strong></td>
                   <td>Jay Reyes</td>
                   <td>FreshFields</td>
@@ -315,6 +315,7 @@
         btn.closest("td").innerHTML =
           '<button class="btn btn-sm" style="border:1px solid var(--border)">View</button>';
       }
+      applySearchHiglight("disputes-tbody")
     </script>
   </body>
 </html>

@@ -296,6 +296,8 @@ function initGlobalSearch() {
     const ql      = q.toLowerCase();
     const grouped = {};
 
+    const numericQuery = ql.replace(/[^0-9]/g, '');
+
     const fetches = Object.entries(SEARCH_PAGE_CONFIG)
       .filter(([, cfg]) => cfg.searchEndpoint)
       .map(async ([key, cfg]) => {
@@ -303,9 +305,17 @@ function initGlobalSearch() {
           const data    = await apiFetch(cfg.searchEndpoint);
           const matches = data
             .filter(record =>
-              cfg.searchFields.some(field =>
-                String(record[field] ?? '').toLowerCase().includes(ql)
-              )
+              cfg.searchFields.some(field =>{
+                const val = String(record[field] ?? '').toLowerCase();
+                
+                // 1. Check for standard text match (e.g. "Ana Lopez")
+                if (val.includes(ql)) return true;
+                
+                // 2. Check for numeric ID match (e.g. user typed "#ORD-39", we match "39")
+                if (numericQuery.length > 0 && val === numericQuery) return true;
+
+                return false;
+              })
             )
             .slice(0, 4);
           if (matches.length) grouped[key] = { cfg, matches };

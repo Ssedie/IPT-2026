@@ -235,7 +235,7 @@
         <td>${l.product_name}</td>
         <td>${l.farmer_name}</td>
         <td>${formatCurrency(l.price)}/kg</td>
-        <td>${l.stock_kg ? l.stock_kg.toLocaleString() + " kg" : "—"}</td>
+        <td>${l.stock ? parseFloat(l.stock).toLocaleString() + " kg" : "—"}</td>
         <td>${formatDate(l.created_at)}</td>
         <td><span style="font-size:.78rem;color:#d94f4f">${l.flag_reason || "—"}</span></td>
         <td>${statusBadge(l.status)}</td>

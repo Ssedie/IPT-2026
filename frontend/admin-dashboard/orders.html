@@ -119,8 +119,8 @@
             <div class="value" style="color: #b07d10" id="stat-pending">—</div>
           </div>
           <div class="stat-box">
-            <div class="label">Delivered</div>
-            <div class="value" style="color: #2d8a3e" id="stat-delivered">
+            <div class="label">Completed</div>
+            <div class="value" style="color: #2d8a3e" id="stat-completed">
               —
             </div>
           </div>
@@ -140,8 +140,8 @@
           <button class="filter-btn" onclick="filterOrders('shipped', this)">
             🚚 Shipped
           </button>
-          <button class="filter-btn" onclick="filterOrders('delivered', this)">
-            ✅ Delivered
+          <button class="filter-btn" onclick="filterOrders('completed', this)">
+            ✅ Completed
           </button>
           <button class="filter-btn" onclick="filterOrders('disputed', this)">
             ⚖️ Disputed
@@ -248,8 +248,8 @@
         document.getElementById("stat-pending").textContent = orders.filter(
           (o) => o.status === "pending",
         ).length;
-        document.getElementById("stat-delivered").textContent = orders.filter(
-          (o) => o.status === "delivered",
+        document.getElementById("stat-completed").textContent = orders.filter(
+          (o) => o.status === "completed",
         ).length;
         document.getElementById("stat-disputed").textContent = orders.filter(
           (o) => o.status === "disputed",

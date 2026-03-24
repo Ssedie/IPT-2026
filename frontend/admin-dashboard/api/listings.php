@@ -35,7 +35,7 @@ if ($method === 'GET') {
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
-    echo json_encode($stmt->fetchAll());
+    echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
 
 } elseif ($method === 'POST') {
     $data       = json_decode(file_get_contents('php://input'), true);
